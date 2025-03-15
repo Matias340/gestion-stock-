@@ -1,0 +1,68 @@
+import Product from '../../models/productoModel/productoModel.js'
+
+export const createProduct = async (req, res) => {
+  const { name, price, barcode, cost, stock, stockAmount, unit, description } = req.body;
+
+  try {
+    // Verificar si el producto ya existe
+    const existeProducto = await Product.findOne({ where: { barcode } });
+
+    if (existeProducto) {
+      return res.status(400).json({ msg: "Producto ya registrado" });
+    }
+    const producto = await Product.create({
+      ...req.body,
+    });
+    res.status(201).json({ msg: "Producto registrado" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Error en el servidor" });
+  }
+};
+
+
+
+// Obtener todos los productos
+export const getProduct = async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.status(200).json(products);
+    } catch (error) {
+        console.error("Error en getProduct:", error);
+        res.status(500).json({ message: "Error al obtener los productos", error });
+    }
+};
+
+
+// Obtener un producto por ID
+export const getProductById = async (req, res) => {
+    try {
+        const Product = await Product.findById(req.params.id);
+        if (!Product) return res.status(404).json({ message: 'Producto no encontrado' });
+        res.status(200).json(Product);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los productos', error });
+    }
+};
+
+// Actualizar un Producto
+export const updateProduct = async (req, res) => {
+    try {
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedProduct) return res.status(404).json({ message: 'Producto no encontrado' });
+        res.status(200).json(Product);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar el producto', error });
+    }
+};
+
+// Eliminar un producto
+export const deleteProduct = async (req, res) => {
+    try {
+        const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+        if (!deletedProduct) return res.status(404).json({ message: 'Producto no encontrado' });
+        res.status(200).json({ message: 'Producto eliminado con éxito' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al eliminar el Producto', error });
+    }
+};

@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import productRoutes from './routes/productRoutes/productRoutes.js'
+import productRoutes from './routes/productRoutes/productRoutes.js';
+import ventaRoutes from './routes/ventasRoutes/ventasRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,7 @@ app.use(bodyParser.json());
 
 // Rutas
 app.use('/api/product', productRoutes);
+app.use('/api/venta', ventaRoutes);
 
 // Conexión a MongoDB
 mongoose.connect(process.env.MONGO_URI)

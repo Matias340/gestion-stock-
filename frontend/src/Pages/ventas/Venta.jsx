@@ -8,7 +8,7 @@ function Venta() {
       <Link to="/venta">
         Ventas
         <div className="flex justify-center items-center mt-2">
-          <img src={ventaImage} alt="Producto" className="w-24 h-24" />
+          <img src={ventaImage} alt="Venta" className="w-24 h-24" />
         </div>
       </Link>
     </div>

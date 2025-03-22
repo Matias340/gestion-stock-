@@ -25,7 +25,7 @@ export const createProduct = async (req, res) => {
 // Obtener todos los productos
 export const getProduct = async (req, res) => {
     try {
-        const products = await Product.find();
+        const products = await Product.find().select("_id name price stockAmount barcode");
         res.status(200).json(products);
     } catch (error) {
         console.error("Error en getProduct:", error);
@@ -44,6 +44,30 @@ export const getProductById = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los productos', error });
     }
 };
+
+export const getProductByBarcode = async (req, res) => {
+    try {
+      // Obtenemos el barcode de los parámetros de la URL
+      const { barcode } = req.params;
+  
+      if (!barcode) {
+        return res.status(400).json({ message: 'El barcode es requerido.' });
+      }
+  
+      // Buscamos el producto en la base de datos usando el barcode
+      const product = await Product.findOne({ barcode });
+  
+      if (!product) {
+        return res.status(404).json({ message: `Producto con barcode ${barcode} no encontrado` });
+      }
+  
+      // Si el producto existe, lo devolvemos
+      res.status(200).json(product);
+    } catch (error) {
+      console.error('Error al obtener el producto por barcode:', error);
+      res.status(500).json({ message: 'Error en el servidor al obtener el producto.' });
+    }
+  };
 
 // Actualizar un Producto
 export const updateProduct = async (req, res) => {

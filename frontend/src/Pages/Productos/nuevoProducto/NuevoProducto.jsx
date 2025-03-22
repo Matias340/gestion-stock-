@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import useProductStore from "../../../store/productStore/productStore";
 import { ArrowLeft } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function NuevoProducto() {
   const { id } = useParams();
@@ -45,23 +46,31 @@ function NuevoProducto() {
       stockAmount,
     };
 
-    if (id) {
-      await updateProduct(id, productData);
-    } else {
-      await addProduct(productData);
+    try {
+      if (id) {
+        await updateProduct(id, productData);
+        toast.success("Producto actualizado correctamente");
+      } else {
+        await addProduct(productData);
+        toast.success("Producto agregado correctamente");
+      }
+
+      // Limpiar formulario
+      setName("");
+      setDescription("");
+      setStock("");
+      setBarcode("");
+      setCost("");
+      setPrice("");
+      setUnit("");
+      setStockAmount("");
+      clearCurrentProduct();
+
+      navigate("/products");
+    } catch (error) {
+      toast.error("Ocurrió un error al guardar el producto");
+      console.error("Error al guardar producto:", error);
     }
-
-    setName("");
-    setDescription("");
-    setStock("");
-    setBarcode("");
-    setCost("");
-    setPrice("");
-    setUnit("");
-    setStockAmount("");
-    clearCurrentProduct();
-
-    navigate("/products");
   };
 
   const handleCostChange = (e) => {
@@ -217,7 +226,6 @@ function NuevoProducto() {
             </label>
             <select
               value={unit}
-              required
               onChange={(e) => setUnit(e.target.value)}
               className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             >

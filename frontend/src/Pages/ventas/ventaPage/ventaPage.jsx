@@ -7,11 +7,14 @@ import ListCartProduct from "./ListCartProduct";
 import InformacionProduct from "./InformacionProduct";
 
 export default function VentaPage() {
-  const { fetchProduct } = useProductStore();
+  const { fetchProduct, fetchVentaDetails, ventaProducts } = useProductStore();
 
   useEffect(() => {
     fetchProduct();
+    fetchVentaDetails();
   }, []);
+
+  console.log("venta", ventaProducts);
 
   return (
     <div className="max-w-full mx-auto p-6 bg-gray-100 space-y-6">
@@ -51,34 +54,51 @@ export default function VentaPage() {
           <h3 className="text-xl font-bold mb-4">
             Historial de Ventas del Día
           </h3>
-          <div className="max-h-60 overflow-y-auto rounded-sm">
-            <table className="w-full border-collapse">
-              <thead className="text-center">
-                <tr className="bg-blue-600 rounded-md">
-                  <th className="p-2 border border-blue-600 text-white">
-                    Código
-                  </th>
-                  <th className="p-2 border border-blue-600 text-white">
-                    Producto
-                  </th>
-                  <th className="p-2 border border-blue-600 text-white">
-                    Cantidad
-                  </th>
-                  <th className="p-2 border border-blue-600 text-white">
-                    Total
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-center">
-                {/* Aquí se llenará el historial de ventas */}
-                <tr className="border border-gray-200 odd:bg-gray-200 even:bg-white">
-                  <td className="p-2 font-bold">ABC123</td>
-                  <td className="p-2 font-bold">Ejemplo Producto</td>
-                  <td className="p-2 font-bold">2</td>
-                  <td className="p-2 font-bold">$1000</td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="space-y-4">
+            {ventaProducts.length > 0 ? (
+              ventaProducts.map((venta) => (
+                <div
+                  key={venta._id}
+                  className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
+                >
+                  <div className="text-sm mb-4 text-gray-500">
+                    📅 {new Date(venta.createdAt).toLocaleString()}
+                  </div>
+                  {/* 🔹 Encabezado de la venta */}
+                  <div className="flex justify-between">
+                    <h2 className="text-md font-bold mb-2">Producto/s:</h2>
+                    <h2 className="text-md font-bold mb-2">Cantidad:</h2>
+                    <h2 className="text-md font-bold mb-2">Precio:</h2>
+                  </div>
+                  {/* 🔹 Lista de productos */}
+                  <div className="space-y-2">
+                    {venta.products.map((product) => (
+                      <div
+                        key={product._id}
+                        className="flex justify-between bg-gray-100 p-2 rounded-md"
+                      >
+                        <span className="font-semibold">{product.name}</span>
+                        <span className="text-gray-700">
+                          x{product.quantity}
+                        </span>
+                        <span className="font-bold">
+                          ${product.quantity * product.price}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* 🔹 Total de la venta */}
+                  <div className="mt-3 text-right font-bold text-lg">
+                    Total: ${venta.total}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 text-center">
+                No hay ventas registradas.
+              </p>
+            )}
           </div>
         </div>
       </div>

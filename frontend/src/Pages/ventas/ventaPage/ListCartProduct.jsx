@@ -1,10 +1,32 @@
 import { useState } from "react";
 import useProductStore from "../../../store/productStore/productStore";
 import deleteImage from "../../../assets/delete.png";
+import { toast } from "react-toastify";
 
 function ListCartProduct() {
-  const { selectedProducts, updateProductQuantity, removeFromCart, getTotal } =
-    useProductStore();
+  const {
+    selectedProducts,
+    updateProductQuantity,
+    removeFromCart,
+    getTotal,
+    completePurchase,
+  } = useProductStore();
+
+  const handleCompletePurchase = async () => {
+    try {
+      const result = await completePurchase();
+
+      // Aquí verificamos si la respuesta contiene el campo 'message'
+      if (result.message === "Venta registrada con éxito") {
+        toast.success(result.message); // Mostramos el mensaje de éxito
+      } else {
+        toast.error(`Error al completar la venta: ${result.message}`); // Mostramos el error si no es el mensaje esperado
+      }
+    } catch (error) {
+      toast.error("Ocurrió un error inesperado al procesar la venta");
+      console.error("Error en la compra:", error);
+    }
+  };
 
   return (
     <div className="bg-white p-4 mb-3 rounded-md shadow w-full max-w-xl">
@@ -63,7 +85,10 @@ function ListCartProduct() {
         </span>
       </div>
       <div className="flex justify-start">
-        <button className="bg-blue-500 mt-3 font-bold text-white px-2 py-1 shadow-md rounded-md cursor-pointer hover:bg-blue-700">
+        <button
+          onClick={handleCompletePurchase}
+          className="bg-blue-500 mt-3 font-bold text-white px-2 py-1 shadow-md rounded-md cursor-pointer hover:bg-blue-700"
+        >
           Completar Venta
         </button>
       </div>

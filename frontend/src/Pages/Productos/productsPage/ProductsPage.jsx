@@ -40,7 +40,6 @@ function ProductsPage() {
     return (
       product.name.toLowerCase().includes(filterText.toLowerCase()) ||
       product.price.toString().includes(filterText) ||
-      //product.stockAmount.toString().includes(filterText) ||
       product.barcode.toLowerCase().includes(filterText.toLowerCase())
     );
   });

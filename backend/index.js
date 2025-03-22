@@ -6,6 +6,7 @@ import cors from 'cors';
 import productRoutes from './routes/productRoutes/productRoutes.js';
 import ventaRoutes from './routes/ventasRoutes/ventasRoutes.js';
 
+
 dotenv.config();
 const app = express();
 

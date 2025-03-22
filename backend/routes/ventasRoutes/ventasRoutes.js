@@ -1,11 +1,13 @@
 import express from 'express';
 import {
-    ventaCompleta
+    ventaCompleta,
+    getSales
 } from '../../controllers/ventasController/ventasController.js'
 
 const router = express.Router();
 
 // Rutas CRUD
-router.post('/complete-sale', ventaCompleta);
+router.post('/', ventaCompleta);
+router.get('/', getSales);
 
 export default router;

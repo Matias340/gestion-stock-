@@ -1,14 +1,19 @@
 import { create } from "zustand";
 import {
   fetchProduct,
+  fetchProductById,
+  getProductByBarcode,
   createProduct,
-  updateProduct,
   deleteProduct,
+  updateProduct,
+  fetchVenta,
+  realizarVenta,
 } from "../../api/api";
 
 const useProductStore = create((set, get) => ({
   products: [],
   selectedProducts: [], // Productos seleccionados en la compra
+  ventaProducts: [],
   currentProduct: null,
   notification: null,
 
@@ -22,6 +27,37 @@ const useProductStore = create((set, get) => ({
       });
     }
   },
+
+  fetchProductDetails: async (productId) => {
+    try {
+      // Verificar que productId no sea undefined
+      if (!productId) {
+        console.error("El productId no está definido:", productId);
+        throw new Error("El productId no está definido");
+      }
+  
+      let response;
+      
+      // Si el productId es un barcode (lo asumimos si es un string de longitud más corta)
+      if (productId.length < 10) {  // Suponiendo que los barcodes son más cortos que los _id
+        console.log("Buscando producto por barcode");
+        response = await getProductByBarcode(productId);  // Usamos la nueva función
+      } else {
+        console.log("Buscando producto por _id");
+        response = await fetchProductById(productId);  // Usamos la función existente
+      }
+  
+      if (!response || !response.data) {
+        throw new Error('Producto no encontrado');
+      }
+      
+      return response.data;  // Regresamos el producto encontrado
+    } catch (error) {
+      console.error('Error al obtener el producto:', error);
+      return null;  // Si no se encuentra, regresamos null
+    }
+  },
+  
 
   addProduct: async (product) => {
     try {
@@ -88,33 +124,48 @@ const useProductStore = create((set, get) => ({
   clearNotification: () => set({ notification: null }),
 
   // Agregar productos al carrito con cantidad
-  addToProduct: (product, quantity) => {
-    set((state) => {
-      // Verificar si el producto con ese _id y price ya existe en el carrito
-      const existingProduct = state.selectedProducts.find(
-        (p) => p._id === product._id && p.price === product.price
-      );
+  addToProduct: async (product, quantity) => {
+    console.log("Producto recibido:", product);
+    
+    // Si no tiene _id, usa barcode como identificador
+    const productId = product._id || product.barcode;
+    
+    if (!productId) {
+      console.error("No se puede obtener un identificador para el producto.");
+      return;
+    }
   
-      if (existingProduct) {
-        // Si el producto ya está en el carrito, actualizamos la cantidad
-        return {
-          selectedProducts: state.selectedProducts.map((p) =>
-            p._id === product._id && p.price === product.price
-              ? { ...p, quantity: p.quantity + quantity } // Sumamos la cantidad si es el mismo producto con el mismo precio
-              : p
-          ),
-        };
-      } else {
-        // Si es un producto nuevo, lo agregamos al carrito con la cantidad
-        return {
-          selectedProducts: [
-            ...state.selectedProducts,
-            { ...product, quantity }, // Se agrega el producto con la cantidad especificada
-          ],
-        };
-      }
-    });
+    // Llamamos a fetchProductDetails con el productId
+    const productDetails = await get().fetchProductDetails(productId);
+  
+    if (productDetails) {
+      set((state) => {
+        const existingProduct = state.selectedProducts.find(
+          (p) => p._id === productDetails._id && p.price === productDetails.price
+        );
+  
+        if (existingProduct) {
+          return {
+            selectedProducts: state.selectedProducts.map((p) =>
+              p._id === productDetails._id && p.price === productDetails.price
+                ? { ...p, quantity: p.quantity + quantity }
+                : p
+            ),
+          };
+        } else {
+          return {
+            selectedProducts: [
+              ...state.selectedProducts,
+              { ...productDetails, quantity }, // Usamos productDetails que ya incluye _id
+            ],
+          };
+        }
+      });
+    } else {
+      console.error("No se pudo obtener el detalle del producto.");
+    }
   },
+  
 
   updateProductQuantity: (productId, productPrice, newQuantity) => {
     set((state) => ({
@@ -142,6 +193,72 @@ const useProductStore = create((set, get) => ({
       0
     );
   },
+
+  completePurchase: async () => {
+    try {
+        const { selectedProducts, getTotal } = get();
+
+        console.log("Productos que se están enviando:", selectedProducts);
+
+        if (!selectedProducts.length) {
+            return { success: false, message: "El carrito está vacío" };
+        }
+
+        // Asegurar que cada producto tenga un ID válido
+        const productosFormateados = selectedProducts.map(item => ({
+          productId: item._id, // Asegura que se envíe con el nombre correcto
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        }));
+
+        // Verificar si algún producto sigue sin ID
+        const invalidProduct = productosFormateados.find(item => !item.productId);
+        if (invalidProduct) {
+            console.error("Error: Falta el ID del producto en", invalidProduct);
+            return { success: false, message: "Un producto en el carrito no tiene un ID válido" };
+        }
+
+        const total = getTotal();
+
+        console.log("Enviando datos al backend:", { products: productosFormateados, total });
+        
+        const response = await realizarVenta(productosFormateados, total);
+
+        if (response.status === 201) {
+            // Limpiar el carrito de compra
+            set({
+                selectedProducts: [],
+                notification: { type: "success", message: "Compra realizada correctamente" }
+            });
+            return response.data;
+        } else {
+            set({
+                notification: { type: "error", message: response.data.message }
+            });
+            return response.data;
+        }
+    } catch (error) {
+        console.error("Error al completar la compra:", error);
+        set({
+            notification: { type: "error", message: "Error al completar la compra" }
+        });
+        return { success: false, message: "Error al completar la compra" };
+    }
+},
+
+fetchVentaDetails: async () => {
+  try {
+    const { data } = await fetchVenta();
+    set({ ventaProducts: data });
+  } catch (error) {
+    set({
+      notification: { message: "Error al cargar los productos", type: "error" },
+    });
+  }
+},
+
+
 }));
 
 export default useProductStore;

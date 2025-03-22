@@ -4,10 +4,13 @@ import Home from "./Pages/Principal/Home";
 import NuevoProducto from "./Pages/Productos/nuevoProducto/NuevoProducto";
 import ProductsPage from "./Pages/Productos/productsPage/ProductsPage";
 import VentaPage from "./Pages/ventas/ventaPage/VentaPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000} />
       <main className="">
         <Routes>
           <Route path="/" element={<Home />} />

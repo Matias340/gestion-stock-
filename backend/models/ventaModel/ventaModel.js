@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 const VentaSchema = new mongoose.Schema({
   products: [
     {
-      productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+      productId: { type: mongoose.Schema.Types.ObjectId, ref: "productos" },
       name: String,
       quantity: Number,
-      price: Number,
+      price: Number
     },
   ],
   total: { type: Number, required: true },

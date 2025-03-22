@@ -4,13 +4,13 @@ const ProductoSchema = new mongoose.Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true },
     barcode: { type: String, unique: true, required: false, trim: true},
-    cost: { type: Number, required: true },
+    cost: { type: Number, required: false },
     stock: { type: String, enum: ["Disponible", "Agotado"], required: true },
     stockAmount: { type: Number, default: 0 }, // Solo si está "Disponible"
     unit: { 
       type: String, 
       enum: ["Kg", "Litros", "Unidad", "Centimetro", "Días", "Horas", "Metro", "Metro Cuadrado", "Metro Cúbico", "Milimetro"], 
-      required: true 
+      required: true
     },
     description: { type: String, required: false }
   });

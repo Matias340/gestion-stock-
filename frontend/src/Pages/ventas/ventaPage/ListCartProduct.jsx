@@ -11,14 +11,30 @@ function ListCartProduct() {
     getTotal,
     completePurchase,
   } = useProductStore();
+  const [paymentMethod, setPaymentMethod] = useState("efectivo");
+  const [cashReceived, setCashReceived] = useState("");
 
-  const handleCompletePurchase = async () => {
+  const total = getTotal();
+  const change =
+    paymentMethod === "efectivo" ? Math.max(cashReceived - total, 0) : 0;
+
+  const handleCompletePurchase = async (e) => {
+    e.preventDefault();
+
+    if (
+      paymentMethod === "efectivo" &&
+      (cashReceived === "" || cashReceived < total)
+    ) {
+      toast.error("El dinero recibido debe ser mayor o igual al total.");
+      return;
+    }
+
     try {
-      const result = await completePurchase();
+      const result = await completePurchase(paymentMethod, cashReceived);
 
-      // Aquí verificamos si la respuesta contiene el campo 'message'
       if (result.message === "Venta registrada con éxito") {
         toast.success(result.message); // Mostramos el mensaje de éxito
+        setCashReceived("");
       } else {
         toast.error(`Error al completar la venta: ${result.message}`); // Mostramos el error si no es el mensaje esperado
       }
@@ -35,42 +51,96 @@ function ListCartProduct() {
         {selectedProducts.length > 0 ? (
           selectedProducts.map((product) => (
             <div
-              key={product._id} // Usamos _id para asegurarnos de que cada producto tenga una clave única
-              className="p-3 border-b flex justify-between"
+              key={product._id}
+              className="p-3 bg-gray-200 mb-2 mr-2 rounded-md flex flex-col"
             >
-              <span>{product.name}</span>
-              <input
-                type="number"
-                min="1"
-                value={product.quantity}
-                onChange={(e) =>
-                  updateProductQuantity(
-                    product._id,
-                    product.price,
-                    parseInt(e.target.value, 10)
-                  )
-                }
-                className="w-16 p-1 border rounded-md text-center"
-              />
-              <span>
-                {`$${(product.price * product.quantity * 1.21).toLocaleString(
-                  "es-AR",
-                  {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
+              <div className="flex justify-between">
+                <span className="font-bold">{product.name}</span>
+                <button
+                  onClick={() => removeFromCart(product._id, product.price)}
+                  className="cursor-pointer"
+                >
+                  <img src={deleteImage} alt="Delete" className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="flex justify-between items-center mt-2">
+                <input
+                  type="number"
+                  min="1"
+                  value={product.quantity}
+                  onChange={(e) =>
+                    updateProductQuantity(
+                      product._id,
+                      product.price,
+                      parseInt(e.target.value, 10)
+                    )
                   }
-                )}`}
-              </span>
-              <button
-                onClick={() => removeFromCart(product._id, product.price)}
-                className="cursor-pointer"
-              >
-                <img src={deleteImage} alt="Delete" className="w-6 h-6" />
-              </button>
+                  className="w-16 p-1 border bg-white rounded-md text-center"
+                />
+                <div className="text-right">
+                  <span className="block text-lg font-semibold">
+                    $
+                    {(product.price * product.quantity).toLocaleString(
+                      "es-AR",
+                      { minimumFractionDigits: 2 }
+                    )}
+                  </span>
+                  <span className="block text-sm text-gray-600">
+                    + IVA 21%: $
+                    {(product.price * product.quantity * 0.21).toLocaleString(
+                      "es-AR",
+                      { minimumFractionDigits: 2 }
+                    )}
+                  </span>
+                  <span className="block text-md font-bold">
+                    Total: $
+                    {(product.price * product.quantity * 1.21).toLocaleString(
+                      "es-AR",
+                      { minimumFractionDigits: 2 }
+                    )}
+                  </span>
+                </div>
+              </div>
             </div>
           ))
         ) : (
           <p className="text-gray-500">No hay productos en la compra</p>
+        )}
+      </div>
+
+      <div className="flex flex-col mt-2 mb-2">
+        <label className="mb-2 text-md font-medium text-gray-900">
+          Medio de pago:
+        </label>
+        <select
+          value={paymentMethod}
+          onChange={(e) => setPaymentMethod(e.target.value)}
+          className="w-full border p-2 rounded-md focus:ring focus:ring-blue-300"
+        >
+          <option value="efectivo">Efectivo</option>
+          <option value="tarjeta">Tarjeta débito/crédito</option>
+        </select>
+
+        {paymentMethod === "efectivo" && (
+          <div className="mt-4">
+            <label className="block mb-2 font-medium text-gray-900">
+              Dinero Recibido:
+            </label>
+            <input
+              type="number"
+              value={cashReceived}
+              onChange={(e) =>
+                setCashReceived(e.target.value ? Number(e.target.value) : "")
+              }
+              placeholder="Ingrese el monto recibido"
+              className="w-full border p-2 rounded-md focus:ring focus:ring-blue-300"
+            />
+            {cashReceived > 0 && (
+              <p className="mt-2 text-lg font-semibold text-gray-800">
+                Cambio: ${change}
+              </p>
+            )}
+          </div>
         )}
       </div>
 
@@ -84,10 +154,11 @@ function ListCartProduct() {
           })}`}
         </span>
       </div>
+
       <div className="flex justify-start">
         <button
           onClick={handleCompletePurchase}
-          className="bg-blue-500 mt-3 font-bold text-white px-2 py-1 shadow-md rounded-md cursor-pointer hover:bg-blue-700"
+          className="bg-blue-600 mt-3 font-bold text-white px-2 py-1 shadow-md rounded-md cursor-pointer hover:bg-blue-700"
         >
           Completar Venta
         </button>

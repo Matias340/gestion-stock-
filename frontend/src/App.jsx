@@ -6,6 +6,7 @@ import ProductsPage from "./Pages/Productos/productsPage/ProductsPage";
 import VentaPage from "./Pages/ventas/ventaPage/VentaPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import HistorialVentasPage from "./Pages/Historial/HistorialVentasPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/nuevoProducto" element={<NuevoProducto />} />
           <Route path="/nuevoProducto/:id" element={<NuevoProducto />} />
+          <Route path="/historial" element={<HistorialVentasPage />} />
         </Routes>
       </main>
     </BrowserRouter>

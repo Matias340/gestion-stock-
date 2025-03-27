@@ -171,6 +171,7 @@ function NuevoProducto() {
               type="text"
               placeholder="Valor costo"
               value={cost}
+              required
               onChange={handleCostChange}
               className={`border p-2 rounded-md text-gray-900 outline-none focus:ring-1 ${
                 error

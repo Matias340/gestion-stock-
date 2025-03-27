@@ -12,12 +12,12 @@ function InformacionProduct() {
   };
 
   return (
-    <div className="bg-white mb-3 w-150 flex p-4 rounded-md shadow grid grid-cols-3 gap-2">
+    <div className="bg-white mb-3 w-145 flex p-4 rounded-md shadow grid grid-cols-3 gap-2">
       <div>
         <label className="font-bold">Nombre del Producto</label>
         <input
           type="text"
-          className="w-full p-2 border rounded-md"
+          className="w-full p-2 border font-sans rounded-md"
           value={currentProduct?.name || ""}
           disabled
         />
@@ -77,10 +77,10 @@ function InformacionProduct() {
         />
       </div>
       {/* Botón de Confirmación */}
-      <div className="flex justify-start">
+      <div className=" justify-start">
         <button
           onClick={handleAddProduct}
-          className="bg-blue-500 font-bold text-white px-2 py-1 shadow-md rounded-md cursor-pointer hover:bg-blue-700"
+          className="bg-blue-600 font-bold text-white px-2 py-1 shadow-md rounded-md cursor-pointer hover:bg-blue-700"
         >
           Agregar producto
         </button>

@@ -3,13 +3,18 @@ import Venta from "../../models/ventaModel/ventaModel.js";
 
 export const ventaCompleta = async (req, res) => {
     try {
-        const { products, total } = req.body;
+        const { products, total, medioPago } = req.body;
 
         console.log("Datos recibidos en el backend:", req.body);
 
         // Validar que los productos sean válidos
         if (!products || !Array.isArray(products) || products.length === 0) {
             return res.status(400).json({ message: "No hay productos en la venta" });
+        }
+
+        // Validar que el método de pago sea válido
+        if (!medioPago || !["efectivo", "tarjeta"].includes(medioPago)) {
+            return res.status(400).json({ message: "Método de pago inválido" });
         }
 
         // Verificar cada producto en la venta
@@ -39,8 +44,8 @@ export const ventaCompleta = async (req, res) => {
             await producto.save();
         }
         
-        // Crear la venta en la base de datos
-        const nuevaVenta = new Venta({ products, total });
+        // Crear la venta en la base de datos con el método de pago
+        const nuevaVenta = new Venta({ products, total, medioPago });
         await nuevaVenta.save();
         
         // Responder con éxito

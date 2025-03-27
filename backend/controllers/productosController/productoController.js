@@ -25,7 +25,7 @@ export const createProduct = async (req, res) => {
 // Obtener todos los productos
 export const getProduct = async (req, res) => {
     try {
-        const products = await Product.find().select("_id name price stockAmount barcode");
+        const products = await Product.find().select("_id name price cost stock stockAmount barcode unit description");
         res.status(200).json(products);
     } catch (error) {
         console.error("Error en getProduct:", error);

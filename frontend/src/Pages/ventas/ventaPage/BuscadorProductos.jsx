@@ -27,7 +27,7 @@ function buscadorProductos() {
   return (
     <div className="flex justify-between mt-3 mb-3 gap-4">
       {/* Botón para agregar un producto manualmente */}
-      <button className="w-full font-bold cursor-pointer max-w-xs bg-blue-500 text-white py-3 rounded-md shadow-md hover:bg-blue-700">
+      <button className="w-full font-bold cursor-pointer max-w-xs bg-blue-600 text-white py-3 rounded-md shadow-md hover:bg-blue-700">
         Agregar Producto Manualmente
       </button>
 
@@ -39,7 +39,7 @@ function buscadorProductos() {
           list="product-list"
           onChange={(e) => setSearchTerm(e.target.value)}
           onBlur={handleSearch}
-          className="w-70 p-2 border rounded-md text-lg bg-white"
+          className="w-70 p-2 border border-gray-500 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 rounded-md text-lg bg-white"
           placeholder="Buscar producto manualmente"
         />
         <datalist id="product-list">
@@ -54,7 +54,7 @@ function buscadorProductos() {
             <option disabled>No hay productos</option>
           )}
         </datalist>
-        <button className="bg-blue-500 font-bold text-white px-4 py-2 cursor-pointer shadow-md rounded-md hover:bg-blue-700">
+        <button className="bg-blue-600 font-bold text-white px-4 py-2 cursor-pointer shadow-md rounded-md hover:bg-blue-700">
           Agregar
         </button>
       </div>

@@ -6,7 +6,6 @@ import {
   createProduct,
   deleteProduct,
   updateProduct,
-  fetchVenta,
   realizarVenta,
 } from "../../api/api";
 
@@ -14,8 +13,11 @@ const useProductStore = create((set, get) => ({
   products: [],
   selectedProducts: [], // Productos seleccionados en la compra
   ventaProducts: [],
+  paymentMethod: "efectivo",
   currentProduct: null,
   notification: null,
+
+  setPaymentMethod: (method) => set({ paymentMethod: method }),
 
   fetchProduct: async () => {
     try {
@@ -196,37 +198,27 @@ const useProductStore = create((set, get) => ({
 
   completePurchase: async () => {
     try {
-        const { selectedProducts, getTotal } = get();
-
+        const { selectedProducts, getTotal, paymentMethod } = get();
         console.log("Productos que se están enviando:", selectedProducts);
 
         if (!selectedProducts.length) {
             return { success: false, message: "El carrito está vacío" };
         }
 
-        // Asegurar que cada producto tenga un ID válido
         const productosFormateados = selectedProducts.map(item => ({
-          productId: item._id, // Asegura que se envíe con el nombre correcto
+          productId: item._id,
           name: item.name,
           quantity: item.quantity,
           price: item.price
         }));
 
-        // Verificar si algún producto sigue sin ID
-        const invalidProduct = productosFormateados.find(item => !item.productId);
-        if (invalidProduct) {
-            console.error("Error: Falta el ID del producto en", invalidProduct);
-            return { success: false, message: "Un producto en el carrito no tiene un ID válido" };
-        }
-
         const total = getTotal();
 
-        console.log("Enviando datos al backend:", { products: productosFormateados, total });
+        console.log("Enviando datos al backend:", { products: productosFormateados, total, medioPago: paymentMethod });
         
-        const response = await realizarVenta(productosFormateados, total);
+        const response = await realizarVenta(productosFormateados, total, paymentMethod); // 📌 Enviar `medioPago`
 
         if (response.status === 201) {
-            // Limpiar el carrito de compra
             set({
                 selectedProducts: [],
                 notification: { type: "success", message: "Compra realizada correctamente" }
@@ -245,19 +237,7 @@ const useProductStore = create((set, get) => ({
         });
         return { success: false, message: "Error al completar la compra" };
     }
-},
-
-fetchVentaDetails: async () => {
-  try {
-    const { data } = await fetchVenta();
-    set({ ventaProducts: data });
-  } catch (error) {
-    set({
-      notification: { message: "Error al cargar los productos", type: "error" },
-    });
-  }
-},
-
+  },
 
 }));
 

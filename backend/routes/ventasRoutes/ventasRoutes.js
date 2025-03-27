@@ -1,7 +1,7 @@
 import express from 'express';
 import {
     ventaCompleta,
-    getSales
+    getSales,
 } from '../../controllers/ventasController/ventasController.js'
 
 const router = express.Router();

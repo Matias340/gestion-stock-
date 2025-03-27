@@ -1,4 +1,5 @@
 import React from "react";
+import HistorialVentas from "../Historial/HistorialVentas";
 import Productos from "../Productos/Productos";
 import Venta from "../ventas/Venta";
 
@@ -12,17 +13,12 @@ function Home() {
         <Venta />
         <Productos />
         <div className="bg-white shadow-md p-4 rounded-lg">
-          <h2>Servicios</h2>
-        </div>
-        <div className="bg-white shadow-md p-4 rounded-lg">
-          <h2>Pedidos</h2>
-        </div>
-        <div className="bg-white shadow-md p-4 rounded-lg">
           <h2>Ingresos</h2>
         </div>
         <div className="bg-white shadow-md p-4 rounded-lg">
           <h2>Gastos</h2>
         </div>
+        <HistorialVentas />
       </div>
     </div>
   );

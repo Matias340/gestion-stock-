@@ -75,7 +75,7 @@ function ProductsPage() {
           filteredProducts.map((product) => (
             <div
               key={product._id}
-              className="bg-blue-500 p-4 mt-5 rounded-lg shadow-md w-full grid grid-cols-3 items-center gap-4"
+              className="bg-blue-600 p-4 mt-5 rounded-lg shadow-md w-full grid grid-cols-3 items-center gap-4"
             >
               <div className="col-span-1">
                 <h2 className="text-lg text-white font-bold">{product.name}</h2>
@@ -94,7 +94,7 @@ function ProductsPage() {
               </div>
               <div className="col-span-1 flex justify-end gap-2">
                 <button
-                  className="px-4 py-2 text-sm font-bold border border-white rounded bg-white text-blue-500 cursor-pointer"
+                  className="px-4 py-2 text-sm font-bold border border-white rounded bg-white text-blue-600 cursor-pointer"
                   onClick={() => {
                     setCurrentProduct(product);
                     navigate(`/nuevoProducto/${product._id}`);

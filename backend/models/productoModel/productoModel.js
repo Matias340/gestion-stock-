@@ -4,7 +4,7 @@ const ProductoSchema = new mongoose.Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true },
     barcode: { type: String, unique: true, required: false, trim: true},
-    cost: { type: Number, required: false },
+    cost: { type: Number, required: true },
     stock: { type: String, enum: ["Disponible", "Agotado"], required: true },
     stockAmount: { type: Number, default: 0 }, // Solo si está "Disponible"
     unit: { 

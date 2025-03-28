@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'http://localhost:4000/api/product' });
-const APIVENTA = axios.create({ baseURL: 'http://localhost:4000/api/venta' });
+const API = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL });
+const APIVENTA = axios.create({ baseURL: import.meta.env.VITE_API_VENTA_URL });
 
 export const fetchProduct = () => API.get('/');
 export const fetchProductById = (id) => API.get(`/${id}`);

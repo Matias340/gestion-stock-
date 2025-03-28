@@ -14,7 +14,7 @@ function historialVentasPorDia() {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded-md shadow">
+    <div className="bg-white p-4 rounded-md shadow-lg">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-bold">Historial de Ventas del Día</h3>
         <button

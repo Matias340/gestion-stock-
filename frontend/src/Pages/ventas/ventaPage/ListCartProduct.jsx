@@ -45,7 +45,7 @@ function ListCartProduct() {
   };
 
   return (
-    <div className="bg-white p-4 mb-3 rounded-md shadow w-full max-w-xl">
+    <div className="bg-white p-4 mb-3 rounded-md shadow-lg w-full max-w-xl">
       <h2 className="text-xl font-semibold mb-3">Productos en la Compra</h2>
       <div className="max-h-60 overflow-y-auto">
         {selectedProducts.length > 0 ? (
@@ -145,7 +145,7 @@ function ListCartProduct() {
       </div>
 
       {/* Total de la Compra */}
-      <div className="bg-white p-4 rounded-md shadow flex justify-between text-lg font-bold">
+      <div className="bg-white p-4 rounded-md shadow-md flex justify-between text-lg font-bold">
         <span>Total:</span>
         <span>
           {`$${getTotal().toLocaleString("es-AR", {

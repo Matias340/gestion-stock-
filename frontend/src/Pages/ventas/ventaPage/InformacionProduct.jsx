@@ -12,7 +12,7 @@ function InformacionProduct() {
   };
 
   return (
-    <div className="bg-white mb-3 w-145 flex p-4 rounded-md shadow grid grid-cols-3 gap-2">
+    <div className="bg-white mb-3 w-145 flex p-4 rounded-md shadow-lg grid grid-cols-3 gap-2">
       <div>
         <label className="font-bold">Nombre del Producto</label>
         <input

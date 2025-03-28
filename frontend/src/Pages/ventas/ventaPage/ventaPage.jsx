@@ -6,13 +6,16 @@ import BuscadorProductos from "./buscadorProductos";
 import ListCartProduct from "./ListCartProduct";
 import InformacionProduct from "./InformacionProduct";
 import HistorialVentasPorDia from "./HistorialVentasPorDia";
+import { Fade, Slide } from "react-awesome-reveal"; // Importamos los efectos
 
 export default function VentaPage() {
   const { fetchProduct } = useProductStore();
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
     fetchProduct();
-  }, []);
+    setShowContent(true); // Activamos la animación una vez cargado el contenido
+  }, [fetchProduct]);
 
   return (
     <div className="max-w-full mx-auto p-6 bg-gray-100 space-y-6">
@@ -21,8 +24,9 @@ export default function VentaPage() {
           <Link to="/">
             <ArrowLeft size={35} className="mr-10" />
           </Link>
-          <h1 className="text-2xl font-semibold">Facturación</h1>
+          <h1 className="text-2xl font-semibold">Realizar Venta</h1>
         </div>
+
         {/* Escaneo del Código de Barras */}
         <div className="">
           <input
@@ -32,23 +36,31 @@ export default function VentaPage() {
             autoFocus
           />
         </div>
+
         {/* Buscador de los Productos */}
         <div>
           <BuscadorProductos />
         </div>
-        <div className="flex justify-between gap-4">
-          {/* Tablero de Productos Seleccionados */}
-          <div className="w-1/2 overflow-auto">
-            <ListCartProduct />
+
+        {/* Usamos Fade y Slide para animar los componentes */}
+        <Fade triggerOnce={true} delay={200}>
+          <div className="flex justify-between gap-4">
+            {/* Tablero de Productos Seleccionados */}
+            <div className="w-1/2 overflow-auto">
+              <ListCartProduct />
+            </div>
+            {/* Información del Producto */}
+            <div className="w-1/2 overflow-auto">
+              <InformacionProduct />
+            </div>
           </div>
-          {/* Información del Producto */}
-          <div className="w-1/2 overflow-auto">
-            <InformacionProduct />
+        </Fade>
+
+        <Fade triggerOnce={true} delay={400}>
+          <div>
+            <HistorialVentasPorDia />
           </div>
-        </div>
-        <div>
-          <HistorialVentasPorDia />
-        </div>
+        </Fade>
       </div>
     </div>
   );

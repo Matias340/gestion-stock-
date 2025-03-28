@@ -6,10 +6,32 @@ import { Link } from "react-router-dom";
 function HistorialVentasPage() {
   const { ventaProducts, fetchVentaDetails, mostrarHistorial } =
     useVentaStore();
+  const [ventasOrdenadas, setVentasOrdenadas] = useState([]);
 
   useEffect(() => {
     fetchVentaDetails();
   }, []);
+
+  useEffect(() => {
+    if (ventaProducts.length > 0) {
+      const ventasPorMes = {};
+
+      ventaProducts.forEach((venta) => {
+        const fecha = new Date(venta.createdAt);
+        const mesAno = fecha.toLocaleString("default", {
+          month: "long",
+          year: "numeric",
+        });
+
+        if (!ventasPorMes[mesAno]) {
+          ventasPorMes[mesAno] = [];
+        }
+        ventasPorMes[mesAno].push(venta);
+      });
+
+      setVentasOrdenadas(Object.entries(ventasPorMes));
+    }
+  }, [ventaProducts]);
 
   return (
     <div className="bg-white p-4 rounded-md shadow">
@@ -21,48 +43,36 @@ function HistorialVentasPage() {
           <h1 className="text-2xl font-semibold">Historial de Ventas</h1>
         </div>
       </div>
-
       {mostrarHistorial && (
-        <div className="space-y-4 mt-4">
-          {ventaProducts.length > 0 ? (
-            ventaProducts.map((venta) => (
-              <div
-                key={venta._id}
-                className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
-              >
-                <div>
-                  <div className="flex justify-between">
-                    <div className="text-sm mb-4 text-gray-500">
-                      📅 {new Date(venta.createdAt).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-                {/* 🔹 Encabezado de la venta */}
-                <div className="flex justify-between">
-                  <h2 className="text-md font-bold mb-2">Producto/s:</h2>
-                  <h2 className="text-md font-bold mb-2">Cantidad:</h2>
-                  <h2 className="text-md font-bold mb-2">Precio:</h2>
-                </div>
-                {/* 🔹 Lista de productos */}
-                <div className="space-y-2">
-                  {venta.products.map((product) => (
-                    <div
-                      key={product._id}
-                      className="flex justify-between bg-gray-100 p-2 rounded-md"
-                    >
-                      <span className="font-semibold">{product.name}</span>
-                      <span className="text-gray-700">x{product.quantity}</span>
-                      <span className="font-bold">
-                        ${product.quantity * product.price}
-                      </span>
-                    </div>
+        <div className="mt-4">
+          {ventasOrdenadas.length > 0 ? (
+            ventasOrdenadas.map(([mesAno, ventas]) => (
+              <div key={mesAno}>
+                <h2 className="text-lg font-bold bg-gray-200 p-2 rounded-md">
+                  {mesAno}
+                </h2>
+                <ul className="divide-y divide-gray-300">
+                  {ventas.map((venta) => (
+                    <li key={venta._id} className="py-3 px-2">
+                      <div className="text-sm text-gray-500 mb-3">
+                        📅 {new Date(venta.createdAt).toLocaleDateString()}
+                      </div>
+                      <div className="grid grid-cols-3 gap-72 text-left">
+                        <span className="font-semibold">
+                          {venta.products.map((p) => p.name).join(", ")}
+                        </span>
+                        <span className="text-gray-700">
+                          x
+                          {venta.products.reduce(
+                            (acc, p) => acc + p.quantity,
+                            0
+                          )}
+                        </span>
+                        <span className="font-bold">${venta.total}</span>
+                      </div>
+                    </li>
                   ))}
-                </div>
-
-                {/* 🔹 Total de la venta */}
-                <div className="mt-3 text-right font-bold text-lg">
-                  Total: ${venta.total}
-                </div>
+                </ul>
               </div>
             ))
           ) : (

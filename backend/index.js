@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import productRoutes from './routes/productRoutes/productRoutes.js';
+import proveedorRoutes from './routes/proveedorRoutes/proveedorRoutes.js';
 import ventaRoutes from './routes/ventasRoutes/ventasRoutes.js';
 
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 
 // Rutas
 app.use('/api/product', productRoutes);
+app.use('/api/proveedor', proveedorRoutes);
 app.use('/api/venta', ventaRoutes);
 
 // Conexión a MongoDB

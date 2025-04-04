@@ -127,11 +127,14 @@ function ListCartProduct() {
               Dinero Recibido:
             </label>
             <input
-              type="number"
+              type="text"
               value={cashReceived}
-              onChange={(e) =>
-                setCashReceived(e.target.value ? Number(e.target.value) : "")
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*\.?\d*$/.test(value)) {
+                  setCashReceived(value);
+                }
+              }}
               placeholder="Ingrese el monto recibido"
               className="w-full border p-2 rounded-md focus:ring focus:ring-blue-300"
             />

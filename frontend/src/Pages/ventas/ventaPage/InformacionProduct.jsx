@@ -37,7 +37,12 @@ function InformacionProduct() {
         <input
           type="text"
           className="w-full p-2 border rounded-md"
-          value={currentProduct?.price || ""}
+          value={
+            currentProduct?.price.toLocaleString("es-AR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) || ""
+          }
           disabled
         />
       </div>
@@ -74,6 +79,7 @@ function InformacionProduct() {
           type="number"
           value={currentProduct?.stockAmount || ""}
           className="w-full p-2 border rounded-md"
+          disabled
         />
       </div>
       {/* Botón de Confirmación */}

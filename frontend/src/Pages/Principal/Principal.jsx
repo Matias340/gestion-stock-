@@ -53,7 +53,7 @@ function Principal() {
           <button className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
             <Menu size={28} />
           </button>
-          <h1 className="ml-4 text-xl font-bold">Mi Aplicación</h1>
+          <h1 className="ml-4 text-xl font-bold">Gestión 360</h1>
         </header>
 
         <div className="w-full overflow-hidden">

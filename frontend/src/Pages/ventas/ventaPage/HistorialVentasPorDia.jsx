@@ -14,7 +14,7 @@ function historialVentasPorDia() {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded-md shadow-lg">
+    <div className="bg-white p-4 rounded-md shadow-lg ">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-bold">Historial de Ventas del Día</h3>
         <button
@@ -64,7 +64,11 @@ function historialVentasPorDia() {
 
                 {/* 🔹 Total de la venta */}
                 <div className="mt-3 text-right font-bold text-lg">
-                  Total: ${venta.total}
+                  Total: $
+                  {venta.total.toLocaleString("es-AR", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }) || ""}
                 </div>
               </div>
             ))

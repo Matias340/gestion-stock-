@@ -1,47 +1,48 @@
 import { useState, useEffect } from "react";
-import useProductStore from "../../../store/productStore/productStore";
+import useProveedorStore from "../../../store/proveedorStore/proveedorStore";
 import { Filter, Plus, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Fade, Slide } from "react-awesome-reveal"; // Importamos los efectos
 
 function ProveedoresPage() {
-  const { products, fetchProduct, removeProduct, setCurrentProduct } =
-    useProductStore();
+  const {
+    proveedores,
+    fetchProveedor,
+    removeProveedor,
+    setCurrentProveedores,
+  } = useProveedorStore();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
+  const [proveedorToDelete, setProveedorToDelete] = useState(null);
   const [filterText, setFilterText] = useState("");
 
   useEffect(() => {
-    fetchProduct();
+    fetchProveedor();
   }, []);
 
-  const handleDeleteClick = (product) => {
-    setProductToDelete(product);
+  const handleDeleteClick = (proveedor) => {
+    setProveedorToDelete(proveedor);
     setShowModal(true);
   };
 
-  // Función para confirmar la eliminación
   const confirmDelete = () => {
-    if (productToDelete) {
-      removeProduct(productToDelete._id);
+    if (proveedorToDelete) {
+      removeProveedor(proveedorToDelete._id);
       setShowModal(false);
-      setProductToDelete(null);
+      setProveedorToDelete(null);
     }
   };
 
-  // Función para cancelar la eliminación
   const cancelDelete = () => {
     setShowModal(false);
-    setProductToDelete(null);
+    setProveedorToDelete(null);
   };
 
-  //filtro
-  const filteredProducts = products.filter((product) => {
+  const filteredProveedor = proveedores.filter((proveedor) => {
     return (
-      product.name.toLowerCase().includes(filterText.toLowerCase()) ||
-      product.price.toString().includes(filterText) ||
-      product.barcode.toLowerCase().includes(filterText.toLowerCase())
+      proveedor.name.toLowerCase().includes(filterText.toLowerCase()) ||
+      proveedor.identify.toString().includes(filterText) ||
+      proveedor.state.toLowerCase().includes(filterText.toLowerCase())
     );
   });
 
@@ -65,7 +66,7 @@ function ProveedoresPage() {
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="Filtrar producto por Nombre, Precio o Codigo de barras"
+              placeholder="Filtrar proveedor por Nombre, Direccion o Estado"
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white border rounded-lg shadow-sm outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
@@ -76,45 +77,37 @@ function ProveedoresPage() {
             />
           </div>
           <div className="max-h-[400px] overflow-y-auto w-full px-4">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
+            {filteredProveedor.length > 0 ? (
+              filteredProveedor.map((proveedor) => (
                 <div
-                  key={product._id}
+                  key={proveedor._id}
                   className="bg-blue-600 p-4 mt-5 rounded-lg shadow-md w-full grid grid-cols-3 items-center gap-4"
                 >
                   <div className="col-span-1">
                     <h2 className="text-lg text-white font-bold">
-                      {product.name}
+                      {proveedor.name}
                     </h2>
+                    <p className="text-white font-bold">{proveedor.adress}</p>
                     <p className="text-white font-bold">
-                      ARS${" "}
-                      {new Intl.NumberFormat("es-AR").format(product.price)}
-                    </p>
-                    <p className="text-white font-bold">
-                      Código: {product.barcode}
+                      Contacto: {proveedor.contact}
                     </p>
                   </div>
                   <div className="col-span-1 text-center text-white">
-                    <span className="font-bold">
-                      Stock:{" "}
-                      {product.stockAmount > 0
-                        ? product.stockAmount
-                        : "Agotado"}
-                    </span>
+                    <span className="font-bold">Estado: {proveedor.state}</span>
                   </div>
                   <div className="col-span-1 flex justify-end gap-2">
                     <button
                       className="px-4 py-2 text-sm font-bold border border-white rounded bg-white text-blue-600 cursor-pointer"
                       onClick={() => {
-                        setCurrentProduct(product);
-                        navigate(`/nuevoProveedor/${product._id}`);
+                        setCurrentProveedores(proveedor);
+                        navigate(`/nuevoProveedor/${proveedor._id}`);
                       }}
                     >
                       Editar
                     </button>
                     <button
                       className="px-4 py-2 text-sm font-bold border border-red-500 rounded bg-red-500 text-white cursor-pointer"
-                      onClick={() => handleDeleteClick(product)}
+                      onClick={() => handleDeleteClick(proveedor)}
                     >
                       Eliminar
                     </button>
@@ -123,7 +116,7 @@ function ProveedoresPage() {
               ))
             ) : (
               <p className="text-gray-500 text-center">
-                No se encontraron productos.
+                No se encontraron proveedores.
               </p>
             )}
           </div>
@@ -132,7 +125,7 @@ function ProveedoresPage() {
             <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
               <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
                 <h3 className="text-lg font-semibold mb-4">
-                  ¿Seguro que quieres eliminar este producto?
+                  ¿Seguro que quieres eliminar este proveedor?
                 </h3>
                 <div className="flex justify-between">
                   <button

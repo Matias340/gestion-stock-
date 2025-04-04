@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HistorialVentasPage from "./Pages/Historial/HistorialVentasPage";
 import ProveedoresPage from "./Pages/Proveedores/proveedoresPage/proveedoresPage";
+import NuevoProveedor from "./Pages/Proveedores/nuevoProveedor/nuevoProveedor";
 import Home from "./Pages/Principal/Home";
 import Cards from "./Pages/Principal/Cards";
 
@@ -21,6 +22,8 @@ function App() {
             <Route path="/vender" element={<VentaPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/proveedores" element={<ProveedoresPage />} />
+            <Route path="/nuevoProveedor" element={<NuevoProveedor />} />
+            <Route path="/nuevoProveedor/:id" element={<NuevoProveedor />} />
             <Route path="/nuevoProducto" element={<NuevoProducto />} />
             <Route path="/nuevoProducto/:id" element={<NuevoProducto />} />
             <Route path="/historial" element={<HistorialVentasPage />} />

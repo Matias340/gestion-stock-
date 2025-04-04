@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Fade, Slide } from "react-awesome-reveal";
 
-function nuevoProveedor() {
+function NuevoProveedor() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentProduct, addProduct, updateProduct, clearCurrentProduct } =
@@ -287,4 +287,4 @@ function nuevoProveedor() {
   );
 }
 
-export default nuevoProveedor;
+export default NuevoProveedor;

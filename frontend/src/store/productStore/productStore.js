@@ -7,7 +7,7 @@ import {
   deleteProduct,
   updateProduct,
   realizarVenta,
-} from "../../api/api";
+} from "../../api/apiProducto";
 
 const useProductStore = create((set, get) => ({
   products: [],

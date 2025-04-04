@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import {
   fetchVenta,
-} from "../../api/api";
+} from "../../api/apiProducto";
 
 const useVentaStore = create((set, get) => ({
     ventaProducts: [],

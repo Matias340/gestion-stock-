@@ -25,7 +25,7 @@ export const createProveedor = async (req, res) => {
 // Obtener todos los proveedores
 export const getProveedor = async (req, res) => {
     try {
-        const proveedor = await Proveedor.find().select("_id name, identify, contact, phone, adress, state, description");
+        const proveedor = await Proveedor.find().select("_id name identify contact phone adress state description");
         res.status(200).json(proveedor);
     } catch (error) {
         console.error("Error en getProveedor:", error);

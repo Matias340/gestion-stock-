@@ -18,6 +18,7 @@ const useProveedorStore = create((set, get) => ({
   fetchProveedor: async () => {
     try {
       const { data } = await fetchProveedor();
+      console.log('2', data);
       set({ proveedores: data });
     } catch (error) {
       set({
@@ -37,10 +38,10 @@ const useProveedorStore = create((set, get) => ({
       
       
       if (proveedorId.length < 10) {
-        console.log("Buscando producto por barcode");
+        console.log("Buscando proveedor por nombre");
         response = await getProveedorByName(proveedorId);  
       } else {
-        console.log("Buscando producto por _id");
+        console.log("Buscando proveedor por _id");
         response = await fetchProveedorById(proveedorId);  
       }
   

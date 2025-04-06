@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import useProductStore from "../../../store/productStore/productStore";
+import useProveedorStore from "../../../store/proveedorStore/proveedorStore";
 import { ArrowLeft } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,110 +8,69 @@ import { Fade, Slide } from "react-awesome-reveal";
 function NuevoProveedor() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { currentProduct, addProduct, updateProduct, clearCurrentProduct } =
-    useProductStore();
+  const {
+    currentProveedores,
+    addProveedor,
+    updateProveedor,
+    clearCurrentProveedores,
+  } = useProveedorStore();
 
   const [name, setName] = useState("");
+  const [identify, setIdentify] = useState("");
+  const [contact, setContact] = useState("");
+  const [phone, setPhone] = useState("");
+  const [adress, setAdress] = useState("");
+  const [state, setState] = useState("");
   const [description, setDescription] = useState("");
-  const [stock, setStock] = useState("");
-  const [barcode, setBarcode] = useState("");
-  const [cost, setCost] = useState("");
-  const [price, setPrice] = useState("");
-  const [unit, setUnit] = useState("");
-  const [stockAmount, setStockAmount] = useState("");
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (id && currentProduct) {
-      setName(currentProduct.name || "");
-      setDescription(currentProduct.description || "");
-      setStock(currentProduct.stock || "");
-      setBarcode(currentProduct.barcode || "");
-      setCost(currentProduct.cost || "");
-      setPrice(currentProduct.price || "");
-      setUnit(currentProduct.unit || "");
-      setStockAmount(currentProduct.stockAmount || "");
+    if (id && currentProveedores) {
+      setName(currentProveedores.name || "");
+      setDescription(currentProveedores.description || "");
+      setIdentify(currentProveedores.identify || "");
+      setContact(currentProveedores.contact || "");
+      setPhone(currentProveedores.phone || "");
+      setAdress(currentProveedores.adress || "");
+      setState(currentProveedores.state || "");
     }
-  }, [id, currentProduct]);
+  }, [id, currentProveedores]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const productData = {
+    const proveedorData = {
       name,
       description,
-      stock,
-      barcode,
-      cost,
-      price,
-      unit,
-      stockAmount,
+      identify,
+      contact,
+      phone,
+      adress,
+      state,
     };
 
     try {
       if (id) {
-        await updateProduct(id, productData);
-        toast.success("Producto actualizado correctamente");
+        await updateProveedor(id, proveedorData);
+        toast.success("Proveedor actualizado correctamente");
       } else {
-        await addProduct(productData);
-        toast.success("Producto agregado correctamente");
+        await addProveedor(proveedorData);
+        toast.success("Proveedor agregado correctamente");
       }
 
       // Limpiar formulario
       setName("");
       setDescription("");
-      setStock("");
-      setBarcode("");
-      setCost("");
-      setPrice("");
-      setUnit("");
-      setStockAmount("");
-      clearCurrentProduct();
+      setIdentify("");
+      setContact("");
+      setPhone("");
+      setAdress("");
+      setState("");
+      clearCurrentProveedores();
 
       navigate("/proveedores");
     } catch (error) {
-      toast.error("Ocurrió un error al guardar el producto");
-      console.error("Error al guardar producto:", error);
+      toast.error("Ocurrió un error al guardar el proveedor");
+      console.error("Error al guardar proveedor:", error);
     }
-  };
-
-  const handleCostChange = (e) => {
-    let value = e.target.value;
-    value = value.replace(/[^0-9]/g, "");
-
-    if (value.length > 1) {
-      value = value.replace(/^0+/, "");
-    }
-
-    const newCost = value ? Number(value) : "";
-
-    setCost(newCost);
-
-    if (newCost > price) {
-      setError("El valor costo no puede ser mayor que el valor comercial");
-    } else {
-      setError("");
-    }
-  };
-
-  const handlePriceChange = (e) => {
-    let value = e.target.value;
-
-    value = value.replace(/[^0-9]/g, "");
-
-    if (value.length > 1) {
-      value = value.replace(/^0+/, "");
-    }
-
-    setPrice(value);
-  };
-
-  const handleStockAmountChange = (e) => {
-    let value = e.target.value;
-    value = value.replace(/[^0-9]/g, "");
-    if (value.length > 1) {
-      value = value.replace(/^0+/, "");
-    }
-    setStockAmount(value);
   };
 
   return (
@@ -123,7 +82,7 @@ function NuevoProveedor() {
               <ArrowLeft size={35} className="mr-10" />
             </Link>
             <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-              {id ? "Editar Producto" : "Nuevo Producto"}
+              {id ? "Editar Proveedor" : "Nuevo Proveedor"}
             </h1>
             <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
               <div className="flex flex-col">
@@ -132,7 +91,7 @@ function NuevoProveedor() {
                 </label>
                 <input
                   type="text"
-                  placeholder="Nombre del producto"
+                  placeholder="Nombre del proveedor"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoFocus
@@ -142,123 +101,78 @@ function NuevoProveedor() {
               </div>
               <div className="flex flex-col">
                 <label className="mb-2 text-md font-medium text-gray-900">
-                  Valor comercial:
+                  Identificación:
                 </label>
                 <input
                   type="text"
-                  placeholder="Valor comercial"
-                  value={
-                    price.toLocaleString("es-AR", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }) || ""
+                  value={identify}
+                  placeholder="Identificación"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  onChange={(e) =>
+                    setIdentify(e.target.value.replace(/\D/, ""))
                   }
-                  onChange={handlePriceChange}
-                  required
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                 />
               </div>
 
               <div className="flex flex-col">
                 <label className="mb-2 text-md font-medium text-gray-900">
-                  Codigo de barras:
+                  Email:
                 </label>
                 <input
                   type="text"
-                  placeholder="Codigo de barras"
-                  value={barcode}
-                  onChange={(e) => setBarcode(e.target.value)}
+                  placeholder="Email"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                 />
               </div>
               <div className="flex flex-col">
                 <label className="mb-2 text-md font-medium text-gray-900">
-                  Valor costo:
+                  Telefono:
                 </label>
                 <input
                   type="text"
-                  placeholder="Valor costo"
-                  value={
-                    cost.toLocaleString("es-AR", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }) || ""
-                  }
+                  placeholder="Telefono"
+                  value={phone}
                   required
-                  onChange={handleCostChange}
-                  className={`border p-2 rounded-md text-gray-900 outline-none focus:ring-1 ${
-                    error
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                      : "border-gray-500 focus:border-blue-600 focus:ring-blue-600"
-                  }`}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/, ""))}
+                  className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                 />
-                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
               </div>
               <div className="flex flex-col">
                 <label className="mb-2 text-md font-medium text-gray-900">
-                  Stock:
+                  Estado:
                 </label>
                 <select
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                   required
-                  value={stock}
-                  onChange={(e) => {
-                    const newStock = e.target.value;
-                    setStock(newStock);
-
-                    // Si selecciona "Agotado", actualizamos el stockAmount a 0
-                    if (newStock === "Agotado") {
-                      setStockAmount(0);
-                    }
-                  }}
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
                 >
                   <option value="" disabled hidden>
-                    Seleccionar stock
+                    Seleccionar estado
                   </option>
-                  <option value="Disponible">Disponible</option>
-                  <option value="Agotado">Agotado</option>
+                  <option value="Activo">Activo</option>
+                  <option value="Inactivo">Inactivo</option>
                 </select>
-                {stock === "Disponible" && (
-                  <div className="mt-4">
-                    <label className="mb-2 text-md font-medium text-gray-900">
-                      Stock actual:
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ingrese cantidad"
-                      required
-                      value={stockAmount}
-                      onChange={handleStockAmountChange}
-                      className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                    />
-                  </div>
-                )}
               </div>
               <div className="flex flex-col">
                 <label className="mb-2 text-md font-medium text-gray-900">
-                  Unidad:
+                  Dirección:
                 </label>
-                <select
-                  value={unit}
-                  onChange={(e) => setUnit(e.target.value)}
+                <input
+                  type="text"
+                  placeholder="Dirección"
+                  value={adress}
+                  required
+                  onChange={(e) => setAdress(e.target.value)}
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                >
-                  <option value="" disabled hidden>
-                    Seleccionar unidad
-                  </option>
-                  <option value="kg">Kilogramo</option>
-                  <option value="lt">Litro</option>
-                  <option value="Centimetro">Centimetro</option>
-                  <option value="Días">Días</option>
-                  <option value="Horas">Horas</option>
-                  <option value="Metro">Metro</option>
-                  <option value="Metro Cuadrado">Metro Cuadrado</option>
-                  <option value="Metro Cúbico">Metro Cúbico</option>
-                  <option value="Milimetro">Milimetro</option>
-                  <option value="Unidad">Unidad</option>
-                </select>
+                />
               </div>
-
               <div className="col-span-2 flex flex-col">
                 <label className="mb-2 text-md font-medium text-gray-900">
                   Descripción:

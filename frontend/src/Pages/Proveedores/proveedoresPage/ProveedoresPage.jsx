@@ -87,7 +87,9 @@ function ProveedoresPage() {
                     <h2 className="text-lg text-white font-bold">
                       {proveedor.name}
                     </h2>
-                    <p className="text-white font-bold">{proveedor.adress}</p>
+                    <p className="text-white font-bold">
+                      Dirección: {proveedor.adress}
+                    </p>
                     <p className="text-white font-bold">
                       Contacto: {proveedor.contact}
                     </p>

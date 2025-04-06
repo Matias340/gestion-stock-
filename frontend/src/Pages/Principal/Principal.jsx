@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Menu, House, Package, Notebook, ShoppingCart } from "lucide-react";
+import {
+  Menu,
+  House,
+  Package,
+  Notebook,
+  ShoppingCart,
+  BanknoteIcon,
+  ExternalLinkIcon,
+} from "lucide-react";
 import { Link, Outlet } from "react-router-dom";
 
 function Principal() {
@@ -34,9 +42,21 @@ function Principal() {
             </div>
           </Link>
           <Link to="/historial">
-            <div className="flex">
+            <div className="flex mb-5">
               <Notebook size={24} />
               <p className="text-md ml-5">Historial de Ventas</p>
+            </div>
+          </Link>
+          <Link to="/ingresos">
+            <div className="flex mb-5">
+              <BanknoteIcon size={24} />
+              <p className="text-md ml-5">Ingresos</p>
+            </div>
+          </Link>
+          <Link to="/gastos">
+            <div className="flex">
+              <ExternalLinkIcon size={24} />
+              <p className="text-md ml-5">Gastos</p>
             </div>
           </Link>
         </nav>

@@ -3,6 +3,8 @@ import HistorialVentas from "../Historial/HistorialVentas";
 import Productos from "../Productos/Productos";
 import Proveedores from "../Proveedores/Proveedores";
 import Venta from "../ventas/Venta";
+import Ingresos from "../Ingresos/Ingresos";
+import Gastos from "../Gastos/Gastos";
 import { Fade, Slide } from "react-awesome-reveal";
 
 function Cards() {
@@ -13,12 +15,8 @@ function Cards() {
         <Productos />
         <Proveedores />
         <HistorialVentas />
-        <div className="bg-white shadow-md p-4 rounded-lg">
-          <h2>Ingresos</h2>
-        </div>
-        <div className="bg-white shadow-md p-4 rounded-lg">
-          <h2>Gastos</h2>
-        </div>
+        <Ingresos />
+        <Gastos />
       </div>
     </Fade>
   );

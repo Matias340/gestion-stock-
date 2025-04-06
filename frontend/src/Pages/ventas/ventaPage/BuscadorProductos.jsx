@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import useProductStore from "../../../store/productStore/productStore";
 
 function buscadorProductos() {
@@ -27,9 +28,11 @@ function buscadorProductos() {
   return (
     <div className="flex justify-between mt-3 mb-3 gap-4">
       {/* Botón para agregar un producto manualmente */}
-      <button className="w-full font-bold cursor-pointer max-w-xs bg-blue-600 text-white py-3 rounded-md shadow-md hover:bg-blue-700">
-        Agregar Producto Manualmente
-      </button>
+      <Link to="/nuevoProductoAgregado">
+        <button className="w-full px-4 font-bold cursor-pointer max-w-xs bg-blue-600 text-white py-3 rounded-md shadow-md hover:bg-blue-700">
+          Agregar Producto Manualmente
+        </button>
+      </Link>
 
       {/* Buscador de Productos Manual */}
       <div className="flex items-center gap-2 justify-end">
@@ -39,7 +42,7 @@ function buscadorProductos() {
           list="product-list"
           onChange={(e) => setSearchTerm(e.target.value)}
           onBlur={handleSearch}
-          className="w-70 p-2 border border-gray-500 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 rounded-md text-lg bg-white"
+          className="w-70 p-2 border border-gray-900 border-2 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 rounded-md text-lg bg-white"
           placeholder="Buscar producto manualmente"
         />
         <datalist id="product-list">

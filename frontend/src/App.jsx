@@ -10,6 +10,7 @@ import ProveedoresPage from "./Pages/Proveedores/proveedoresPage/proveedoresPage
 import NuevoProveedor from "./Pages/Proveedores/nuevoProveedor/nuevoProveedor";
 import Home from "./Pages/Principal/Home";
 import Cards from "./Pages/Principal/Cards";
+import NuevoProductoAgregado from "./Pages/Productos/nuevoProductoAgregado/NuevoProductoAgregado";
 
 function App() {
   return (
@@ -25,6 +26,10 @@ function App() {
             <Route path="/nuevoProveedor" element={<NuevoProveedor />} />
             <Route path="/nuevoProveedor/:id" element={<NuevoProveedor />} />
             <Route path="/nuevoProducto" element={<NuevoProducto />} />
+            <Route
+              path="/nuevoProductoAgregado"
+              element={<NuevoProductoAgregado />}
+            />
             <Route path="/nuevoProducto/:id" element={<NuevoProducto />} />
             <Route path="/historial" element={<HistorialVentasPage />} />
           </Route>

@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Fade, Slide } from "react-awesome-reveal";
 
-function NuevoProducto() {
+function NuevoProductoAgregado() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentProduct, addProduct, updateProduct, clearCurrentProduct } =
@@ -67,7 +67,7 @@ function NuevoProducto() {
       setStockAmount("");
       clearCurrentProduct();
 
-      navigate("/products");
+      navigate("/vender");
     } catch (error) {
       toast.error("Ocurrió un error al guardar el producto");
       console.error("Error al guardar producto:", error);
@@ -119,7 +119,7 @@ function NuevoProducto() {
       <Fade triggerOnce={true} delay={50}>
         <div className="h-[calc(100vh-100px)] flex items-center justify-center mt-4 mb-10">
           <div className="max-h-[500px] overflow-y-auto px-4 bg-white p-6 rounded-lg shadow-xl w-[800px]">
-            <Link to="/products">
+            <Link to="/vender">
               <ArrowLeft size={35} className="mr-10" />
             </Link>
             <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">
@@ -287,4 +287,4 @@ function NuevoProducto() {
   );
 }
 
-export default NuevoProducto;
+export default NuevoProductoAgregado;

@@ -11,6 +11,7 @@ function ListCartProduct() {
     getTotal,
     completePurchase,
   } = useProductStore();
+
   const [paymentMethod, setPaymentMethod] = useState("efectivo");
   const [cashReceived, setCashReceived] = useState("");
 
@@ -52,48 +53,59 @@ function ListCartProduct() {
           selectedProducts.map((product) => (
             <div
               key={product._id}
-              className="p-3 bg-gray-200 mb-2 mr-2 rounded-md flex flex-col"
+              className="p-3 bg-blue-600 mb-2 mr-2 rounded-md flex flex-col"
             >
               <div className="flex justify-between">
-                <span className="font-bold">{product.name}</span>
+                <span className="font-bold text-lg text-white">
+                  {product.name}
+                </span>
                 <button
                   onClick={() => removeFromCart(product._id, product.price)}
                   className="cursor-pointer"
                 >
-                  <img src={deleteImage} alt="Delete" className="w-6 h-6" />
+                  <img
+                    src={deleteImage}
+                    alt="Delete"
+                    className="w-7 h-7 bg-red-200 py-1 px-1 rounded-md"
+                  />
                 </button>
               </div>
-              <div className="flex justify-between items-center mt-2">
-                <input
-                  type="number"
-                  min="1"
-                  value={product.quantity}
-                  onChange={(e) =>
-                    updateProductQuantity(
-                      product._id,
-                      product.price,
-                      parseInt(e.target.value, 10)
-                    )
-                  }
-                  className="w-16 p-1 border bg-white rounded-md text-center"
-                />
+              <div className="flex justify-between mt-5">
+                <div className=" flex flex-col">
+                  <label className="mb-1 font-bold  text-white">
+                    Cantidad:
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={product.quantity}
+                    onChange={(e) =>
+                      updateProductQuantity(
+                        product._id,
+                        product.price,
+                        parseInt(e.target.value, 10)
+                      )
+                    }
+                    className="w-16 p-1 border border-gray-900 border-2 bg-white rounded-md text-center"
+                  />
+                </div>
                 <div className="text-right">
-                  <span className="block text-lg font-semibold">
-                    $
+                  <span className="block text-md font-semibold  text-white">
+                    ${" "}
                     {(product.price * product.quantity).toLocaleString(
                       "es-AR",
                       { minimumFractionDigits: 2 }
                     )}
                   </span>
-                  <span className="block text-sm text-gray-600">
-                    + IVA 21%: $
+                  <span className="block text-sm text-gray-200">
+                    + IVA 21%: ${" "}
                     {(product.price * product.quantity * 0.21).toLocaleString(
                       "es-AR",
                       { minimumFractionDigits: 2 }
                     )}
                   </span>
-                  <span className="block text-md font-bold">
-                    Total: $
+                  <span className="block text-lg font-bold text-white">
+                    Total: ${" "}
                     {(product.price * product.quantity * 1.21).toLocaleString(
                       "es-AR",
                       { minimumFractionDigits: 2 }
@@ -115,7 +127,7 @@ function ListCartProduct() {
         <select
           value={paymentMethod}
           onChange={(e) => setPaymentMethod(e.target.value)}
-          className="w-full border p-2 rounded-md focus:ring focus:ring-blue-300"
+          className="w-full border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
         >
           <option value="efectivo">Efectivo</option>
           <option value="tarjeta">Tarjeta débito/crédito</option>
@@ -136,7 +148,7 @@ function ListCartProduct() {
                 }
               }}
               placeholder="Ingrese el monto recibido"
-              className="w-full border p-2 rounded-md focus:ring focus:ring-blue-300"
+              className="w-full border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             />
             {cashReceived > 0 && (
               <p className="mt-2 text-lg font-semibold text-gray-800">

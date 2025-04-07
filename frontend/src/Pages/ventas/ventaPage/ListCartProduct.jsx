@@ -10,9 +10,10 @@ function ListCartProduct() {
     removeFromCart,
     getTotal,
     completePurchase,
+    paymentMethod,
+    setPaymentMethod,
   } = useProductStore();
 
-  const [paymentMethod, setPaymentMethod] = useState("efectivo");
   const [cashReceived, setCashReceived] = useState("");
 
   const total = getTotal();
@@ -34,10 +35,10 @@ function ListCartProduct() {
       const result = await completePurchase(paymentMethod, cashReceived);
 
       if (result.message === "Venta registrada con éxito") {
-        toast.success(result.message); // Mostramos el mensaje de éxito
+        toast.success(result.message);
         setCashReceived("");
       } else {
-        toast.error(`Error al completar la venta: ${result.message}`); // Mostramos el error si no es el mensaje esperado
+        toast.error(`Error al completar la venta: ${result.message}`);
       }
     } catch (error) {
       toast.error("Ocurrió un error inesperado al procesar la venta");
@@ -126,7 +127,10 @@ function ListCartProduct() {
         </label>
         <select
           value={paymentMethod}
-          onChange={(e) => setPaymentMethod(e.target.value)}
+          onChange={(e) => {
+            console.log("Nuevo medio de pago seleccionado:", e.target.value);
+            setPaymentMethod(e.target.value); // Ahora actualiza el estado global del store
+          }}
           className="w-full border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
         >
           <option value="efectivo">Efectivo</option>

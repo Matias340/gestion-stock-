@@ -72,7 +72,11 @@ function IngresosPage({ sales }) {
           <div className="flex justify-between bg-blue-100 p-3 rounded-md mb-4">
             <span className="text-lg font-bold">Total Ingresos:</span>
             <span className="text-lg font-bold text-blue-600">
-              ${totalIngresos}
+              $
+              {totalIngresos.toLocaleString("es-AR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }) || ""}
             </span>
           </div>
 
@@ -90,27 +94,54 @@ function IngresosPage({ sales }) {
           </div>
 
           {/* Tabla de ventas */}
-          <div className="">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead>
+          <div className="relative overflow-x-auto">
+            <table className="min-w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="bg-gray-100">
-                  <th className="px-4 py-2 border">Fecha</th>
-                  <th className="px-4 py-2 border">Nombre</th>
-                  <th className="px-4 py-2 border">Método de Pago</th>
-                  <th className="px-4 py-2 border">Total</th>
+                  <th scope="col" className="px-4 py-2">
+                    Fecha
+                  </th>
+                  <th scope="col" className="px-4 py-2">
+                    Nombre
+                  </th>
+                  <th scope="col" className="px-4 py-2">
+                    Método de Pago
+                  </th>
+                  <th scope="col" className="px-4 py-2">
+                    Total
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {ventasFiltradas.map((venta) => (
-                  <tr key={venta.id}>
-                    <td className="px-4 py-2 border">{venta.createdAt}</td>
-                    <td className="px-4 py-2 border">
+                  <tr
+                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
+                    key={venta.id}
+                  >
+                    <th
+                      scope="row"
+                      class="pl-2 py-4 font-medium text-gray-900 whitespace-nowrap"
+                    >
+                      {new Date(venta.createdAt).toLocaleString("es-AR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </th>
+                    <td className="px-4 py-2 ">
                       {venta.products
                         .map((producto) => producto.name)
                         .join(", ")}
                     </td>
-                    <td className="px-4 py-2 border">{venta.medioPago}</td>
-                    <td className="px-4 py-2 border">{venta.total}</td>
+                    <td className="px-4 py-2">{venta.medioPago}</td>
+                    <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">
+                      {venta.total.toLocaleString("es-AR", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }) || ""}
+                    </td>
                   </tr>
                 ))}
               </tbody>

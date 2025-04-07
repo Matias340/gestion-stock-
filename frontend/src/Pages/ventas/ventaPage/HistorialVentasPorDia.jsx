@@ -40,22 +40,26 @@ function historialVentasPorDia() {
                     </div>
                   </div>
                 </div>
+
                 {/* 🔹 Encabezado de la venta */}
-                <div className="flex justify-between">
-                  <h2 className="text-md font-bold mb-2">Producto/s:</h2>
-                  <h2 className="text-md font-bold mb-2">Cantidad:</h2>
-                  <h2 className="text-md font-bold mb-2">Precio:</h2>
+                <div className="grid grid-cols-3 font-bold mb-2">
+                  <h2 className="text-md">Producto/s:</h2>
+                  <h2 className="text-md text-center">Cantidad:</h2>
+                  <h2 className="text-md text-right">Precio:</h2>
                 </div>
+
                 {/* 🔹 Lista de productos */}
                 <div className="space-y-2">
                   {venta.products.map((product) => (
                     <div
                       key={product._id}
-                      className="flex justify-between bg-gray-100 p-2 rounded-md"
+                      className="grid grid-cols-3 bg-gray-100 p-2 rounded-md"
                     >
                       <span className="font-semibold">{product.name}</span>
-                      <span className="text-gray-700">x{product.quantity}</span>
-                      <span className="font-bold">
+                      <span className="text-gray-700 text-center">
+                        x{product.quantity}
+                      </span>
+                      <span className="font-bold text-right">
                         ${product.quantity * product.price}
                       </span>
                     </div>

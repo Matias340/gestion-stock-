@@ -10,7 +10,7 @@ const VentaSchema = new mongoose.Schema({
     },
   ],
   total: { type: Number, required: true },
-  medioPago: { type: String, required: true, enum: ["efectivo", "tarjeta"] },
+  medioPago: { type: String, required: true, enum: ["efectivo", "tarjeta", "transferencia"] },
   createdAt: { type: Date, default: Date.now },
 });
 

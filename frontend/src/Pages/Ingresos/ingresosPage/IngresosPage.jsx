@@ -4,14 +4,14 @@ import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Fade } from "react-awesome-reveal";
 
-function IngresosPage({ sales }) {
+function IngresosPage() {
   const { ventaProducts, fetchVentaDetails } = useVentaStore();
-  const [filtro, setFiltro] = useState(""); // Estado para el filtro
+  const [filtro, setFiltro] = useState("");
   const [ventasFiltradas, setVentasFiltradas] = useState([]);
   const [totalIngresos, setTotalIngresos] = useState(0);
 
   useEffect(() => {
-    fetchVentaDetails(); // Carga las ventas al montar el componente
+    fetchVentaDetails();
   }, []);
 
   useEffect(() => {
@@ -95,9 +95,9 @@ function IngresosPage({ sales }) {
 
           {/* Tabla de ventas */}
           <div className="relative overflow-x-auto">
-            <table className="min-w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr className="bg-gray-100">
+            <table className="min-w-full text-sm text-left rtl:text-right text-gray-500">
+              <thead className="text-xs text-white uppercase">
+                <tr className="bg-blue-500">
                   <th scope="col" className="px-4 py-2">
                     Fecha
                   </th>
@@ -114,10 +114,7 @@ function IngresosPage({ sales }) {
               </thead>
               <tbody>
                 {ventasFiltradas.map((venta) => (
-                  <tr
-                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
-                    key={venta.id}
-                  >
+                  <tr class="bg-white border-b border-gray-200" key={venta.id}>
                     <th
                       scope="row"
                       class="pl-2 py-4 font-medium text-gray-900 whitespace-nowrap"
@@ -130,10 +127,20 @@ function IngresosPage({ sales }) {
                         minute: "2-digit",
                       })}
                     </th>
-                    <td className="px-4 py-2 ">
-                      {venta.products
-                        .map((producto) => producto.name)
-                        .join(", ")}
+                    <td className="px-4 py-2">
+                      <div
+                        className={`flex ${
+                          venta.products.length > 3
+                            ? "flex-col"
+                            : "flex-wrap gap-2"
+                        }`}
+                      >
+                        {venta.products.map((producto, index) => (
+                          <span key={index} className="whitespace-nowrap">
+                            {producto.name}
+                          </span>
+                        ))}
+                      </div>
                     </td>
                     <td className="px-4 py-2">{venta.medioPago}</td>
                     <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">

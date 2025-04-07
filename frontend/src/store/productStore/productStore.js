@@ -200,7 +200,7 @@ const useProductStore = create((set, get) => ({
     try {
         const { selectedProducts, getTotal, paymentMethod } = get();
         
-        console.log("Estado actual antes de la compra:", get().paymentMethod); // 👀 Revisar aquí
+        console.log("Estado actual antes de la compra:", get().paymentMethod);
         
         if (!selectedProducts.length) {
             return { success: false, message: "El carrito está vacío" };

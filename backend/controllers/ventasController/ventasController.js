@@ -13,7 +13,7 @@ export const ventaCompleta = async (req, res) => {
         }
 
         // Validar que el método de pago sea válido
-        if (!medioPago || !["efectivo", "tarjeta"].includes(medioPago)) {
+        if (!medioPago || !["efectivo", "tarjeta", "transferencia"].includes(medioPago)) {
             return res.status(400).json({ message: "Método de pago inválido" });
         }
 

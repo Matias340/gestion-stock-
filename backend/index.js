@@ -6,6 +6,7 @@ import cors from 'cors';
 import productRoutes from './routes/productRoutes/productRoutes.js';
 import proveedorRoutes from './routes/proveedorRoutes/proveedorRoutes.js';
 import ventaRoutes from './routes/ventasRoutes/ventasRoutes.js';
+import gastosRoutes from './routes/gastosRoutes/gastosRoutes.js';
 
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use('/api/product', productRoutes);
 app.use('/api/proveedor', proveedorRoutes);
 app.use('/api/venta', ventaRoutes);
+app.use('/api/gasto', gastosRoutes);
 
 // Conexión a MongoDB
 mongoose.connect(process.env.MONGO_URI)

@@ -13,6 +13,7 @@ import Cards from "./Pages/Principal/Cards";
 import NuevoProductoAgregado from "./Pages/Productos/nuevoProductoAgregado/NuevoProductoAgregado";
 import IngresosPage from "./Pages/Ingresos/ingresosPage/IngresosPage";
 import GastosPage from "./Pages/Gastos/gastosPage/GastosPage";
+import EditarGasto from "./Pages/Gastos/editarGasto/EditarGasto";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="/historial" element={<HistorialVentasPage />} />
             <Route path="/ingresos" element={<IngresosPage />} />
             <Route path="/gastos" element={<GastosPage />} />
+            <Route path="/editarGasto/:id" element={<EditarGasto />} />
           </Route>
         </Routes>
       </main>

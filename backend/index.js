@@ -7,13 +7,19 @@ import productRoutes from './routes/productRoutes/productRoutes.js';
 import proveedorRoutes from './routes/proveedorRoutes/proveedorRoutes.js';
 import ventaRoutes from './routes/ventasRoutes/ventasRoutes.js';
 import gastosRoutes from './routes/gastosRoutes/gastosRoutes.js';
-
+import userRoutes from './routes/userRoutes/userRoutes.js';
 
 dotenv.config();
 const app = express();
 
+const corsOptions = {
+    origin: 'http://localhost:5173',
+    credentials: true,
+    optionSuccessStatus: 200,
+  };
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Rutas
@@ -21,6 +27,7 @@ app.use('/api/product', productRoutes);
 app.use('/api/proveedor', proveedorRoutes);
 app.use('/api/venta', ventaRoutes);
 app.use('/api/gasto', gastosRoutes);
+app.use('/api/usuario', userRoutes);
 
 // Conexión a MongoDB
 mongoose.connect(process.env.MONGO_URI)

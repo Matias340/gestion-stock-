@@ -9,10 +9,12 @@ import {
   ExternalLinkIcon,
 } from "lucide-react";
 import { Link, Outlet } from "react-router-dom";
+import useUserStore from "../../store/userStore/userStore";
 
 function Principal() {
   const [isOpen, setIsOpen] = useState(false);
-
+  const { user, logout } = useUserStore();
+  console.log(user);
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
@@ -74,6 +76,10 @@ function Principal() {
             <Menu size={28} />
           </button>
           <h1 className="ml-4 text-xl font-bold">Gestión 360</h1>
+          <div>
+            <h1>Bienvenido {user ? user.user : "Invitado"}</h1>
+            {user && <button onClick={logout}>Cerrar sesión</button>}
+          </div>
         </header>
 
         <div className="w-full overflow-hidden">

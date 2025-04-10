@@ -9,6 +9,8 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
+import pdf from "../../../assets/pdf.png";
+import excel from "../../../assets/excel.png";
 
 function GastosPage() {
   const { ventaProducts, fetchVentaDetails } = useVentaStore();
@@ -178,7 +180,7 @@ function GastosPage() {
     const doc = new jsPDF();
     doc.text("Historial de Gastos", 10, 10);
 
-    const tableColumn = ["Fecha", "Descripción", "Monto"];
+    const tableColumn = ["Fecha", "Descripción", "Monto", "Total"];
     console.log(gastos);
     const tableRows = gastos.map((gasto) => [
       new Date(gasto.createdAt).toLocaleString("es-AR", {
@@ -195,9 +197,30 @@ function GastosPage() {
       })}`,
     ]);
 
+    tableRows.push([
+      "Total",
+      "",
+      "",
+      `$${totalGastos.toLocaleString("es-AR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+    ]);
+
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
+      foot: [
+        [
+          "",
+          "",
+          "Total Gastos:",
+          `$${totalIngresos.toLocaleString("es-AR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`,
+        ],
+      ],
     });
 
     doc.save("Gastos.pdf");
@@ -205,31 +228,41 @@ function GastosPage() {
 
   // Función para exportar a Excel
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(
-      gastos.map((gasto) => ({
-        Fecha: new Date(gasto.createdAt).toLocaleString("es-AR", {
-          year: "numeric",
-          month: "long",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        Descripción: gasto.description.map((p) => p.name).join(", "),
-        Monto: gasto.monto,
-      }))
-    );
+    const worksheetData = gastos.map((gasto) => ({
+      Fecha: new Date(gasto.createdAt).toLocaleString("es-AR", {
+        year: "numeric",
+        month: "long",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      Descripcion: gasto.description,
+      Monto: gasto.monto,
+    }));
 
+    // Agregar la fila de total
+    worksheetData.push({
+      Fecha: "Total",
+      Descripcion: "",
+      Total: totalGastos,
+    });
+
+    // Crear la hoja de cálculo con los datos
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Gastos");
 
+    // Convertir a Excel
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array",
     });
 
+    // Guardar archivo
     const data = new Blob([excelBuffer], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
     });
+
     saveAs(data, "Gastos.xlsx");
   };
 
@@ -345,17 +378,19 @@ function GastosPage() {
               </button>
             </div>
             {/* Botones de exportación */}
-            <button
-              onClick={exportToPDF}
-              className="bg-red-600 cursor-pointer hover:bg-red-700 text-white font-bold py-1 px-2 mr-2 mb-2 rounded"
-            >
-              Exportar PDF
+            <button onClick={exportToPDF} className="cursor-pointer">
+              <img
+                src={pdf}
+                alt="Pdf"
+                className="w-12 h-12 py-1 px-1 rounded-md"
+              />
             </button>
-            <button
-              onClick={exportToExcel}
-              className="bg-green-600 cursor-pointer hover:bg-green-700 text-white font-bold py-1 px-2 mb-2 rounded"
-            >
-              Exportar Excel
+            <button onClick={exportToExcel} className="cursor-pointer">
+              <img
+                src={excel}
+                alt="Excel"
+                className="w-12 h-12 py-1 px-1 rounded-md"
+              />
             </button>
 
             <table className="min-w-full text-sm text-left text-gray-500">

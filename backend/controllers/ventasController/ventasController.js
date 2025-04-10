@@ -5,6 +5,8 @@ export const ventaCompleta = async (req, res) => {
     try {
         const { products, total, medioPago } = req.body;
 
+        const userId = req.userId;
+
         console.log("Datos recibidos en el backend:", req.body);
 
         // Validar que los productos sean válidos
@@ -22,12 +24,14 @@ export const ventaCompleta = async (req, res) => {
             if (!item.productId) {
                 return res.status(400).json({ message: `Falta el ID del producto en: ${item.name}` });
             }
-            console.log(`Buscando producto con ID: ${item.productId}`);
-            const producto = await Product.findById(item.productId);
+            console.log(`Buscando producto con ID: ${item.productId} para el usuario ${userId}`);
+            
+            const producto = await Product.findOne({ _id: item.productId, userId });
+        
             console.log("Producto encontrado:", producto);
         
             if (!producto) {
-                return res.status(404).json({ message: `Producto no encontrado: ${item.productId}` });
+                return res.status(404).json({ message: `Producto no encontrado o no pertenece al usuario: ${item.productId}` });
             }
         
             // Verificar stock
@@ -45,7 +49,7 @@ export const ventaCompleta = async (req, res) => {
         }
         
         // Crear la venta en la base de datos con el método de pago
-        const nuevaVenta = new Venta({ products, total, medioPago });
+        const nuevaVenta = new Venta({ products, total, medioPago, userId });
         await nuevaVenta.save();
         
         // Responder con éxito
@@ -59,22 +63,33 @@ export const ventaCompleta = async (req, res) => {
 
 export const getSales = async (req, res) => {
     try {
-        const Sale = await Venta.find().populate('products.productId') // Hace populate de la referencia 'productId' en el array de productos
-        .exec();
-        res.status(200).json(Sale);
+        const userId = req.userId; // Obtener el userId desde el request
+        
+        const sales = await Venta.find({ userId }) // Filtrar por usuario
+            .populate('products.productId') // Hacer populate de la referencia 'productId'
+            .exec();
+        
+        res.status(200).json(sales);
     } catch (error) {
         console.error("Error en getSales:", error);
         res.status(500).json({ message: "Error al obtener las ventas", error });
     }
-}
+};
 
-    export const deleteSales = async (req, res) => {
-        try {
-            const deletedSales = await Venta.findByIdAndDelete(req.params.id);
-            if (!deletedSales) return res.status(404).json({ message: 'Venta no encontrada' });
-            res.status(200).json({ message: 'Venta eliminada con éxito' });
-        } catch (error) {
-            res.status(500).json({ message: 'Error al eliminar el Venta', error });
+export const deleteSales = async (req, res) => {
+    try {
+        const userId = req.userId; // Obtener el userId desde el request
+        const saleId = req.params.id;
+
+        const deletedSale = await Venta.findOneAndDelete({ _id: saleId, userId });
+
+        if (!deletedSale) {
+            return res.status(404).json({ message: "Venta no encontrada o no pertenece al usuario" });
         }
-      }
 
+        res.status(200).json({ message: "Venta eliminada con éxito" });
+    } catch (error) {
+        console.error("Error en deleteSales:", error);
+        res.status(500).json({ message: "Error al eliminar la venta", error });
+    }
+};

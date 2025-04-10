@@ -11,10 +11,10 @@ function ListCartProduct() {
     getTotal,
     completePurchase,
     paymentMethod,
+    userId,
     setPaymentMethod,
   } = useProductStore();
 
-  //const [paymentMethod, setPaymentMethod] = useState("efectivo");
   const [cashReceived, setCashReceived] = useState("");
 
   const total = getTotal();
@@ -33,7 +33,11 @@ function ListCartProduct() {
     }
 
     try {
-      const result = await completePurchase(paymentMethod, cashReceived);
+      const result = await completePurchase(
+        userId,
+        paymentMethod,
+        cashReceived
+      );
 
       if (result.message === "Venta registrada con éxito") {
         toast.success(result.message); // Mostramos el mensaje de éxito

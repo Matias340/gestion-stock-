@@ -7,6 +7,8 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Fade } from "react-awesome-reveal";
+import pdf from "../../../assets/pdf.png";
+import excel from "../../../assets/excel.png";
 
 function IngresosPage() {
   const { ventaProducts, fetchVentaDetails } = useVentaStore();
@@ -81,9 +83,30 @@ function IngresosPage() {
       })}`,
     ]);
 
+    tableRows.push([
+      "Total",
+      "",
+      "",
+      `$${totalIngresos.toLocaleString("es-AR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+    ]);
+
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
+      foot: [
+        [
+          "",
+          "",
+          "Total Ingresos:",
+          `$${totalIngresos.toLocaleString("es-AR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`,
+        ],
+      ],
     });
 
     doc.save("Ingresos.pdf");
@@ -91,32 +114,43 @@ function IngresosPage() {
 
   // Función para exportar a Excel
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(
-      ventasFiltradas.map((venta) => ({
-        Fecha: new Date(venta.createdAt).toLocaleString("es-AR", {
-          year: "numeric",
-          month: "long",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        Nombre: venta.products.map((p) => p.name).join(", "),
-        "Método de Pago": venta.medioPago,
-        Total: venta.total,
-      }))
-    );
+    const worksheetData = ventasFiltradas.map((venta) => ({
+      Fecha: new Date(venta.createdAt).toLocaleString("es-AR", {
+        year: "numeric",
+        month: "long",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      Nombre: venta.products.map((p) => p.name).join(", "),
+      "Método de Pago": venta.medioPago,
+      Total: venta.total,
+    }));
 
+    // Agregar la fila de total
+    worksheetData.push({
+      Fecha: "Total",
+      Nombre: "",
+      "Método de Pago": "",
+      Total: totalIngresos,
+    });
+
+    // Crear la hoja de cálculo con los datos
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Ingresos");
 
+    // Convertir a Excel
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array",
     });
 
+    // Guardar archivo
     const data = new Blob([excelBuffer], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
     });
+
     saveAs(data, "Ingresos.xlsx");
   };
 
@@ -155,18 +189,19 @@ function IngresosPage() {
               <option value="week">Última semana</option>
             </select>
 
-            {/* Botones de exportación */}
-            <button
-              onClick={exportToPDF}
-              className="bg-red-600 cursor-pointer hover:bg-red-700 text-white font-bold py-1 px-2 mr-2 mb-2 rounded"
-            >
-              Exportar PDF
+            <button onClick={exportToPDF} className="cursor-pointer">
+              <img
+                src={pdf}
+                alt="Pdf"
+                className="w-12 h-12 py-1 px-1 rounded-md"
+              />
             </button>
-            <button
-              onClick={exportToExcel}
-              className="bg-green-600 cursor-pointer hover:bg-green-700 text-white font-bold py-1 px-2 mb-2 rounded"
-            >
-              Exportar Excel
+            <button onClick={exportToExcel} className="cursor-pointer">
+              <img
+                src={excel}
+                alt="Excel"
+                className="w-12 h-12 py-1 px-1 rounded-md"
+              />
             </button>
           </div>
 

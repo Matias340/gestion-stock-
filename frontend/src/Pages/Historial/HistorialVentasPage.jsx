@@ -7,6 +7,8 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Fade, Slide } from "react-awesome-reveal";
+import pdf from "../../assets/pdf.png";
+import excel from "../../assets/excel.png";
 
 function HistorialVentasPage() {
   const { ventaProducts, fetchVentaDetails } = useVentaStore();
@@ -110,17 +112,19 @@ function HistorialVentasPage() {
             </div>
           </div>
           <div className="mt-5">
-            <button
-              onClick={exportToPDF}
-              className="bg-red-600 cursor-pointer hover:bg-red-700 text-white font-bold py-1 px-2 mr-2 mb-2 rounded"
-            >
-              Exportar PDF
+            <button onClick={exportToPDF} className="cursor-pointer">
+              <img
+                src={pdf}
+                alt="Pdf"
+                className="w-12 h-12 py-1 px-1 rounded-md"
+              />
             </button>
-            <button
-              onClick={exportToExcel}
-              className="bg-green-600 cursor-pointer hover:bg-green-700 text-white font-bold py-1 px-2 mb-2 rounded"
-            >
-              Exportar Excel
+            <button onClick={exportToExcel} className="cursor-pointer">
+              <img
+                src={excel}
+                alt="Excel"
+                className="w-12 h-12 py-1 px-1 rounded-md"
+              />
             </button>
           </div>
           {ventaProducts && (

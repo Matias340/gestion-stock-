@@ -14,10 +14,12 @@ const useProductStore = create((set, get) => ({
   selectedProducts: [], // Productos seleccionados en la compra
   ventaProducts: [],
   paymentMethod: "efectivo",
+  userId: null,
   currentProduct: null,
   notification: null,
 
   setPaymentMethod: (method) => set({ paymentMethod: method }),
+  setUserId: (id) => set({ userId: id }),
 
   fetchProduct: async () => {
     try {
@@ -198,7 +200,7 @@ const useProductStore = create((set, get) => ({
 
   completePurchase: async () => {
     try {
-      const { selectedProducts, getTotal, paymentMethod } = get();
+      const { selectedProducts, getTotal, paymentMethod, userID } = get();
 
       //console.log("Estado actual antes de la compra:", paymentMethod);
       //console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: paymentMethod });
@@ -218,7 +220,7 @@ const useProductStore = create((set, get) => ({
 
         //console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: paymentMethod }); // 💡 Usa `get()` aquí para evitar valores antiguos
         
-        const response = await realizarVenta(productosFormateados, total, paymentMethod); // 📌 Usa `get().paymentMethod` para asegurar que tiene el valor actualizado
+        const response = await realizarVenta(productosFormateados, total, paymentMethod, userID); // 📌 Usa `get().paymentMethod` para asegurar que tiene el valor actualizado
 
         if (response.status === 201) {
             set({

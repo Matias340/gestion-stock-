@@ -12,7 +12,8 @@ const ProductoSchema = new mongoose.Schema({
       enum: ["Kg", "Litros", "Unidad", "Centimetro", "Días", "Horas", "Metro", "Metro Cuadrado", "Metro Cúbico", "Milimetro"], 
       required: true
     },
-    description: { type: String, required: false }
+    description: { type: String, required: false },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
   });
   
   // Middleware para validar stock

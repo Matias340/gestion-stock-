@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import useVentaStore from "../../store/ventaStore/ventaStore";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import { Fade, Slide } from "react-awesome-reveal";
 
 function HistorialVentasPage() {
-  const { ventaProducts, fetchVentaDetails, mostrarHistorial } =
-    useVentaStore();
+  const { ventaProducts, fetchVentaDetails } = useVentaStore();
   const [ventasOrdenadas, setVentasOrdenadas] = useState([]);
 
   useEffect(() => {
@@ -34,6 +37,66 @@ function HistorialVentasPage() {
     }
   }, [ventaProducts]);
 
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Historial de Ventas", 10, 10);
+
+    const tableColumn = ["Fecha", "Nombre", "Cantidad", "Total"];
+    const tableRows = ventaProducts.map((ventaProduct) => [
+      new Date(ventaProduct.createdAt).toLocaleString("es-AR", {
+        year: "numeric",
+        month: "long",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      ventaProduct.products.map((p) => p.name).join(", "),
+      ventaProduct.products.map((p) => p.quantity).join(", "),
+      `$${ventaProduct.total.toLocaleString("es-AR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+    });
+
+    doc.save("Ventas.pdf");
+  };
+
+  // Función para exportar a Excel
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      ventaProducts.map((venta) => ({
+        Fecha: new Date(venta.createdAt).toLocaleString("es-AR", {
+          year: "numeric",
+          month: "long",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        Nombre: venta.products.map((p) => p.name).join(", "),
+        Cantidad: venta.products.map((p) => p.quantity).join(", "),
+        total: venta.total,
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Ventas");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const data = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
+    saveAs(data, "Ventas.xlsx");
+  };
+
   return (
     <>
       <Fade triggerOnce={true} delay={50}>
@@ -46,12 +109,26 @@ function HistorialVentasPage() {
               <h1 className="text-2xl font-semibold">Historial de Ventas</h1>
             </div>
           </div>
-          {mostrarHistorial && (
-            <div className="mt-4 max-h-[450px] overflow-y-auto">
+          <div className="mt-5">
+            <button
+              onClick={exportToPDF}
+              className="bg-red-600 cursor-pointer hover:bg-red-700 text-white font-bold py-1 px-2 mr-2 mb-2 rounded"
+            >
+              Exportar PDF
+            </button>
+            <button
+              onClick={exportToExcel}
+              className="bg-green-600 cursor-pointer hover:bg-green-700 text-white font-bold py-1 px-2 mb-2 rounded"
+            >
+              Exportar Excel
+            </button>
+          </div>
+          {ventaProducts && (
+            <div className="mt-4 max-h-[380px] overflow-y-auto">
               {ventasOrdenadas.length > 0 ? (
                 ventasOrdenadas.map(([mesAno, ventas]) => (
                   <div key={mesAno}>
-                    <h2 className="text-lg font-bold bg-gray-200 p-2 rounded-md">
+                    <h2 className="text-lg font-bold bg-blue-600 text-white p-2 rounded-md">
                       {mesAno}
                     </h2>
                     <ul className="divide-y divide-gray-300">

@@ -1,11 +1,13 @@
 import { create } from "zustand";
 import {
   fetchVenta,
+  deleteSales
 } from "../../api/apiProducto";
 
 const useVentaStore = create((set, get) => ({
     ventaProducts: [],
     mostrarHistorial: true,
+    notification: null,
     toggleHistorial: () => set((state) => ({ mostrarHistorial: !state.mostrarHistorial })),
 
 fetchVentaDetails: async () => {
@@ -17,7 +19,27 @@ fetchVentaDetails: async () => {
         notification: { message: "Error al cargar los ventas", type: "error" },
       });
     }
-  }
+  },
+
+  removeSales: async (id) => {
+    try {
+      await deleteSales(id);
+      set((state) => ({
+        ventaProducts: state.ventaProducts.filter((ventaProduct) => ventaProduct._id !== id),
+        notification: {
+          message: "Venta eliminada exitosamente",
+          type: "success",
+        },
+      }));
+    } catch (error) {
+      set({
+        notification: {
+          message: "No se pudo eliminar la venta",
+          type: "error",
+        },
+      });
+    }
+  },
 
 }));  
 

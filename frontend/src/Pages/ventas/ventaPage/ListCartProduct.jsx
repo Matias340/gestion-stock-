@@ -10,63 +10,37 @@ function ListCartProduct() {
     removeFromCart,
     getTotal,
     completePurchase,
+    paymentMethod,
+    setPaymentMethod,
   } = useProductStore();
-  const [paymentMethods, setPaymentMethods] = useState([]);
-  const [newPaymentMethod, setNewPaymentMethod] = useState(""); // Para agregar métodos
+
+  //const [paymentMethod, setPaymentMethod] = useState("efectivo");
+  const [cashReceived, setCashReceived] = useState("");
+
   const total = getTotal();
-
-  // Suma total de los pagos ingresados
-  const totalPaid = paymentMethods.reduce(
-    (sum, p) => sum + parseFloat(p.amount || 0),
-    0
-  );
-
-  const change = Math.max(totalPaid - total, 0);
-
-  // Agregar un nuevo método de pago
-  const addPaymentMethod = () => {
-    if (
-      newPaymentMethod &&
-      !paymentMethods.some((p) => p.method === newPaymentMethod)
-    ) {
-      setPaymentMethods([
-        ...paymentMethods,
-        { method: newPaymentMethod, amount: "" },
-      ]);
-      setNewPaymentMethod("");
-    }
-  };
-
-  // Actualizar monto de un método de pago
-  const updatePaymentAmount = (index, amount) => {
-    const updatedMethods = [...paymentMethods];
-    updatedMethods[index].amount = amount;
-    setPaymentMethods(updatedMethods);
-  };
-
-  // Eliminar un método de pago
-  const removePaymentMethod = (index) => {
-    setPaymentMethods(paymentMethods.filter((_, i) => i !== index));
-  };
+  const change =
+    paymentMethod === "efectivo" ? Math.max(cashReceived - total, 0) : 0;
 
   const handleCompletePurchase = async (e) => {
     e.preventDefault();
 
-    if (totalPaid < total) {
-      toast.error(
-        "El monto total pagado debe ser igual o mayor al total de la compra."
-      );
+    if (
+      paymentMethod === "efectivo" &&
+      (cashReceived === "" || cashReceived < total)
+    ) {
+      toast.error("El dinero recibido debe ser mayor o igual al total.");
       return;
     }
 
     try {
-      const result = await completePurchase(paymentMethods);
+      const result = await completePurchase(paymentMethod, cashReceived);
 
       if (result.message === "Venta registrada con éxito") {
-        toast.success(result.message);
-        setPaymentMethods([]); // Reset pagos
+        toast.success(result.message); // Mostramos el mensaje de éxito
+
+        setCashReceived("");
       } else {
-        toast.error(`Error al completar la venta: ${result.message}`);
+        toast.error(`Error al completar la venta: ${result.message}`); // Mostramos el error si no es el mensaje esperado
       }
     } catch (error) {
       toast.error("Ocurrió un error inesperado al procesar la venta");
@@ -151,90 +125,62 @@ function ListCartProduct() {
 
       <div className="flex flex-col mt-2 mb-2">
         <label className="mb-2 text-md font-medium text-gray-900">
-          Métodos de pago:
+          Medio de pago:
         </label>
+        <select
+          value={paymentMethod}
+          onChange={(e) => setPaymentMethod(e.target.value)}
+          className="w-full border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+        >
+          <option value="efectivo">Efectivo</option>
+          <option value="tarjeta">Tarjeta débito/crédito</option>
+          <option value="transferencia">Transferencia</option>
+          <option value="variado">Variado</option>
+        </select>
 
-        <div className="flex gap-2">
-          <select
-            value={newPaymentMethod}
-            onChange={(e) => setNewPaymentMethod(e.target.value)}
-            className="border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-          >
-            <option value="">Seleccione un método</option>
-            <option value="efectivo">Efectivo</option>
-            <option value="tarjeta">Tarjeta débito/crédito</option>
-            <option value="transferencia">Transferencia</option>
-          </select>
-          <button
-            onClick={addPaymentMethod}
-            className="px-4 py-2 bg-blue-600 cursor-pointer font-bold text-white rounded-md hover:bg-blue-700"
-          >
-            Agregar
-          </button>
-        </div>
-
-        {paymentMethods.map((payment, index) => (
-          <div key={index} className="mt-4 flex flex-col">
+        {paymentMethod === "efectivo" && (
+          <div className="mt-4">
             <label className="block mb-2 font-medium text-gray-900">
-              {payment.method.charAt(0).toUpperCase() + payment.method.slice(1)}
-              :
+              Dinero Recibido:
             </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={payment.amount}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*\.?\d*$/.test(value)) {
-                    updatePaymentAmount(index, value);
-                  }
-                }}
-                placeholder="Ingrese el monto"
-                className="border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-              />
-              <button
-                onClick={() => removePaymentMethod(index)}
-                className="cursor-pointer"
-              >
-                <img
-                  src={deleteImage}
-                  alt="Delete"
-                  className="w-7 h-7 py-1 px-1 "
-                />
-              </button>
-            </div>
+            <input
+              type="text"
+              value={cashReceived}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*\.?\d*$/.test(value)) {
+                  setCashReceived(value);
+                }
+              }}
+              placeholder="Ingrese el monto recibido"
+              className="w-full border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            />
+            {cashReceived > 0 && (
+              <p className="mt-2 text-lg font-semibold text-green-600">
+                Cambio: ${change}
+              </p>
+            )}
           </div>
-        ))}
-
-        <p className="mt-4 font-semibold text-gray-800">
-          Total a pagar: $
-          {`${getTotal().toLocaleString("es-AR", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`}
-        </p>
-        <p className="font-semibold text-gray-800">
-          Total pagado: $
-          {`${totalPaid.toLocaleString("es-AR", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`}
-        </p>
-        {change > 0 && (
-          <p className="text-lg font-semibold text-green-600">
-            Cambio: $
-            {`${change.toLocaleString("es-AR", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}`}
-          </p>
         )}
+      </div>
 
+      {/* Total de la Compra */}
+      <div className="bg-white p-2 flex justify-between text-lg font-bold">
+        <span>Total:</span>
+        <span>
+          {`$${getTotal().toLocaleString("es-AR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`}
+        </span>
+      </div>
+
+      <div className="flex justify-start">
         <button
           onClick={handleCompletePurchase}
-          className="mt-4 px-4 py-2 cursor-pointer font-bold bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="bg-blue-600 mt-3 font-bold text-white px-2 py-1 shadow-md rounded-md cursor-pointer hover:bg-blue-700"
         >
-          Completar compra
+          Completar Venta
         </button>
       </div>
     </div>

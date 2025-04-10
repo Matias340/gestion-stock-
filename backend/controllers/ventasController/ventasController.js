@@ -13,7 +13,7 @@ export const ventaCompleta = async (req, res) => {
         }
 
         // Validar que el método de pago sea válido
-        if (!medioPago || !["efectivo", "tarjeta", "transferencia"].includes(medioPago)) {
+        if (!medioPago || !["efectivo", "tarjeta", "transferencia", "variado"].includes(medioPago)) {
             return res.status(400).json({ message: "Método de pago inválido" });
         }
 
@@ -66,4 +66,15 @@ export const getSales = async (req, res) => {
         console.error("Error en getSales:", error);
         res.status(500).json({ message: "Error al obtener las ventas", error });
     }
-};
+}
+
+    export const deleteSales = async (req, res) => {
+        try {
+            const deletedSales = await Venta.findByIdAndDelete(req.params.id);
+            if (!deletedSales) return res.status(404).json({ message: 'Venta no encontrada' });
+            res.status(200).json({ message: 'Venta eliminada con éxito' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al eliminar el Venta', error });
+        }
+      }
+

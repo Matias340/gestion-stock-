@@ -14,3 +14,4 @@ export const realizarVenta = (productos, total, medioPago) => {
   console.log("Enviando productos al backend:", productos);
   return APIVENTA.post(`/`, { products: productos, total, medioPago }); // Ahora incluimos paymentMethod
 };
+export const deleteSales = (id) => APIVENTA.delete(`/${id}`);

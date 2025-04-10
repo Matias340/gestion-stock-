@@ -198,9 +198,10 @@ const useProductStore = create((set, get) => ({
 
   completePurchase: async () => {
     try {
-        const { selectedProducts, getTotal, paymentMethod } = get();
-        
-        console.log("Estado actual antes de la compra:", get().paymentMethod);
+      const { selectedProducts, getTotal, paymentMethod } = get();
+
+      //console.log("Estado actual antes de la compra:", paymentMethod);
+      //console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: paymentMethod });
         
         if (!selectedProducts.length) {
             return { success: false, message: "El carrito está vacío" };
@@ -215,9 +216,9 @@ const useProductStore = create((set, get) => ({
 
         const total = getTotal();
 
-        console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: get().paymentMethod }); // 💡 Usa `get()` aquí para evitar valores antiguos
+        //console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: paymentMethod }); // 💡 Usa `get()` aquí para evitar valores antiguos
         
-        const response = await realizarVenta(productosFormateados, total, get().paymentMethod); // 📌 Usa `get().paymentMethod` para asegurar que tiene el valor actualizado
+        const response = await realizarVenta(productosFormateados, total, paymentMethod); // 📌 Usa `get().paymentMethod` para asegurar que tiene el valor actualizado
 
         if (response.status === 201) {
             set({

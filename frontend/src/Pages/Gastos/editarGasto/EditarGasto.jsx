@@ -49,7 +49,7 @@ function EditarGasto() {
     <>
       <Fade triggerOnce={true} delay={50}>
         <div className="h-[calc(100vh-100px)] flex items-center justify-center mt-4 mb-10">
-          <div className="max-h-[500px] overflow-y-auto px-4 bg-white p-6 rounded-lg shadow-xl w-[800px]">
+          <div className="max-h-[500px] overflow-y-auto px-4 bg-white p-6 rounded-lg border border-gray-200 shadow-xl w-[800px]">
             <Link to="/gastos">
               <ArrowLeft size={35} className="mr-10" />
             </Link>

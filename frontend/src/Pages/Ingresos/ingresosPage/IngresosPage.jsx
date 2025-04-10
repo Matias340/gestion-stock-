@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import useVentaStore from "../../../store/ventaStore/ventaStore";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import { Fade } from "react-awesome-reveal";
 
 function IngresosPage() {
@@ -23,7 +27,6 @@ function IngresosPage() {
       const hoy = new Date();
       ventasFiltradas = ventaProducts.filter((venta) => {
         const fechaVenta = new Date(venta.createdAt);
-
         return (
           fechaVenta.getDate() === hoy.getDate() &&
           fechaVenta.getMonth() === hoy.getMonth() &&
@@ -44,8 +47,6 @@ function IngresosPage() {
     setVentasFiltradas(ventasFiltradas);
   }, [filtro, ventaProducts]);
 
-  console.log("ventas", ventaProducts);
-
   useEffect(() => {
     if (ventasFiltradas.length > 0) {
       let total = ventasFiltradas.reduce(
@@ -58,6 +59,67 @@ function IngresosPage() {
     }
   }, [ventasFiltradas]);
 
+  // Función para exportar a PDF
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Historial de Ingresos", 10, 10);
+
+    const tableColumn = ["Fecha", "Nombre", "Método de Pago", "Total"];
+    const tableRows = ventasFiltradas.map((venta) => [
+      new Date(venta.createdAt).toLocaleString("es-AR", {
+        year: "numeric",
+        month: "long",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      venta.products.map((p) => p.name).join(", "),
+      venta.medioPago,
+      `$${venta.total.toLocaleString("es-AR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+    });
+
+    doc.save("Ingresos.pdf");
+  };
+
+  // Función para exportar a Excel
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      ventasFiltradas.map((venta) => ({
+        Fecha: new Date(venta.createdAt).toLocaleString("es-AR", {
+          year: "numeric",
+          month: "long",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        Nombre: venta.products.map((p) => p.name).join(", "),
+        "Método de Pago": venta.medioPago,
+        Total: venta.total,
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Ingresos");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const data = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
+    saveAs(data, "Ingresos.xlsx");
+  };
+
   return (
     <>
       <Fade triggerOnce={true} delay={50}>
@@ -68,6 +130,7 @@ function IngresosPage() {
             </Link>
             <h1 className="text-2xl font-semibold">Historial de Ingresos</h1>
           </div>
+
           {/* Resumen de ingresos */}
           <div className="flex justify-between bg-blue-100 p-3 rounded-md mb-4">
             <span className="text-lg font-bold">Total Ingresos:</span>
@@ -81,7 +144,7 @@ function IngresosPage() {
           </div>
 
           {/* Filtros */}
-          <div className="mb-3">
+          <div className="mb-3 flex gap-4">
             <select
               value={filtro}
               onChange={(e) => setFiltro(e.target.value)}
@@ -91,13 +154,27 @@ function IngresosPage() {
               <option value="today">Hoy</option>
               <option value="week">Última semana</option>
             </select>
+
+            {/* Botones de exportación */}
+            <button
+              onClick={exportToPDF}
+              className="bg-red-600 cursor-pointer hover:bg-red-700 text-white font-bold py-1 px-2 mr-2 mb-2 rounded"
+            >
+              Exportar PDF
+            </button>
+            <button
+              onClick={exportToExcel}
+              className="bg-green-600 cursor-pointer hover:bg-green-700 text-white font-bold py-1 px-2 mb-2 rounded"
+            >
+              Exportar Excel
+            </button>
           </div>
 
           {/* Tabla de ventas */}
           <div className="relative overflow-x-auto">
             <table className="min-w-full text-sm text-left rtl:text-right text-gray-500">
-              <thead className="text-xs text-white uppercase">
-                <tr className="bg-blue-500">
+              <thead className="text-xs text-white uppercase bg-blue-500">
+                <tr>
                   <th scope="col" className="px-4 py-2">
                     Fecha
                   </th>
@@ -114,40 +191,19 @@ function IngresosPage() {
               </thead>
               <tbody>
                 {ventasFiltradas.map((venta) => (
-                  <tr class="bg-white border-b border-gray-200" key={venta.id}>
-                    <th
-                      scope="row"
-                      class="pl-2 py-4 font-medium text-gray-900 whitespace-nowrap"
-                    >
-                      {new Date(venta.createdAt).toLocaleString("es-AR", {
-                        year: "numeric",
-                        month: "long",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </th>
+                  <tr
+                    key={venta.id}
+                    className="bg-white border-b border-gray-200"
+                  >
                     <td className="px-4 py-2">
-                      <div
-                        className={`flex ${
-                          venta.products.length > 3
-                            ? "flex-col"
-                            : "flex-wrap gap-2"
-                        }`}
-                      >
-                        {venta.products.map((producto, index) => (
-                          <span key={index} className="whitespace-nowrap">
-                            {producto.name}
-                          </span>
-                        ))}
-                      </div>
+                      {new Date(venta.createdAt).toLocaleString("es-AR")}
+                    </td>
+                    <td className="px-4 py-2">
+                      {venta.products.map((p) => p.name).join(", ")}
                     </td>
                     <td className="px-4 py-2">{venta.medioPago}</td>
-                    <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">
-                      {venta.total.toLocaleString("es-AR", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      }) || ""}
+                    <td className="px-4 py-2 font-bold text-gray-900">
+                      ${venta.total}
                     </td>
                   </tr>
                 ))}

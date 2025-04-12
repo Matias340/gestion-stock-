@@ -105,7 +105,7 @@ function HistorialVentasPage() {
         <div className="bg-white p-4 rounded-md shadow">
           <div className="flex justify-between items-center">
             <div className="flex">
-              <Link to="/">
+              <Link to="/home">
                 <ArrowLeft size={35} className="mr-10" />
               </Link>
               <h1 className="text-2xl font-semibold">Historial de Ventas</h1>

@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-const APIPRODUCTO = axios.create({ baseURL: import.meta.env.VITE_API_PRODUCTO_URL });
+const APIPRODUCTO = axios.create({
+  baseURL: import.meta.env.VITE_API_PRODUCTO_URL,
+});
+
+APIPRODUCTO.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`; // ← este formato es importante
+  }
+  return config;
+});
 const APIVENTA = axios.create({ baseURL: import.meta.env.VITE_API_VENTA_URL });
 
 export const fetchProduct = () => APIPRODUCTO.get('/');

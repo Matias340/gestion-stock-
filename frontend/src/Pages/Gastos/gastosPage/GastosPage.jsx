@@ -271,7 +271,7 @@ function GastosPage() {
       <Fade triggerOnce={true} delay={50}>
         <div className="max-h-[510px] overflow-y-auto bg-white p-4 shadow-md rounded-md w-full">
           <div className="flex mb-4">
-            <Link to="/">
+            <Link to="/home">
               <ArrowLeft size={35} className="mr-10" />
             </Link>
             <h1 className="text-2xl font-semibold">Gastos</h1>

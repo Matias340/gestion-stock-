@@ -27,6 +27,7 @@ const useProductStore = create((set, get) => ({
       set({ products: data });
     } catch (error) {
       set({
+        products: [], // Limpiar si hay error
         notification: { message: "Error al cargar los productos", type: "error" },
       });
     }
@@ -65,14 +66,14 @@ const useProductStore = create((set, get) => ({
 
   addProduct: async (product) => {
     try {
-      await createProduct(product);
-      set((state) => ({
-        products: [...state.products, product],
+      const { data } = await createProduct(product); // usar data si tu backend lo retorna
+      await get().fetchProduct(); // volver a cargar los productos correctamente
+      set({
         notification: {
           message: "Producto creado exitosamente",
           type: "success",
         },
-      }));
+      });
     } catch (error) {
       set({
         notification: { message: "No se pudo crear el producto", type: "error" },

@@ -23,7 +23,7 @@ export default function VentaPage() {
         <div className="max-w-full mx-auto p-6 bg-gray-100 space-y-6">
           <div className="max-h-[480px] overflow-y-auto">
             <div className="flex">
-              <Link to="/">
+              <Link to="/home">
                 <ArrowLeft size={35} className="mr-10" />
               </Link>
               <h1 className="text-2xl font-semibold">Realizar Venta</h1>

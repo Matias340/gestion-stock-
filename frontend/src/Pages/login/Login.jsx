@@ -29,34 +29,39 @@ function Login() {
   };
 
   return (
-    <div className="max-w-sm mx-auto p-4 border rounded-lg shadow-md">
-      <h2 className="text-xl font-bold text-center mb-4">Iniciar Sesión</h2>
-      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Usuario"
-          value={usuario}
-          onChange={(e) => setUsuario(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-        />
-        <button
-          type="submit"
-          className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          disabled={loading}
-        >
-          {loading ? "Cargando..." : "Ingresar"}
-        </button>
-      </form>
+    <div className="mt-24">
+      <h2 className="text-4xl font-bold text-center mb-20">Gestion 360</h2>
+      <div className="max-w-sm shadow-md mx-auto p-4 border border-gray-200 rounded-lg">
+        <h2 className="text-xl font-bold text-center mb-4">Inicia Sesión</h2>
+        {error && (
+          <p className="text-red-500 mb-2 mt-2 text-sm text-center">{error}</p>
+        )}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Usuario"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+            className="w-full p-2 border border-gray-200 rounded outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border border-gray-200 rounded outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full mt-5 p-2 bg-blue-600 font-bold text-white rounded hover:bg-blue-700 cursor-pointer"
+            disabled={loading}
+          >
+            {loading ? "Cargando..." : "Ingresar"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

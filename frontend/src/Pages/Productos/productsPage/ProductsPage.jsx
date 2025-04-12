@@ -51,7 +51,7 @@ function ProductsPage() {
         <div className="p-6 max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-4">
             <div className="flex">
-              <Link to="/">
+              <Link to="/home">
                 <ArrowLeft size={35} className="mr-10" />
               </Link>
               <h1 className="text-2xl font-semibold">Productos</h1>

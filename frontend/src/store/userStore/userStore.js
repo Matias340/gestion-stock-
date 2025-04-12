@@ -2,7 +2,8 @@ import { create } from "zustand";
 import { registro } from "../../api/apiUsers";
 
 const useUserStore = create((set) => {
-  const storedUser = JSON.parse(localStorage.getItem("user")) || null;
+  const storedUser = localStorage.getItem("user") || null;
+  console.log('hola', storedUser);
 
   return {
     user: storedUser,
@@ -11,22 +12,26 @@ const useUserStore = create((set) => {
   login: async (usuario, password) => {
     try {
       set({ loading: true, error: null });
-
+  
       const response = await fetch(import.meta.env.VITE_API_USERS_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user: usuario, password }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         set({ user: data.user, loading: false });
         localStorage.setItem("user", JSON.stringify(data.user));
-        return true; // Indicar éxito
+  
+        // ✅ Guardar el token
+        localStorage.setItem("token", data.token);
+  
+        return true;
       } else {
         set({ error: data.message || "Credenciales incorrectas", loading: false });
-        return false; // Indicar error
+        return false;
       }
     } catch (error) {
       set({ error: "Error al conectar con el servidor", loading: false });
@@ -42,7 +47,14 @@ const useUserStore = create((set) => {
       set({ error: "Error en el registro", loading: false });
     }
   },
-  logout: () => set({ user: null }), // Para cerrar sesión
+  logout: () => set({
+    products: [],
+    selectedProducts: [],
+    ventaProducts: [],
+    currentProduct: null,
+    userId: null,
+    notification: null,
+  }), // Para cerrar sesión
 }});
 
 export default useUserStore;

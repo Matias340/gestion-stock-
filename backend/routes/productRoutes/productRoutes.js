@@ -8,16 +8,17 @@ import {
     deleteProduct,
     
 } from '../../controllers/productosController/productoController.js';
+import authMiddleware from '../../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // Rutas CRUD
-router.post('/', createProduct); // Crear
-router.get('/', getProduct); // Obtener todos
-router.get('/:id', getProductById); // Obtener por ID
-router.get('/barcode/:barcode', getProductByBarcode); // Obtener por BARCODE
-router.put('/:id', updateProduct); // Actualizar
-router.delete('/:id', deleteProduct); // Eliminar
+router.post('/', authMiddleware, createProduct); // Crear
+router.get('/', authMiddleware, getProduct); // Obtener todos
+router.get('/barcode/:barcode', authMiddleware, getProductByBarcode); // Obtener por BARCODE
+router.get('/:id', authMiddleware, getProductById); // Obtener por ID
+router.put('/:id', authMiddleware, updateProduct); // Actualizar
+router.delete('/:id', authMiddleware, deleteProduct); // Eliminar
 
 
 export default router;

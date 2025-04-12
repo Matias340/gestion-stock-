@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Menu,
   House,
@@ -9,12 +9,31 @@ import {
   ExternalLinkIcon,
 } from "lucide-react";
 import { Link, Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useUserStore from "../../store/userStore/userStore";
+import { toast } from "react-toastify";
 
 function Principal() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useUserStore();
+  const [usuario, setUsuario] = useState(null);
   console.log(user);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUsuario(JSON.parse(storedUser)); // Convertir de string a objeto
+    }
+  }, []);
+
+  const handleLogout = () => {
+    logout(); // Esto borra el estado del usuario en el store
+    toast.success("Sesión cerrada correctamente");
+    navigate("/"); // Redirige a la página de login
+  };
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
@@ -71,14 +90,31 @@ function Principal() {
         }`}
       >
         {/* Navbar */}
-        <header className="bg-blue-600 shadow-md text-white p-4 flex items-center transition-all duration-300 ease-in-out">
-          <button className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-            <Menu size={28} />
-          </button>
-          <h1 className="ml-4 text-xl font-bold">Gestión 360</h1>
-          <div>
-            <h1>Bienvenido {user ? user.user : "Invitado"}</h1>
-            {user && <button onClick={logout}>Cerrar sesión</button>}
+        <header className="bg-blue-600 shadow-md text-white p-4 flex items-center justify-between transition-all duration-300 ease-in-out">
+          {/* Lado izquierdo: botón menú y título */}
+          <div className="flex items-center">
+            <button
+              className="cursor-pointer"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <Menu size={28} />
+            </button>
+            <h1 className="ml-4 text-xl font-bold">Gestión 360</h1>
+          </div>
+
+          {/* Lado derecho: bienvenida y botón de cerrar sesión */}
+          <div className="flex items-center gap-4">
+            <h1 className="font-bold">
+              Bienvenido {usuario ? usuario.nombre : "Invitado"}
+            </h1>
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="bg-white text-blue-600 font-bold cursor-pointer px-3 py-1 rounded hover:bg-gray-100 transition"
+              >
+                Cerrar sesión
+              </button>
+            )}
           </div>
         </header>
 

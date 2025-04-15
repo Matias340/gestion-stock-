@@ -44,7 +44,7 @@ function Principal() {
       >
         <h2 className="text-gray-300 mt-4 ml-3 font-bold">Tienda</h2>
         <nav className="p-4 font-bold">
-          <Link to="/">
+          <Link to="/home">
             <div className="flex mb-5 mt-5">
               <House size={24} />
               <p className="text-md ml-5">Inicio</p>

@@ -7,7 +7,8 @@ const ProveedorSchema = new mongoose.Schema({
     phone: { type: String, required: true },
     adress: { type: String, required: true },
     state: { type: String, enum: ["Activo", "Inactivo"], required: true },
-    description: { type: String, required: false }
+    description: { type: String, required: false },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
   });
 
 export default mongoose.model('proveedores', ProveedorSchema);

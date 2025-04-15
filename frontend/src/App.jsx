@@ -24,28 +24,25 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
 
-          {/* Ruta de Home y sus subrutas */}
-          <Route path="/home" element={<Home />}>
-            <Route index element={<Cards />} />{" "}
-            {/* Muestra Cards por defecto en /home */}
+          {/* Rutas protegidas con layout que contiene Navbar */}
+          <Route path="/" element={<Home />}>
+            <Route path="home" element={<Cards />} />
+            <Route path="vender" element={<VentaPage />} />
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="proveedores" element={<ProveedoresPage />} />
+            <Route path="nuevoProveedor" element={<NuevoProveedor />} />
+            <Route path="nuevoProveedor/:id" element={<NuevoProveedor />} />
+            <Route path="nuevoProducto" element={<NuevoProducto />} />
+            <Route
+              path="nuevoProductoAgregado"
+              element={<NuevoProductoAgregado />}
+            />
+            <Route path="nuevoProducto/:id" element={<NuevoProducto />} />
+            <Route path="historial" element={<HistorialVentasPage />} />
+            <Route path="ingresos" element={<IngresosPage />} />
+            <Route path="gastos" element={<GastosPage />} />
+            <Route path="editarGasto/:id" element={<EditarGasto />} />
           </Route>
-
-          {/* Otras rutas */}
-          <Route path="/vender" element={<VentaPage />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/proveedores" element={<ProveedoresPage />} />
-          <Route path="/nuevoProveedor" element={<NuevoProveedor />} />
-          <Route path="/nuevoProveedor/:id" element={<NuevoProveedor />} />
-          <Route path="/nuevoProducto" element={<NuevoProducto />} />
-          <Route
-            path="/nuevoProductoAgregado"
-            element={<NuevoProductoAgregado />}
-          />
-          <Route path="/nuevoProducto/:id" element={<NuevoProducto />} />
-          <Route path="/historial" element={<HistorialVentasPage />} />
-          <Route path="/ingresos" element={<IngresosPage />} />
-          <Route path="/gastos" element={<GastosPage />} />
-          <Route path="/editarGasto/:id" element={<EditarGasto />} />
         </Routes>
       </main>
     </BrowserRouter>

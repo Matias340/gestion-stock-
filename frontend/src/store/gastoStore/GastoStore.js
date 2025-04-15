@@ -11,12 +11,15 @@ const useGastoStore = create((set, get) => ({
   gastos: [],
   notification: null,
 
+  setUserId: (id) => set({ userId: id }),
+
   fetchGasto: async () => {
     try {
       const { data } = await fetchGasto();
       set({ gastos: data });
     } catch (error) {
       set({
+        gastos: [],
         notification: { message: "Error al cargar los gastos", type: "error" },
       });
     }

@@ -12,6 +12,7 @@ export const createProveedor = async (req, res) => {
     }
     const proveedor = await Proveedor.create({
       ...req.body,
+      userId: req.userId,
     });
     res.status(201).json({ msg: "Proveedor registrado" });
   } catch (error) {
@@ -25,7 +26,7 @@ export const createProveedor = async (req, res) => {
 // Obtener todos los proveedores
 export const getProveedor = async (req, res) => {
     try {
-        const proveedor = await Proveedor.find().select("_id name identify contact phone adress state description");
+        const proveedor = await Proveedor.find({ userId: req.userId }).select("_id name identify contact phone adress state description");
         res.status(200).json(proveedor);
     } catch (error) {
         console.error("Error en getProveedor:", error);
@@ -37,7 +38,7 @@ export const getProveedor = async (req, res) => {
 // Obtener un proveedor por ID
 export const getProveedorById = async (req, res) => {
     try {
-        const Proveedor = await Proveedor.findById(req.params.id);
+        const Proveedor = await Proveedor.findById({ _id: req.params.id, userId: req.userId });
         if (!Proveedor) return res.status(404).json({ message: 'Proveedor no encontrado' });
         res.status(200).json(Product);
     } catch (error) {
@@ -54,7 +55,7 @@ export const getProveedorByName = async (req, res) => {
         return res.status(400).json({ message: 'El nombre es requerido.' });
       }
   
-      const proveedor = await Proveedor.findOne({ name });
+      const proveedor = await Proveedor.findOne({ name, userId: req.userId });
   
       if (!proveedor) {
         return res.status(404).json({ message: `Proveedor con nombre ${name} no encontrado` });
@@ -69,7 +70,7 @@ export const getProveedorByName = async (req, res) => {
 // Actualizar un Proveedor
 export const updateProveedor = async (req, res) => {
     try {
-        const updatedProveedor = await Proveedor.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedProveedor = await Proveedor.findByIdAndUpdate({ _id: req.params.id, userId: req.userId }, req.body, { new: true });
         if (!updatedProveedor) return res.status(404).json({ message: 'Proveedor no encontrado' });
         res.status(200).json(Proveedor);
     } catch (error) {
@@ -80,7 +81,7 @@ export const updateProveedor = async (req, res) => {
 // Eliminar un proveedor
 export const deleteProveedor = async (req, res) => {
     try {
-        const deletedProveedor = await Proveedor.findByIdAndDelete(req.params.id);
+        const deletedProveedor = await Proveedor.findByIdAndDelete({ _id: req.params.id, userId: req.userId });
         if (!deletedProveedor) return res.status(404).json({ message: 'Proveedor no encontrado' });
         res.status(200).json({ message: 'Proveedor eliminado con éxito' });
     } catch (error) {

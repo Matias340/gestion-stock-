@@ -13,6 +13,14 @@ APIPRODUCTO.interceptors.request.use((config) => {
 });
 const APIVENTA = axios.create({ baseURL: import.meta.env.VITE_API_VENTA_URL });
 
+APIVENTA.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`; // ← este formato es importante
+  }
+  return config;
+});
+
 export const fetchProduct = () => APIPRODUCTO.get('/');
 export const fetchProductById = (id) => APIPRODUCTO.get(`/${id}`);
 export const getProductByBarcode = (barcode) => APIPRODUCTO.get(`/barcode/${barcode}`);

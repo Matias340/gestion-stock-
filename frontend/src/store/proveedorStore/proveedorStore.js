@@ -15,13 +15,15 @@ const useProveedorStore = create((set, get) => ({
   currentProveedores: null,
   notification: null,
 
+  setUserId: (id) => set({ userId: id }),
+
   fetchProveedor: async () => {
     try {
       const { data } = await fetchProveedor();
-      console.log('2', data);
       set({ proveedores: data });
     } catch (error) {
       set({
+        proveedores: [],
         notification: { message: "Error al cargar los proveedores", type: "error" },
       });
     }

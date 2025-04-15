@@ -6,13 +6,14 @@ import {
     updateGastos,
     deleteGastos
 } from '../../controllers/gastosController/gastosController.js';
+import authMiddleware from '../../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', createGasto);
-router.get('/', getGastos); 
-router.get('/:id', getGastoById);
-router.put('/:id', updateGastos);
-router.delete('/:id', deleteGastos);
+router.post('/', authMiddleware, createGasto);
+router.get('/', authMiddleware, getGastos); 
+router.get('/:id', authMiddleware, getGastoById);
+router.put('/:id', authMiddleware, updateGastos);
+router.delete('/:id', authMiddleware, deleteGastos);
 
 export default router;

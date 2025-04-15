@@ -10,12 +10,15 @@ const useVentaStore = create((set, get) => ({
     notification: null,
     toggleHistorial: () => set((state) => ({ mostrarHistorial: !state.mostrarHistorial })),
 
+    setUserId: (id) => set({ userId: id }),
+
 fetchVentaDetails: async () => {
     try {
       const { data } = await fetchVenta();
       set({ ventaProducts: data });
     } catch (error) {
       set({
+        ventaProducts: [],
         notification: { message: "Error al cargar los ventas", type: "error" },
       });
     }

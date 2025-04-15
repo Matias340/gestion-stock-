@@ -8,7 +8,7 @@ export const createGasto = async (req, res) => {
       return res.status(400).json({ msg: "Descripción y monto son obligatorios" });
     }
 
-    const gasto = await Gasto.create({ description, monto });
+    const gasto = await Gasto.create({ ...req.body, userId: req.userId });
 
     res.status(201).json({ msg: "Gasto registrado", gasto });
   } catch (error) {
@@ -19,7 +19,7 @@ export const createGasto = async (req, res) => {
 
 export const getGastos = async (req, res) => {
     try {
-        const gastos = await Gasto.find().select("_id description monto createdAt");
+        const gastos = await Gasto.find({ userId: req.userId }).select("_id description monto createdAt");
         res.status(200).json(gastos);
     } catch (error) {
         console.error("Error en getGastos:", error);
@@ -29,7 +29,7 @@ export const getGastos = async (req, res) => {
 
 export const getGastoById = async (req, res) => {
   try {
-      const gastos = await Gasto.findById(req.params.id);
+      const gastos = await Gasto.findById({ _id: req.params.id, userId: req.userId });
       if (!gastos) return res.status(404).json({ message: 'Gasto no encontrado' });
       res.status(200).json(gastos);
   } catch (error) {
@@ -40,7 +40,7 @@ export const getGastoById = async (req, res) => {
 
 export const updateGastos = async (req, res) => {
   try {
-      const updatedGastos = await Gasto.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      const updatedGastos = await Gasto.findByIdAndUpdate({ _id: req.params.id, userId: req.userId }, req.body, { new: true });
       if (!updatedGastos) return res.status(404).json({ message: 'Gasto no encontrado' });
       res.status(200).json(Gasto);
   } catch (error) {
@@ -50,7 +50,7 @@ export const updateGastos = async (req, res) => {
 
 export const deleteGastos = async (req, res) => {
   try {
-      const deletedGastos = await Gasto.findByIdAndDelete(req.params.id);
+      const deletedGastos = await Gasto.findByIdAndDelete({ _id: req.params.id, userId: req.userId });
       if (!deletedGastos) return res.status(404).json({ message: 'Gasto no encontrado' });
       res.status(200).json({ message: 'Gasto eliminado con éxito' });
   } catch (error) {

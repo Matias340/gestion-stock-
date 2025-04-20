@@ -44,7 +44,6 @@ export default function VentaPage() {
               <BuscadorProductos />
             </div>
 
-            {/* Usamos Fade y Slide para animar los componentes */}
             <Fade triggerOnce={true} delay={100}>
               <div className="flex justify-between gap-4">
                 {/* Tablero de Productos Seleccionados */}

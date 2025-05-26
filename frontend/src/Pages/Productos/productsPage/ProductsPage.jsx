@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
-import useProductStore from "../../../store/productStore/productStore";
-import { Filter, Plus, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Filter, Plus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Fade } from "react-awesome-reveal";
 import { Link, useNavigate } from "react-router-dom";
-import { Fade, Slide } from "react-awesome-reveal";
+import { toast } from "react-toastify";
+import useProductStore from "../../../store/productStore/productStore";
 
 function ProductsPage() {
-  const { products, fetchProduct, removeProduct, setCurrentProduct } =
-    useProductStore();
+  const { products, fetchProduct, removeProduct, setCurrentProduct } = useProductStore();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [filterText, setFilterText] = useState("");
+  const [showedStockAlert, setShowedStockAlert] = useState(false);
+  const stockAlertShown = useRef(false);
 
   useEffect(() => {
     fetchProduct();
@@ -45,6 +47,20 @@ function ProductsPage() {
     );
   });
 
+  const STOCK_MINIMO = 5;
+
+  useEffect(() => {
+    const productosConStockBajo = products.filter((p) => p.stockAmount <= STOCK_MINIMO);
+
+    if (productosConStockBajo.length > 0 && !stockAlertShown.current) {
+      toast.warn(`Atención: Hay ${productosConStockBajo.length} productos con stock bajo.`, {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      stockAlertShown.current = true; // Evita mostrar múltiples veces
+    }
+  }, [products]);
+
   return (
     <>
       <Fade triggerOnce={true} delay={50}>
@@ -71,10 +87,7 @@ function ProductsPage() {
               onChange={(e) => setFilterText(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white border rounded-lg shadow-sm outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             />
-            <Filter
-              size={20}
-              className="absolute left-3 top-2.5 text-gray-900"
-            />
+            <Filter size={20} className="absolute left-3 top-2.5 text-gray-900" />
           </div>
           <div className="max-h-[400px] overflow-y-auto w-full px-4">
             {filteredProducts.length > 0 ? (
@@ -84,23 +97,16 @@ function ProductsPage() {
                   className="bg-blue-600 p-4 mt-5 rounded-lg shadow-md w-full grid grid-cols-3 items-center gap-4"
                 >
                   <div className="col-span-1">
-                    <h2 className="text-lg text-white font-bold">
-                      {product.name}
-                    </h2>
-                    <p className="text-white font-bold">
-                      ARS${" "}
-                      {new Intl.NumberFormat("es-AR").format(product.price)}
-                    </p>
-                    <p className="text-white font-bold">
-                      Código: {product.barcode}
-                    </p>
+                    <h2 className="text-lg text-white font-bold">{product.name}</h2>
+                    <p className="text-white font-bold">ARS$ {new Intl.NumberFormat("es-AR").format(product.price)}</p>
+                    <p className="text-white font-bold">Código: {product.barcode}</p>
                   </div>
                   <div className="col-span-1 text-center text-white">
                     <span className="font-bold">
                       Stock:{" "}
-                      {product.stockAmount > 0
-                        ? product.stockAmount
-                        : "Agotado"}
+                      <span className={`${product.stockAmount <= STOCK_MINIMO ? "text-red-500" : "text-green-400"}`}>
+                        {product.stockAmount > 0 ? product.stockAmount : "Agotado"}
+                      </span>
                     </span>
                   </div>
                   <div className="col-span-1 flex justify-end gap-2">
@@ -123,18 +129,14 @@ function ProductsPage() {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 text-center">
-                No se encontraron productos.
-              </p>
+              <p className="text-gray-500 text-center">No se encontraron productos.</p>
             )}
           </div>
           {/* Modal de confirmación */}
           {showModal && (
             <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
               <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-                <h3 className="text-lg font-semibold mb-4">
-                  ¿Seguro que quieres eliminar este producto?
-                </h3>
+                <h3 className="text-lg font-semibold mb-4">¿Seguro que quieres eliminar este producto?</h3>
                 <div className="flex justify-between">
                   <button
                     className="px-4 py-2 text-sm font-bold text-white bg-blue-500 cursor-pointer rounded"

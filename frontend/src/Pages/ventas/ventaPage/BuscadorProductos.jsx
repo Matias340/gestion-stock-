@@ -12,9 +12,7 @@ function buscadorProductos() {
 
     if (!searchValue) return; // Si está vacío, salir de la función
 
-    const selectedProduct = products.find(
-      (p) => p.name?.toLowerCase() === searchValue
-    );
+    const selectedProduct = products.find((p) => p.name?.toLowerCase() === searchValue);
 
     if (selectedProduct) {
       setCurrentProduct({
@@ -69,12 +67,9 @@ function buscadorProductos() {
         />
         <datalist id="product-list">
           {Array.isArray(products) && products.length > 0 ? (
-            products.map((product) => (
-              <option
-                key={product._id}
-                value={product.name || "Producto sin nombre"}
-              />
-            ))
+            products
+              .filter((product) => product.stockAmount > 0) // Filtramos productos con stock
+              .map((product) => <option key={product._id} value={product.name || "Producto sin nombre"} />)
           ) : (
             <option disabled>No hay productos</option>
           )}

@@ -1,11 +1,12 @@
 import React from "react";
+import { Fade } from "react-awesome-reveal";
+import CierreDeCaja from "../CierreDeCaja/CierreDeCaja";
+import Gastos from "../Gastos/Gastos";
 import HistorialVentas from "../Historial/HistorialVentas";
+import Ingresos from "../Ingresos/Ingresos";
 import Productos from "../Productos/Productos";
 import Proveedores from "../Proveedores/Proveedores";
 import Venta from "../ventas/Venta";
-import Ingresos from "../Ingresos/Ingresos";
-import Gastos from "../Gastos/Gastos";
-import { Fade, Slide } from "react-awesome-reveal";
 
 function Cards() {
   return (
@@ -17,6 +18,7 @@ function Cards() {
         <HistorialVentas />
         <Ingresos />
         <Gastos />
+        <CierreDeCaja />
       </div>
     </Fade>
   );

@@ -1,17 +1,8 @@
-import { useState, useEffect } from "react";
-import {
-  Menu,
-  House,
-  Package,
-  Notebook,
-  ShoppingCart,
-  BanknoteIcon,
-  ExternalLinkIcon,
-} from "lucide-react";
-import { Link, Outlet } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import useUserStore from "../../store/userStore/userStore";
+import { BanknoteIcon, ExternalLinkIcon, House, Menu, Notebook, Package, ShoppingCart } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import useUserStore from "../../store/userStore/userStore";
 
 function Principal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,28 +66,27 @@ function Principal() {
             </div>
           </Link>
           <Link to="/gastos">
-            <div className="flex">
+            <div className="flex mb-5">
               <ExternalLinkIcon size={24} />
               <p className="text-md ml-5">Gastos</p>
+            </div>
+          </Link>
+          <Link to="/cierre">
+            <div className="flex">
+              <ExternalLinkIcon size={24} />
+              <p className="text-md ml-5">Cierre De Caja</p>
             </div>
           </Link>
         </nav>
       </div>
 
       {/* Contenedor principal que se desplaza */}
-      <div
-        className={`flex-1 min-h-screen transition-all duration-300 ease-in-out ${
-          isOpen ? "ml-64" : "ml-0"
-        }`}
-      >
+      <div className={`flex-1 min-h-screen transition-all duration-300 ease-in-out ${isOpen ? "ml-64" : "ml-0"}`}>
         {/* Navbar */}
         <header className="bg-blue-600 shadow-md text-white p-4 flex items-center justify-between transition-all duration-300 ease-in-out">
           {/* Lado izquierdo: botón menú y título */}
           <div className="flex items-center">
-            <button
-              className="cursor-pointer"
-              onClick={() => setIsOpen(!isOpen)}
-            >
+            <button className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
               <Menu size={28} />
             </button>
             <h1 className="ml-4 text-xl font-bold">Gestión 360</h1>
@@ -104,9 +94,7 @@ function Principal() {
 
           {/* Lado derecho: bienvenida y botón de cerrar sesión */}
           <div className="flex items-center gap-4">
-            <h1 className="font-bold">
-              Bienvenido {usuario ? usuario.nombre : "Invitado"}
-            </h1>
+            <h1 className="font-bold">Bienvenido {usuario ? usuario.nombre : "Invitado"}</h1>
             {user && (
               <button
                 onClick={handleLogout}

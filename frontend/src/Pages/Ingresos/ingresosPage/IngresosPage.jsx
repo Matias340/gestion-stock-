@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
-import useVentaStore from "../../../store/ventaStore/ventaStore";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Fade } from "react-awesome-reveal";
-import pdf from "../../../assets/pdf.png";
+import { Link } from "react-router-dom";
+import * as XLSX from "xlsx";
 import excel from "../../../assets/excel.png";
+import pdf from "../../../assets/pdf.png";
+import useVentaStore from "../../../store/ventaStore/ventaStore";
 
 function IngresosPage() {
   const { ventaProducts, fetchVentaDetails } = useVentaStore();
@@ -23,10 +23,10 @@ function IngresosPage() {
   useEffect(() => {
     if (!ventaProducts) return;
 
+    const hoy = new Date(); // <<<< Declaración global dentro del useEffect
     let ventasFiltradas = ventaProducts;
 
     if (filtro === "today") {
-      const hoy = new Date();
       ventasFiltradas = ventaProducts.filter((venta) => {
         const fechaVenta = new Date(venta.createdAt);
         return (
@@ -36,13 +36,20 @@ function IngresosPage() {
         );
       });
     } else if (filtro === "week") {
-      const hoy = new Date();
       const haceUnaSemana = new Date();
       haceUnaSemana.setDate(hoy.getDate() - 7);
 
       ventasFiltradas = ventaProducts.filter((venta) => {
         const fechaVenta = new Date(venta.createdAt);
         return fechaVenta >= haceUnaSemana && fechaVenta <= hoy;
+      });
+    } else if (filtro === "month") {
+      const haceUnMes = new Date();
+      haceUnMes.setMonth(hoy.getMonth() - 1);
+
+      ventasFiltradas = ventaProducts.filter((venta) => {
+        const fechaVenta = new Date(venta.createdAt);
+        return fechaVenta >= haceUnMes && fechaVenta <= hoy;
       });
     }
 
@@ -51,10 +58,7 @@ function IngresosPage() {
 
   useEffect(() => {
     if (ventasFiltradas.length > 0) {
-      let total = ventasFiltradas.reduce(
-        (sum, venta) => sum + (Number(venta.total) || 0),
-        0
-      );
+      let total = ventasFiltradas.reduce((sum, venta) => sum + (Number(venta.total) || 0), 0);
       setTotalIngresos(total);
     } else {
       setTotalIngresos(0); // Evita NaN si no hay ventas
@@ -187,21 +191,14 @@ function IngresosPage() {
               <option value="all">Todas las ventas</option>
               <option value="today">Hoy</option>
               <option value="week">Última semana</option>
+              <option value="month">Último mes</option>
             </select>
 
             <button onClick={exportToPDF} className="cursor-pointer">
-              <img
-                src={pdf}
-                alt="Pdf"
-                className="w-12 h-12 py-1 px-1 rounded-md"
-              />
+              <img src={pdf} alt="Pdf" className="w-12 h-12 py-1 px-1 rounded-md" />
             </button>
             <button onClick={exportToExcel} className="cursor-pointer">
-              <img
-                src={excel}
-                alt="Excel"
-                className="w-12 h-12 py-1 px-1 rounded-md"
-              />
+              <img src={excel} alt="Excel" className="w-12 h-12 py-1 px-1 rounded-md" />
             </button>
           </div>
 
@@ -226,20 +223,11 @@ function IngresosPage() {
               </thead>
               <tbody>
                 {ventasFiltradas.map((venta) => (
-                  <tr
-                    key={venta.id}
-                    className="bg-white border-b border-gray-200"
-                  >
-                    <td className="px-4 py-2">
-                      {new Date(venta.createdAt).toLocaleString("es-AR")}
-                    </td>
-                    <td className="px-4 py-2">
-                      {venta.products.map((p) => p.name).join(", ")}
-                    </td>
+                  <tr key={venta.id} className="bg-white border-b border-gray-200">
+                    <td className="px-4 py-2">{new Date(venta.createdAt).toLocaleString("es-AR")}</td>
+                    <td className="px-4 py-2">{venta.products.map((p) => p.name).join(", ")}</td>
                     <td className="px-4 py-2">{venta.medioPago}</td>
-                    <td className="px-4 py-2 font-bold text-gray-900">
-                      ${venta.total}
-                    </td>
+                    <td className="px-4 py-2 font-bold text-gray-900">${venta.total}</td>
                   </tr>
                 ))}
               </tbody>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import gastosImage from "../../assets/gasto.png";
+import gastosImage from "../../assets/close.png";
 
 function CierreDeCaja() {
   return (

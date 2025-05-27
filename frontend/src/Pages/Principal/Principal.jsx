@@ -1,4 +1,4 @@
-import { BanknoteIcon, ExternalLinkIcon, House, Menu, Notebook, Package, ShoppingCart } from "lucide-react";
+import { BanknoteIcon, ExternalLinkIcon, EyeClosed, House, Menu, Notebook, Package, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -73,7 +73,7 @@ function Principal() {
           </Link>
           <Link to="/cierre">
             <div className="flex">
-              <ExternalLinkIcon size={24} />
+              <EyeClosed size={24} />
               <p className="text-md ml-5">Cierre De Caja</p>
             </div>
           </Link>

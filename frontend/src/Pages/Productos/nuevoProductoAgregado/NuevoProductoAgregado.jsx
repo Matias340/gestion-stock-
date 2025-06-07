@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
-import useProductStore from "../../../store/productStore/productStore";
 import { ArrowLeft } from "lucide-react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Fade } from "react-awesome-reveal";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Fade, Slide } from "react-awesome-reveal";
+import useProductStore from "../../../store/productStore/productStore";
 
 function NuevoProductoAgregado() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { currentProduct, addProduct, updateProduct, clearCurrentProduct } =
-    useProductStore();
+  const { currentProduct, addProduct, updateProduct, clearCurrentProduct } = useProductStore();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -117,19 +116,19 @@ function NuevoProductoAgregado() {
   return (
     <>
       <Fade triggerOnce={true} delay={50}>
-        <div className="h-[calc(100vh-100px)] flex items-center justify-center mt-4 mb-10">
-          <div className="max-h-[500px] overflow-y-auto px-4 bg-white p-6 rounded-lg shadow-xl w-[800px]">
-            <Link to="/vender">
-              <ArrowLeft size={35} className="mr-10" />
-            </Link>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">
+        <div className="min-h-[calc(100vh-100px)] flex items-center justify-center mt-4 mb-10 px-4">
+          <div className="max-h-[90vh] overflow-y-auto bg-white p-6 rounded-lg shadow-xl w-full max-w-[800px]">
+            <div className="mb-4">
+              <Link to="/vender">
+                <ArrowLeft size={35} className="text-gray-800 hover:text-blue-600" />
+              </Link>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-6">
               {id ? "Editar Producto" : "Nuevo Producto"}
             </h1>
-            <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
+            <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit}>
               <div className="flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">
-                  Nombre:
-                </label>
+                <label className="mb-2 text-md font-medium text-gray-900">Nombre:</label>
                 <input
                   type="text"
                   placeholder="Nombre del producto"
@@ -140,10 +139,9 @@ function NuevoProductoAgregado() {
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                 />
               </div>
+
               <div className="flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">
-                  Valor comercial:
-                </label>
+                <label className="mb-2 text-md font-medium text-gray-900">Valor comercial:</label>
                 <input
                   type="text"
                   placeholder="Valor comercial"
@@ -160,9 +158,7 @@ function NuevoProductoAgregado() {
               </div>
 
               <div className="flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">
-                  Codigo de barras:
-                </label>
+                <label className="mb-2 text-md font-medium text-gray-900">Codigo de barras:</label>
                 <input
                   type="text"
                   placeholder="Codigo de barras"
@@ -171,10 +167,9 @@ function NuevoProductoAgregado() {
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                 />
               </div>
+
               <div className="flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">
-                  Valor costo:
-                </label>
+                <label className="mb-2 text-md font-medium text-gray-900">Valor costo:</label>
                 <input
                   type="text"
                   placeholder="Valor costo"
@@ -194,10 +189,9 @@ function NuevoProductoAgregado() {
                 />
                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
               </div>
+
               <div className="flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">
-                  Stock:
-                </label>
+                <label className="mb-2 text-md font-medium text-gray-900">Stock:</label>
                 <select
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                   required
@@ -205,8 +199,6 @@ function NuevoProductoAgregado() {
                   onChange={(e) => {
                     const newStock = e.target.value;
                     setStock(newStock);
-
-                    // Si selecciona "Agotado", actualizamos el stockAmount a 0
                     if (newStock === "Agotado") {
                       setStockAmount(0);
                     }
@@ -218,11 +210,10 @@ function NuevoProductoAgregado() {
                   <option value="Disponible">Disponible</option>
                   <option value="Agotado">Agotado</option>
                 </select>
+
                 {stock === "Disponible" && (
-                  <div className="mt-4">
-                    <label className="mb-2 text-md font-medium text-gray-900">
-                      Stock actual:
-                    </label>
+                  <div className="mt-4 flex flex-col">
+                    <label className="mb-2 text-md font-medium text-gray-900">Stock actual:</label>
                     <input
                       type="text"
                       placeholder="Ingrese cantidad"
@@ -234,10 +225,9 @@ function NuevoProductoAgregado() {
                   </div>
                 )}
               </div>
+
               <div className="flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">
-                  Unidad:
-                </label>
+                <label className="mb-2 text-md font-medium text-gray-900">Unidad:</label>
                 <select
                   value={unit}
                   onChange={(e) => setUnit(e.target.value)}
@@ -246,35 +236,33 @@ function NuevoProductoAgregado() {
                   <option value="" disabled hidden>
                     Seleccionar unidad
                   </option>
-                  <option value="kg">Kilogramo</option>
-                  <option value="lt">Litro</option>
-                  <option value="Centimetro">Centimetro</option>
+                  <option value="Kg">Kilogramo</option>
+                  <option value="Litros">Litros</option>
+                  <option value="Unidad">Unidad</option>
+                  <option value="Centimetro">Centímetro</option>
                   <option value="Días">Días</option>
                   <option value="Horas">Horas</option>
                   <option value="Metro">Metro</option>
                   <option value="Metro Cuadrado">Metro Cuadrado</option>
                   <option value="Metro Cúbico">Metro Cúbico</option>
-                  <option value="Milimetro">Milimetro</option>
-                  <option value="Unidad">Unidad</option>
+                  <option value="Milimetro">Milímetro</option>
                 </select>
               </div>
 
-              <div className="col-span-2 flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">
-                  Descripción:
-                </label>
+              <div className="flex flex-col">
+                <label className="mb-2 text-md font-medium text-gray-900">Descripción:</label>
                 <textarea
-                  type="text"
                   placeholder="Descripción"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                 />
               </div>
-              <div className="col-span-2">
+
+              <div>
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white font-bold cursor-pointer py-2 px-4 rounded-md hover:bg-blue-700"
+                  className="w-full mb-5 bg-blue-600 text-white font-bold cursor-pointer py-2 px-4 rounded-md hover:bg-blue-700"
                 >
                   Guardar
                 </button>

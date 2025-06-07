@@ -12,7 +12,7 @@ function InformacionProduct() {
   };
 
   return (
-    <div className="bg-white mb-3 w-145 p-4 rounded-md shadow-lg grid grid-cols-3 gap-4">
+    <div className="bg-white mb-3 w-full p-4 rounded-md shadow-lg grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
         <label className="font-bold">Nombre del Producto</label>
         <input
@@ -22,6 +22,7 @@ function InformacionProduct() {
           disabled
         />
       </div>
+
       <div>
         <label className="font-bold">Código de Barras</label>
         <input
@@ -31,6 +32,7 @@ function InformacionProduct() {
           disabled
         />
       </div>
+
       <div>
         <label className="font-bold">Precio</label>
         <input
@@ -45,6 +47,7 @@ function InformacionProduct() {
           disabled
         />
       </div>
+
       <div>
         <label className="font-bold">IVA</label>
         <input
@@ -54,6 +57,7 @@ function InformacionProduct() {
           disabled
         />
       </div>
+
       <div>
         <label className="font-bold">Stock</label>
         <input
@@ -64,8 +68,8 @@ function InformacionProduct() {
         />
       </div>
 
-      {/* Botón debajo de todos los inputs, alineado a la izquierda */}
-      <div className="col-span-3 flex justify-start">
+      {/* Botón debajo de todos los inputs */}
+      <div className="md:col-span-3">
         <button
           onClick={handleAddProduct}
           className="bg-blue-600 font-bold text-white px-4 py-2 shadow-md rounded-md cursor-pointer hover:bg-blue-700"

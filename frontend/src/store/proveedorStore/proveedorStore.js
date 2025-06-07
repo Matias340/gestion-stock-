@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import {
+  createProveedor,
+  deleteProveedor,
   fetchProveedor,
   fetchProveedorById,
   getProveedorByName,
-  createProveedor,
   updateProveedor,
-  deleteProveedor
 } from "../../api/apiProveedor";
 
 const useProveedorStore = create((set, get) => ({
@@ -35,29 +35,25 @@ const useProveedorStore = create((set, get) => ({
         console.error("El proveedorId no está definido:", proveedorId);
         throw new Error("El proveedorId no está definido");
       }
-  
+
       let response;
-      
-      
+
       if (proveedorId.length < 10) {
-        console.log("Buscando proveedor por nombre");
-        response = await getProveedorByName(proveedorId);  
+        response = await getProveedorByName(proveedorId);
       } else {
-        console.log("Buscando proveedor por _id");
-        response = await fetchProveedorById(proveedorId);  
+        response = await fetchProveedorById(proveedorId);
       }
-  
+
       if (!response || !response.data) {
-        throw new Error('Proveedor no encontrado');
+        throw new Error("Proveedor no encontrado");
       }
-      
-      return response.data; 
+
+      return response.data;
     } catch (error) {
-      console.error('Error al obtener el proveedor:', error);
+      console.error("Error al obtener el proveedor:", error);
       return null;
     }
   },
-  
 
   addProveedor: async (proveedor) => {
     try {
@@ -80,9 +76,7 @@ const useProveedorStore = create((set, get) => ({
     try {
       await updateProveedor(id, updatedProveedor);
       set((state) => ({
-        proveedores: state.proveedores.map((proveedor) =>
-        proveedor._id === id ? updatedProveedor : proveedor
-        ),
+        proveedores: state.proveedores.map((proveedor) => (proveedor._id === id ? updatedProveedor : proveedor)),
         notification: {
           message: "Proveedor actualizado exitosamente",
           type: "success",
@@ -117,7 +111,6 @@ const useProveedorStore = create((set, get) => ({
       });
     }
   },
-
 
   setCurrentProveedores: (proveedor) => set({ currentProveedores: proveedor }),
   clearCurrentProveedores: () => set({ currentProveedores: null }),

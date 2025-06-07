@@ -1,7 +1,7 @@
 import { useState } from "react";
-import useUserStore from "../../store/userStore/userStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import useUserStore from "../../store/userStore/userStore";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
@@ -14,7 +14,6 @@ function Login() {
 
     try {
       const success = await login(usuario, password);
-      console.log("Respuesta del login:", success);
 
       if (success) {
         toast.success("Inicio de sesión exitoso");
@@ -31,11 +30,9 @@ function Login() {
   return (
     <div className="mt-24">
       <h2 className="text-4xl font-bold text-center mb-20">Gestion 360</h2>
-      <div className="max-w-sm shadow-md mx-auto p-4 border border-gray-200 rounded-lg">
+      <div className="max-w-sm mx-4 sm:mx-auto shadow-md p-4 border border-gray-200 rounded-lg">
         <h2 className="text-xl font-bold text-center mb-4">Inicia Sesión</h2>
-        {error && (
-          <p className="text-red-500 mb-2 mt-2 text-sm text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 mb-2 mt-2 text-sm text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"

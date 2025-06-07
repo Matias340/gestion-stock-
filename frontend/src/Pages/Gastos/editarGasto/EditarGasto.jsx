@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import useGastoStore from "../../../store/gastoStore/GastoStore";
 import { ArrowLeft } from "lucide-react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Fade } from "react-awesome-reveal";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Fade, Slide } from "react-awesome-reveal";
+import useGastoStore from "../../../store/gastoStore/GastoStore";
 
 function EditarGasto() {
   const { id } = useParams();
@@ -22,7 +22,6 @@ function EditarGasto() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos a enviar:", { monto, description });
 
     try {
       await actualizarGasto(id, { monto, description });
@@ -53,9 +52,7 @@ function EditarGasto() {
             <Link to="/gastos">
               <ArrowLeft size={35} className="mr-10" />
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-              Editar Gasto
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">Editar Gasto</h1>
             <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
               <div className="flex flex-col">
                 <label className="mb-2 font-bold">Monto:</label>
@@ -73,9 +70,7 @@ function EditarGasto() {
                 />
               </div>
               <div className="col-span-2 flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">
-                  Descripción:
-                </label>
+                <label className="mb-2 text-md font-medium text-gray-900">Descripción:</label>
                 <textarea
                   type="text"
                   placeholder="Descripción"

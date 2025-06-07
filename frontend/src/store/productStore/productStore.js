@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import {
+  createProduct,
+  deleteProduct,
   fetchProduct,
   fetchProductById,
   getProductByBarcode,
-  createProduct,
-  deleteProduct,
-  updateProduct,
   realizarVenta,
+  updateProduct,
 } from "../../api/apiProducto";
 
 const useProductStore = create((set, get) => ({
@@ -40,29 +40,29 @@ const useProductStore = create((set, get) => ({
         console.error("El productId no está definido:", productId);
         throw new Error("El productId no está definido");
       }
-  
+
       let response;
-      
+
       // Si el productId es un barcode (lo asumimos si es un string de longitud más corta)
-      if (productId.length < 10) {  // Suponiendo que los barcodes son más cortos que los _id
+      if (productId.length < 30) {
+        // Suponiendo que los barcodes son más cortos que los _id
         console.log("Buscando producto por barcode");
-        response = await getProductByBarcode(productId);  // Usamos la nueva función
+        response = await getProductByBarcode(productId); // Usamos la nueva función
       } else {
         console.log("Buscando producto por _id");
-        response = await fetchProductById(productId);  // Usamos la función existente
+        response = await fetchProductById(productId); // Usamos la función existente
       }
-  
+
       if (!response || !response.data) {
-        throw new Error('Producto no encontrado');
+        throw new Error("Producto no encontrado");
       }
-      
-      return response.data;  // Regresamos el producto encontrado
+
+      return response.data; // Regresamos el producto encontrado
     } catch (error) {
-      console.error('Error al obtener el producto:', error);
-      return null;  // Si no se encuentra, regresamos null
+      console.error("Error al obtener el producto:", error);
+      return null; // Si no se encuentra, regresamos null
     }
   },
-  
 
   addProduct: async (product) => {
     try {
@@ -85,9 +85,7 @@ const useProductStore = create((set, get) => ({
     try {
       await updateProduct(id, updatedProduct);
       set((state) => ({
-        products: state.products.map((product) =>
-          product._id === id ? updatedProduct : product
-        ),
+        products: state.products.map((product) => (product._id === id ? updatedProduct : product)),
         notification: {
           message: "Producto actualizado exitosamente",
           type: "success",
@@ -131,24 +129,24 @@ const useProductStore = create((set, get) => ({
   // Agregar productos al carrito con cantidad
   addToProduct: async (product, quantity) => {
     console.log("Producto recibido:", product);
-    
+
     // Si no tiene _id, usa barcode como identificador
-    const productId = product._id || product.barcode;
-    
+    const productId = product.barcode || product._id;
+
     if (!productId) {
       console.error("No se puede obtener un identificador para el producto.");
       return;
     }
-  
+
     // Llamamos a fetchProductDetails con el productId
     const productDetails = await get().fetchProductDetails(productId);
-  
+
     if (productDetails) {
       set((state) => {
         const existingProduct = state.selectedProducts.find(
           (p) => p._id === productDetails._id && p.price === productDetails.price
         );
-  
+
         if (existingProduct) {
           return {
             selectedProducts: state.selectedProducts.map((p) =>
@@ -170,7 +168,6 @@ const useProductStore = create((set, get) => ({
       console.error("No se pudo obtener el detalle del producto.");
     }
   },
-  
 
   updateProductQuantity: (productId, productPrice, newQuantity) => {
     set((state) => ({
@@ -185,9 +182,7 @@ const useProductStore = create((set, get) => ({
   // Eliminar producto del carrito
   removeFromCart: (id, price) => {
     set((state) => ({
-      selectedProducts: state.selectedProducts.filter(
-        (p) => !(p._id === id && p.price === price)
-      ),
+      selectedProducts: state.selectedProducts.filter((p) => !(p._id === id && p.price === price)),
     }));
   },
 
@@ -205,45 +200,44 @@ const useProductStore = create((set, get) => ({
 
       //console.log("Estado actual antes de la compra:", paymentMethod);
       //console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: paymentMethod });
-        
-        if (!selectedProducts.length) {
-            return { success: false, message: "El carrito está vacío" };
-        }
-        
-        const productosFormateados = selectedProducts.map(item => ({
-          productId: item._id,
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price
-        }));
 
-        const total = getTotal();
+      if (!selectedProducts.length) {
+        return { success: false, message: "El carrito está vacío" };
+      }
 
-        //console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: paymentMethod }); // 💡 Usa `get()` aquí para evitar valores antiguos
-        
-        const response = await realizarVenta(productosFormateados, total, paymentMethod, userID); // 📌 Usa `get().paymentMethod` para asegurar que tiene el valor actualizado
+      const productosFormateados = selectedProducts.map((item) => ({
+        productId: item._id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      }));
 
-        if (response.status === 201) {
-            set({
-                selectedProducts: [],
-                notification: { type: "success", message: "Compra realizada correctamente" }
-            });
-            return response.data;
-        } else {
-            set({
-                notification: { type: "error", message: response.data.message }
-            });
-            return response.data;
-        }
-    } catch (error) {
-        console.error("Error al completar la compra:", error);
+      const total = getTotal();
+
+      //console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: paymentMethod }); // 💡 Usa `get()` aquí para evitar valores antiguos
+
+      const response = await realizarVenta(productosFormateados, total, paymentMethod, userID); // 📌 Usa `get().paymentMethod` para asegurar que tiene el valor actualizado
+
+      if (response.status === 201) {
         set({
-            notification: { type: "error", message: "Error al completar la compra" }
+          selectedProducts: [],
+          notification: { type: "success", message: "Compra realizada correctamente" },
         });
-        return { success: false, message: "Error al completar la compra" };
+        return response.data;
+      } else {
+        set({
+          notification: { type: "error", message: response.data.message },
+        });
+        return response.data;
+      }
+    } catch (error) {
+      console.error("Error al completar la compra:", error);
+      set({
+        notification: { type: "error", message: "Error al completar la compra" },
+      });
+      return { success: false, message: "Error al completar la compra" };
     }
-},
-
+  },
 }));
 
 export default useProductStore;

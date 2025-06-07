@@ -22,15 +22,11 @@ function EliminarPorFecha({ onDeleteByRange }) {
     } else if (range === "week") {
       const lastWeek = new Date();
       lastWeek.setDate(now.getDate() - 7);
-      filteredGastos = gastos.filter(
-        (gasto) => new Date(gasto.createdAt) >= lastWeek
-      );
+      filteredGastos = gastos.filter((gasto) => new Date(gasto.createdAt) >= lastWeek);
     } else if (range === "month") {
       const lastMonth = new Date();
       lastMonth.setMonth(now.getMonth() - 1);
-      filteredGastos = gastos.filter(
-        (gasto) => new Date(gasto.createdAt) >= lastMonth
-      );
+      filteredGastos = gastos.filter((gasto) => new Date(gasto.createdAt) >= lastMonth);
     }
 
     if (filteredGastos.length > 0) {
@@ -42,21 +38,21 @@ function EliminarPorFecha({ onDeleteByRange }) {
 
   return (
     <div>
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">
         <button
-          className="px-4 py-1 bg-red-600 cursor-pointer text-white font-bold rounded hover:bg-red-700"
+          className="w-full sm:w-auto px-4 py-1 bg-red-600 cursor-pointer text-white font-bold rounded hover:bg-red-700"
           onClick={() => handleDeleteByDate("day")}
         >
           Eliminar Gastos de Hoy
         </button>
         <button
-          className="px-4 py-1 bg-red-600 cursor-pointer text-white font-bold rounded hover:bg-red-700"
+          className="w-full sm:w-auto px-4 py-1 bg-red-600 cursor-pointer text-white font-bold rounded hover:bg-red-700"
           onClick={() => handleDeleteByDate("week")}
         >
           Eliminar Gastos de la Última Semana
         </button>
         <button
-          className="px-4 py-1 bg-red-600 cursor-pointer text-white font-bold rounded hover:bg-red-700"
+          className="w-full sm:w-auto px-4 py-1 bg-red-600 cursor-pointer text-white font-bold rounded hover:bg-red-700"
           onClick={() => handleDeleteByDate("month")}
         >
           Eliminar Gastos del Último Mes

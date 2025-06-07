@@ -1,50 +1,76 @@
-import { useState, useEffect } from "react";
-import useVentaStore from "../../store/ventaStore/ventaStore";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { ArrowLeft } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Fade } from "react-awesome-reveal";
+import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
-import { Fade, Slide } from "react-awesome-reveal";
-import pdf from "../../assets/pdf.png";
 import excel from "../../assets/excel.png";
+import pdf from "../../assets/pdf.png";
+import useVentaStore from "../../store/ventaStore/ventaStore";
 
 function HistorialVentasPage() {
   const { ventaProducts, fetchVentaDetails } = useVentaStore();
-  const [ventasOrdenadas, setVentasOrdenadas] = useState([]);
+
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Filtro: "all" | "week" | "month"
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     fetchVentaDetails();
   }, []);
 
-  useEffect(() => {
-    if (ventaProducts.length > 0) {
-      const ventasPorMes = {};
+  // Filtrar ventas según filtro seleccionado
+  const filteredVentas = useMemo(() => {
+    if (!ventaProducts) return [];
 
-      ventaProducts.forEach((venta) => {
-        const fecha = new Date(venta.createdAt);
-        const mesAno = fecha.toLocaleString("default", {
-          month: "long",
-          year: "numeric",
-        });
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-        if (!ventasPorMes[mesAno]) {
-          ventasPorMes[mesAno] = [];
-        }
-        ventasPorMes[mesAno].push(venta);
+    if (filter === "week") {
+      const startOfWeek = new Date(startOfToday);
+      startOfWeek.setDate(startOfToday.getDate() - 7);
+
+      return ventaProducts.filter((venta) => {
+        const ventaDate = new Date(venta.createdAt);
+        return ventaDate >= startOfWeek && ventaDate <= now;
       });
-
-      setVentasOrdenadas(Object.entries(ventasPorMes));
     }
-  }, [ventaProducts]);
 
+    if (filter === "month") {
+      const startOfMonth = new Date(startOfToday);
+      startOfMonth.setMonth(startOfToday.getMonth() - 1);
+
+      return ventaProducts.filter((venta) => {
+        const ventaDate = new Date(venta.createdAt);
+        return ventaDate >= startOfMonth && ventaDate <= now;
+      });
+    }
+
+    return ventaProducts; // "all"
+  }, [ventaProducts, filter]);
+
+  // Calcular las ventas que mostrar en la página actual
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentVentas = filteredVentas.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Cambiar página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(filteredVentas.length / itemsPerPage);
+
+  // Exportar PDF
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text("Historial de Ventas", 10, 10);
 
     const tableColumn = ["Fecha", "Nombre", "Cantidad", "Total"];
-    const tableRows = ventaProducts.map((ventaProduct) => [
+    const tableRows = filteredVentas.map((ventaProduct) => [
       new Date(ventaProduct.createdAt).toLocaleString("es-AR", {
         year: "numeric",
         month: "long",
@@ -68,10 +94,10 @@ function HistorialVentasPage() {
     doc.save("Ventas.pdf");
   };
 
-  // Función para exportar a Excel
+  // Exportar Excel
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(
-      ventaProducts.map((venta) => ({
+      filteredVentas.map((venta) => ({
         Fecha: new Date(venta.createdAt).toLocaleString("es-AR", {
           year: "numeric",
           month: "long",
@@ -100,81 +126,173 @@ function HistorialVentasPage() {
   };
 
   return (
-    <>
-      <Fade triggerOnce={true} delay={50}>
-        <div className="bg-white p-4 rounded-md shadow">
-          <div className="flex justify-between items-center">
-            <div className="flex">
-              <Link to="/home">
-                <ArrowLeft size={35} className="mr-10" />
-              </Link>
-              <h1 className="text-2xl font-semibold">Historial de Ventas</h1>
-            </div>
+    <Fade triggerOnce={true} delay={50}>
+      <div className="bg-white p-4 rounded-md shadow">
+        {/* Encabezado con botón de volver y título */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <div className="flex items-center">
+            <Link to="/home">
+              <ArrowLeft size={35} className="mr-4" />
+            </Link>
+            <h1 className="text-2xl font-semibold">Historial de Ventas</h1>
           </div>
-          <div className="mt-5">
-            <button onClick={exportToPDF} className="cursor-pointer">
-              <img
-                src={pdf}
-                alt="Pdf"
-                className="w-12 h-12 py-1 px-1 rounded-md"
-              />
+        </div>
+
+        {/* Botones exportar y filtros */}
+        <div className="mt-5 flex flex-wrap items-center gap-4">
+          <button onClick={exportToPDF} className="cursor-pointer">
+            <img src={pdf} alt="Pdf" className="w-12 h-12 py-1 px-1 rounded-md" />
+          </button>
+          <button onClick={exportToExcel} className="cursor-pointer">
+            <img src={excel} alt="Excel" className="w-12 h-12 py-1 px-1 rounded-md" />
+          </button>
+
+          {/* Filtros */}
+          <div className="ml-auto flex gap-2">
+            <button
+              className={`px-4 py-2 cursor-pointer rounded-md font-semibold ${
+                filter === "all" ? "bg-blue-600 text-white" : "bg-gray-200"
+              }`}
+              onClick={() => {
+                setFilter("all");
+                setCurrentPage(1);
+              }}
+            >
+              Todas
             </button>
-            <button onClick={exportToExcel} className="cursor-pointer">
-              <img
-                src={excel}
-                alt="Excel"
-                className="w-12 h-12 py-1 px-1 rounded-md"
-              />
+            <button
+              className={`px-4 py-2 cursor-pointer rounded-md font-semibold ${
+                filter === "week" ? "bg-blue-600 text-white" : "bg-gray-200"
+              }`}
+              onClick={() => {
+                setFilter("week");
+                setCurrentPage(1);
+              }}
+            >
+              Última Semana
+            </button>
+            <button
+              className={`px-4 py-2 cursor-pointer rounded-md font-semibold ${
+                filter === "month" ? "bg-blue-600 text-white" : "bg-gray-200"
+              }`}
+              onClick={() => {
+                setFilter("month");
+                setCurrentPage(1);
+              }}
+            >
+              Último Mes
             </button>
           </div>
-          {ventaProducts && (
-            <div className="mt-4 max-h-[380px] overflow-y-auto">
-              {ventasOrdenadas.length > 0 ? (
-                ventasOrdenadas.map(([mesAno, ventas]) => (
-                  <div key={mesAno}>
-                    <h2 className="text-lg font-bold bg-blue-600 text-white p-2 rounded-md">
-                      {mesAno}
-                    </h2>
-                    <ul className="divide-y divide-gray-300">
-                      {ventas.map((venta) => (
-                        <li key={venta._id} className="py-3 px-2">
-                          <div className="text-sm text-gray-500 mb-3">
-                            📅 {new Date(venta.createdAt).toLocaleDateString()}
-                          </div>
-                          <div className="grid grid-cols-3 gap-72 text-left">
-                            <span className="font-semibold">
-                              {venta.products.map((p) => p.name).join(", ")}
-                            </span>
-                            <span className="text-gray-700">
-                              x
-                              {venta.products.reduce(
-                                (acc, p) => acc + p.quantity,
-                                0
-                              )}
-                            </span>
-                            <span className="font-bold">
-                              $
-                              {venta.total.toLocaleString("es-AR", {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              }) || ""}
-                            </span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500 text-center">
-                  No hay ventas registradas.
-                </p>
-              )}
-            </div>
+        </div>
+
+        {/* Tabla de ventas */}
+        {/* Vista de tabla para escritorio */}
+        <div className="hidden sm:block mt-4 max-h-[320px] overflow-y-auto overflow-x-auto">
+          {filteredVentas.length === 0 ? (
+            <p className="text-gray-500 text-center">No hay ventas registradas.</p>
+          ) : (
+            <table className="min-w-full border border-gray-300 rounded-md text-sm">
+              <thead className="bg-blue-600 text-white">
+                <tr>
+                  <th className="p-2 text-left">Fecha</th>
+                  <th className="p-2 text-left">Nombre</th>
+                  <th className="p-2 text-center">Cantidad</th>
+                  <th className="p-2 text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentVentas.map((venta) => (
+                  <tr key={venta._id} className="border-t border-gray-300 hover:bg-gray-100">
+                    <td className="p-2">
+                      {new Date(venta.createdAt).toLocaleString("es-AR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
+                    <td className="p-2 truncate max-w-xs">{venta.products.map((p) => p.name).join(", ")}</td>
+                    <td className="p-2 text-center">{venta.products.reduce((acc, p) => acc + p.quantity, 0)}</td>
+                    <td className="p-2 text-right font-bold">
+                      $
+                      {venta.total.toLocaleString("es-AR", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
-      </Fade>
-    </>
+
+        {/* Vista de tarjetas para móviles */}
+        <div className="sm:hidden mt-4 max-h-[320px] overflow-y-auto flex flex-col gap-4 pr-2">
+          {filteredVentas.length === 0 ? (
+            <p className="text-gray-500 text-center">No hay ventas registradas.</p>
+          ) : (
+            currentVentas.map((venta) => (
+              <div key={venta._id} className="bg-white rounded shadow p-4 border border-gray-300 text-sm">
+                <p>
+                  <span className="font-semibold">Fecha:</span>
+                  <br />
+                  {new Date(venta.createdAt).toLocaleString("es-AR", {
+                    year: "numeric",
+                    month: "long",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+                <p className="mt-2">
+                  <span className="font-semibold">Productos:</span>
+                  <br />
+                  {venta.products.map((p) => p.name).join(", ")}
+                </p>
+                <p className="mt-2">
+                  <span className="font-semibold">Cantidad total:</span>{" "}
+                  {venta.products.reduce((acc, p) => acc + p.quantity, 0)}
+                </p>
+                <p className="mt-2 font-bold text-right text-green-700">
+                  Total: $
+                  {venta.total.toLocaleString("es-AR", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Paginación */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-4">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1 cursor-pointer rounded bg-blue-500 text-white disabled:opacity-50"
+            >
+              Anterior
+            </button>
+
+            <span className="text-sm text-gray-700">
+              Página {currentPage} de {totalPages}
+            </span>
+
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 cursor-pointer rounded bg-blue-500 text-white disabled:opacity-50"
+            >
+              Siguiente
+            </button>
+          </div>
+        )}
+      </div>
+    </Fade>
   );
 }
 

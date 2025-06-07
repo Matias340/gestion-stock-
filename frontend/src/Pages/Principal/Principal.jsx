@@ -1,4 +1,14 @@
-import { BanknoteIcon, ExternalLinkIcon, EyeClosed, House, Menu, Notebook, Package, ShoppingCart } from "lucide-react";
+import {
+  BanknoteIcon,
+  ExternalLinkIcon,
+  EyeClosed,
+  House,
+  LogOut,
+  Menu,
+  Notebook,
+  Package,
+  ShoppingCart,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,7 +18,6 @@ function Principal() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useUserStore();
   const [usuario, setUsuario] = useState(null);
-  console.log(user);
 
   const navigate = useNavigate();
 
@@ -29,11 +38,16 @@ function Principal() {
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-gray-800 text-white w-64 transform ${
+        className={`fixed top-0 left-0 z-50 h-full bg-gray-800 text-white w-64 transform ${
           isOpen ? "translate-x-0" : "-translate-x-64"
-        } transition-all duration-300 ease-in-out`}
+        } transition-transform duration-300 ease-in-out`}
       >
-        <h2 className="text-gray-300 mt-4 ml-3 font-bold">Tienda</h2>
+        <div className="flex justify-end px-4 mt-2">
+          <button onClick={() => setIsOpen(false)} className="text-white hover:text-gray-300 cursor-pointer">
+            ✕
+          </button>
+        </div>
+        <h2 className="text-gray-300 mt-1 ml-3 font-bold">Tienda</h2>
         <nav className="p-4 font-bold">
           <Link to="/home">
             <div className="flex mb-5 mt-5">
@@ -72,37 +86,37 @@ function Principal() {
             </div>
           </Link>
           <Link to="/cierre">
-            <div className="flex">
+            <div className="flex mb-5">
               <EyeClosed size={24} />
               <p className="text-md ml-5">Cierre De Caja</p>
             </div>
           </Link>
+          {user && (
+            <div className="w-full flex md:w-auto">
+              <LogOut size={24} />
+              <button onClick={handleLogout} className="text-md ml-5 cursor-pointer">
+                Cerrar sesión
+              </button>
+            </div>
+          )}
         </nav>
       </div>
 
       {/* Contenedor principal que se desplaza */}
-      <div className={`flex-1 min-h-screen transition-all duration-300 ease-in-out ${isOpen ? "ml-64" : "ml-0"}`}>
+      <div className="flex-1 min-h-screen transition-all duration-300 ease-in-out">
         {/* Navbar */}
-        <header className="bg-blue-600 shadow-md text-white p-4 flex items-center justify-between transition-all duration-300 ease-in-out">
-          {/* Lado izquierdo: botón menú y título */}
-          <div className="flex items-center">
-            <button className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-              <Menu size={28} />
-            </button>
-            <h1 className="ml-4 text-xl font-bold">Gestión 360</h1>
-          </div>
-
-          {/* Lado derecho: bienvenida y botón de cerrar sesión */}
-          <div className="flex items-center gap-4">
-            <h1 className="font-bold">Bienvenido {usuario ? usuario.nombre : "Invitado"}</h1>
-            {user && (
-              <button
-                onClick={handleLogout}
-                className="bg-white text-blue-600 font-bold cursor-pointer px-3 py-1 rounded hover:bg-gray-100 transition"
-              >
-                Cerrar sesión
+        <header className="bg-blue-600 shadow-md text-white px-4 py-1 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 transition-all duration-300 ease-in-out">
+          {/* Fila superior: Gestión 360 y Bienvenido */}
+          <div className="w-full flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <button className="cursor-pointer p-2 sm:p-3 md:p-4" onClick={() => setIsOpen(!isOpen)}>
+                <Menu className="w-6 h-6 sm:w-7 sm:h-7 md:w-6 md:h-6" />
               </button>
-            )}
+              <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold whitespace-nowrap">Gestión 360</h1>
+            </div>
+            <h1 className="font-semibold text-sm sm:text-base md:text-lg lg:text-xl whitespace-nowrap mr-10">
+              Bienvenido {usuario ? usuario.nombre : "Invitado"}
+            </h1>
           </div>
         </header>
 

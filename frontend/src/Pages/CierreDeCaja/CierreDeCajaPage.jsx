@@ -45,8 +45,17 @@ function CierreDeCajaPage() {
     });
   };
 
+  const [paginaActual, setPaginaActual] = useState(1);
+  const elementosPorPagina = 5;
+
+  const indexInicial = (paginaActual - 1) * elementosPorPagina;
+  const indexFinal = indexInicial + elementosPorPagina;
+  const cierresPaginados = cierres.slice(indexInicial, indexFinal);
+
+  const totalPaginas = Math.ceil(cierres.length / elementosPorPagina);
+
   return (
-    <div className="p-4 max-h-[480px] overflow-y-auto">
+    <div className="p-4 max-h-[400px] overflow-y-auto">
       <Link to="/home">
         <ArrowLeft size={35} className="mr-10 mb-10" />
       </Link>
@@ -57,35 +66,60 @@ function CierreDeCajaPage() {
 
       <form onSubmit={handleSubmit} className="space-y-2">
         <input
-          type="number"
+          type="text"
           name="efectivoInicial"
           placeholder="Efectivo inicial"
           value={nuevoCierre.efectivoInicial}
-          onChange={handleChange}
+          onWheel={(e) => e.target.blur()} // Evita scroll
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d*\.?\d*$/.test(value) || value === "") {
+              handleChange(e); // Asegurate que handleChange guarde string temporal
+            }
+          }}
           className="border p-2 w-full rounded-md"
         />
+
         <input
-          type="number"
+          type="text"
           name="efectivoFinal"
           placeholder="Efectivo final"
           value={nuevoCierre.efectivoFinal}
-          onChange={handleChange}
+          onWheel={(e) => e.target.blur()}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d*\.?\d*$/.test(value) || value === "") {
+              handleChange(e);
+            }
+          }}
           className="border p-2 w-full rounded-md"
         />
         <input
-          type="number"
+          type="text"
           name="ingresosAdicionales"
           placeholder="Ingresos adicionales"
           value={nuevoCierre.ingresosAdicionales}
-          onChange={handleChange}
+          onWheel={(e) => e.target.blur()}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d*\.?\d*$/.test(value) || value === "") {
+              handleChange(e);
+            }
+          }}
           className="border p-2 w-full rounded-md"
         />
         <input
-          type="number"
+          type="text"
           name="gastos"
           placeholder="Gastos"
           value={nuevoCierre.gastos}
-          onChange={handleChange}
+          onWheel={(e) => e.target.blur()}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d*\.?\d*$/.test(value) || value === "") {
+              handleChange(e);
+            }
+          }}
           className="border p-2 w-full rounded-md"
         />
         <textarea
@@ -107,22 +141,92 @@ function CierreDeCajaPage() {
       <hr className="my-6" />
 
       <h2 className="text-xl font-semibold">Lista de Cierres</h2>
-      <ul className="mt-4 space-y-2">
-        {cierres.map((cierre) => (
-          <li key={cierre._id} className="border p-2 rounded bg-blue-600 text-white font-bold relative">
+      {/* Tabla solo en pantallas medianas y grandes */}
+      <div className="hidden sm:block max-h-[400px] max-w-[340px] sm:max-w-full overflow-y-auto overflow-x-auto">
+        <table className="w-full bg-white rounded shadow text-sm">
+          <thead>
+            <tr className="bg-blue-600 text-white">
+              <th className="p-2">Fecha</th>
+              <th className="p-2">Total Ventas</th>
+              <th className="p-2">Efectivo Final</th>
+              <th className="p-2">Notas</th>
+              <th className="p-2">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cierresPaginados.map((cierre) => (
+              <tr key={cierre._id} className="bg-white border border-gray-200 text-gray-900 text-center">
+                <td className="p-2">{new Date(cierre.fecha).toLocaleString()}</td>
+                <td className="p-2">${cierre.ventasTotales}</td>
+                <td className="p-2">${cierre.efectivoFinal}</td>
+                <td className="p-2">{cierre.notas}</td>
+                <td className="p-2">
+                  <button
+                    onClick={() => eliminarCierre(cierre._id)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Tarjetas para móviles */}
+      <div className="sm:hidden flex flex-col gap-4">
+        {cierresPaginados.map((cierre) => (
+          <div key={cierre._id} className="bg-white p-4 rounded shadow text-sm border border-gray-200">
+            <p>
+              <span className="font-semibold">Fecha:</span> {new Date(cierre.fecha).toLocaleString()}
+            </p>
+            <p>
+              <span className="font-semibold">Total Ventas:</span> ${cierre.ventasTotales}
+            </p>
+            <p>
+              <span className="font-semibold">Efectivo Final:</span> ${cierre.efectivoFinal}
+            </p>
+            <p>
+              <span className="font-semibold">Notas:</span> {cierre.notas}
+            </p>
             <button
               onClick={() => eliminarCierre(cierre._id)}
-              className="absolute cursor-pointer top-2 right-2 bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+              className="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs"
             >
               Eliminar
             </button>
-            <p>Fecha: {new Date(cierre.fecha).toLocaleString()}</p>
-            <p>Total Ventas: ${cierre.ventasTotales}</p>
-            <p>Efectivo Final: ${cierre.efectivoFinal}</p>
-            <p>Notas: {cierre.notas}</p>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
+
+      <div className="flex justify-center mt-4 space-x-2">
+        <button
+          onClick={() => setPaginaActual((prev) => Math.max(prev - 1, 1))}
+          disabled={paginaActual === 1}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        {Array.from({ length: totalPaginas }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setPaginaActual(i + 1)}
+            className={`px-3 py-1 rounded ${
+              paginaActual === i + 1 ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+        <button
+          onClick={() => setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))}
+          disabled={paginaActual === totalPaginas}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+        >
+          Siguiente
+        </button>
+      </div>
     </div>
   );
 }

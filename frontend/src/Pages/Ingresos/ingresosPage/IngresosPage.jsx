@@ -15,6 +15,20 @@ function IngresosPage() {
   const [filtro, setFiltro] = useState("");
   const [ventasFiltradas, setVentasFiltradas] = useState([]);
   const [totalIngresos, setTotalIngresos] = useState(0);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const ventasPorPagina = 10;
+
+  const indexUltimaVenta = paginaActual * ventasPorPagina;
+  const indexPrimeraVenta = indexUltimaVenta - ventasPorPagina;
+  const ventasPaginadas = ventasFiltradas.slice(indexPrimeraVenta, indexUltimaVenta);
+
+  const totalPaginas = Math.ceil(ventasFiltradas.length / ventasPorPagina);
+
+  const cambiarPagina = (nuevaPagina) => {
+    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+      setPaginaActual(nuevaPagina);
+    }
+  };
 
   useEffect(() => {
     fetchVentaDetails();
@@ -161,7 +175,7 @@ function IngresosPage() {
   return (
     <>
       <Fade triggerOnce={true} delay={50}>
-        <div className="max-h-[510px] overflow-y-auto bg-white p-4 shadow-md rounded-md w-full">
+        <div className="max-h-[490px] max-w-[344px] sm:max-w-full md:max-w-3xl lg:max-w-5xl mx-auto overflow-x-auto overflow-y-auto  p-4  w-full">
           <div className="flex mb-4">
             <Link to="/home">
               <ArrowLeft size={35} className="mr-10" />
@@ -204,34 +218,81 @@ function IngresosPage() {
 
           {/* Tabla de ventas */}
           <div className="relative overflow-x-auto">
-            <table className="min-w-full text-sm text-left rtl:text-right text-gray-500">
-              <thead className="text-xs text-white uppercase bg-blue-500">
-                <tr>
-                  <th scope="col" className="px-4 py-2">
-                    Fecha
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Nombre
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Método de Pago
-                  </th>
-                  <th scope="col" className="px-4 py-2">
-                    Total
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ventasFiltradas.map((venta) => (
-                  <tr key={venta.id} className="bg-white border-b border-gray-200">
-                    <td className="px-4 py-2">{new Date(venta.createdAt).toLocaleString("es-AR")}</td>
-                    <td className="px-4 py-2">{venta.products.map((p) => p.name).join(", ")}</td>
-                    <td className="px-4 py-2">{venta.medioPago}</td>
-                    <td className="px-4 py-2 font-bold text-gray-900">${venta.total}</td>
+            {/* Vista tipo tabla en escritorio */}
+            <div className="hidden sm:block max-h-[320px] overflow-y-auto overflow-x-auto mt-4 mb-20">
+              <table className="min-w-full text-sm text-left rtl:text-right text-gray-500">
+                <thead className="text-xs text-white uppercase bg-blue-500">
+                  <tr>
+                    <th scope="col" className="px-4 py-2">
+                      Fecha
+                    </th>
+                    <th scope="col" className="px-4 py-2">
+                      Nombre
+                    </th>
+                    <th scope="col" className="px-4 py-2">
+                      Método de Pago
+                    </th>
+                    <th scope="col" className="px-4 py-2">
+                      Total
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {ventasPaginadas.map((venta) => (
+                    <tr key={venta.id} className="bg-white border-b border-gray-200">
+                      <td className="px-4 py-2">{new Date(venta.createdAt).toLocaleString("es-AR")}</td>
+                      <td className="px-4 py-2">{venta.products.map((p) => p.name).join(", ")}</td>
+                      <td className="px-4 py-2">{venta.medioPago}</td>
+                      <td className="px-4 py-2 font-bold text-gray-900">${venta.total}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Vista tipo tarjetas en móviles */}
+            <div className="sm:hidden mt-4 max-h-[320px] overflow-y-auto flex flex-col gap-4 mb-20 pr-2">
+              {ventasPaginadas.map((venta) => (
+                <div key={venta.id} className="bg-white border border-gray-300 rounded shadow p-4 text-sm">
+                  <p>
+                    <span className="font-semibold">Fecha:</span>
+                    <br />
+                    {new Date(venta.createdAt).toLocaleString("es-AR")}
+                  </p>
+                  <p className="mt-2">
+                    <span className="font-semibold">Nombre:</span>
+                    <br />
+                    {venta.products.map((p) => p.name).join(", ")}
+                  </p>
+                  <p className="mt-2">
+                    <span className="font-semibold">Método de Pago:</span>
+                    <br />
+                    {venta.medioPago}
+                  </p>
+                  <p className="mt-2 font-semibold text-green-700">Total: ${venta.total}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-center items-center gap-2 mt-4">
+              <button
+                onClick={() => cambiarPagina(paginaActual - 1)}
+                disabled={paginaActual === 1}
+                className="px-3 py-1 cursor-pointer bg-blue-500 text-white rounded disabled:opacity-50"
+              >
+                Anterior
+              </button>
+              <span className="text-sm text-gray-700">
+                Página {paginaActual} de {totalPaginas}
+              </span>
+              <button
+                onClick={() => cambiarPagina(paginaActual + 1)}
+                disabled={paginaActual === totalPaginas}
+                className="px-3 py-1 cursor-pointer bg-blue-500 text-white rounded disabled:opacity-50"
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         </div>
       </Fade>

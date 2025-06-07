@@ -11,14 +11,16 @@ import Venta from "../ventas/Venta";
 function Cards() {
   return (
     <Fade triggerOnce={true} delay={50}>
-      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
-        <Venta />
-        <Productos />
-        <Proveedores />
-        <HistorialVentas />
-        <Ingresos />
-        <Gastos />
-        <CierreDeCaja />
+      <div className="max-h-[80vh] overflow-y-auto p-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <Venta />
+          <Productos />
+          <Proveedores />
+          <HistorialVentas />
+          <Ingresos />
+          <Gastos />
+          <CierreDeCaja />
+        </div>
       </div>
     </Fade>
   );

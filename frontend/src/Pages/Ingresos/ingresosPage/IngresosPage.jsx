@@ -11,7 +11,7 @@ import pdf from "../../../assets/pdf.png";
 import useVentaStore from "../../../store/ventaStore/ventaStore";
 
 function IngresosPage() {
-  const { ventaProducts, fetchVentaDetails } = useVentaStore();
+  const { ventaProducts, fetchVentaDetails, markSaleAsPaid } = useVentaStore();
   const [filtro, setFiltro] = useState("");
   const [ventasFiltradas, setVentasFiltradas] = useState([]);
   const [totalIngresos, setTotalIngresos] = useState(0);
@@ -172,6 +172,15 @@ function IngresosPage() {
     saveAs(data, "Ingresos.xlsx");
   };
 
+  console.log(ventasPaginadas);
+
+  const handleEstadoChange = (ventaId, nuevoEstado) => {
+    if (nuevoEstado === "cobrado") {
+      markSaleAsPaid(ventaId);
+    }
+    // Si querés manejar otros estados en el futuro, podés agregarlos acá
+  };
+
   return (
     <>
       <Fade triggerOnce={true} delay={50}>
@@ -233,6 +242,9 @@ function IngresosPage() {
                       Método de Pago
                     </th>
                     <th scope="col" className="px-4 py-2">
+                      Estado
+                    </th>
+                    <th scope="col" className="px-4 py-2">
                       Total
                     </th>
                   </tr>
@@ -243,6 +255,14 @@ function IngresosPage() {
                       <td className="px-4 py-2">{new Date(venta.createdAt).toLocaleString("es-AR")}</td>
                       <td className="px-4 py-2">{venta.products.map((p) => p.name).join(", ")}</td>
                       <td className="px-4 py-2">{venta.medioPago}</td>
+                      <select
+                        value={venta.estado}
+                        onChange={(e) => handleEstadoChange(venta._id, e.target.value)}
+                        className="border rounded px-2 py-1 mt-2 mb-2"
+                      >
+                        <option value="pendiente">Pendiente</option>
+                        <option value="cobrado">Cobrado</option>
+                      </select>
                       <td className="px-4 py-2 font-bold text-gray-900">${venta.total}</td>
                     </tr>
                   ))}
@@ -268,6 +288,18 @@ function IngresosPage() {
                     <span className="font-semibold">Método de Pago:</span>
                     <br />
                     {venta.medioPago}
+                  </p>
+                  <p className="mt-2">
+                    <span className="font-semibold">Estado:</span>
+                    <br />
+                    <select
+                      value={venta.estado}
+                      onChange={(e) => handleEstadoChange(venta._id, e.target.value)}
+                      className="border rounded px-2 py-1"
+                    >
+                      <option value="pendiente">Pendiente</option>
+                      <option value="cobrado">Cobrado</option>
+                    </select>
                   </p>
                   <p className="mt-2 font-semibold text-green-700">Total: ${venta.total}</p>
                 </div>

@@ -143,27 +143,27 @@ function CierreDeCajaPage() {
       <h2 className="text-xl font-semibold">Lista de Cierres</h2>
       {/* Tabla solo en pantallas medianas y grandes */}
       <div className="hidden sm:block max-h-[400px] max-w-[340px] sm:max-w-full overflow-y-auto overflow-x-auto">
-        <table className="w-full bg-white rounded shadow text-sm">
+        <table className="w-full bg-white rounded shadow ">
           <thead>
             <tr className="bg-blue-600 text-white">
-              <th className="p-2">Fecha</th>
-              <th className="p-2">Total Ventas</th>
-              <th className="p-2">Efectivo Final</th>
-              <th className="p-2">Notas</th>
-              <th className="p-2">Acciones</th>
+              <th className="text-sm p-2">Fecha</th>
+              <th className="text-sm p-2">Total Ventas</th>
+              <th className="text-sm p-2">Efectivo Final</th>
+              <th className="text-sm p-2">Notas</th>
+              <th className="text-sm p-2">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {cierresPaginados.map((cierre) => (
               <tr key={cierre._id} className="bg-white border border-gray-200 text-gray-900 text-center">
-                <td className="p-2">{new Date(cierre.fecha).toLocaleString()}</td>
-                <td className="p-2">${cierre.ventasTotales}</td>
-                <td className="p-2">${cierre.efectivoFinal}</td>
-                <td className="p-2">{cierre.notas}</td>
-                <td className="p-2">
+                <td className="text-sm p-2">{new Date(cierre.fecha).toLocaleString()}</td>
+                <td className="text-sm p-2">${cierre.ventasTotales}</td>
+                <td className="text-sm p-2">${cierre.efectivoFinal}</td>
+                <td className="text-sm p-2">{cierre.notas}</td>
+                <td className="text-sm p-2">
                   <button
                     onClick={() => eliminarCierre(cierre._id)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
+                    className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-2 py-1 rounded text-md"
                   >
                     Eliminar
                   </button>
@@ -177,22 +177,22 @@ function CierreDeCajaPage() {
       {/* Tarjetas para móviles */}
       <div className="sm:hidden flex flex-col gap-4">
         {cierresPaginados.map((cierre) => (
-          <div key={cierre._id} className="bg-white p-4 rounded shadow text-sm border border-gray-200">
+          <div key={cierre._id} className="bg-white p-4 rounded shadow border border-gray-200">
             <p>
-              <span className="font-semibold">Fecha:</span> {new Date(cierre.fecha).toLocaleString()}
+              <span className="text-sm font-semibold">Fecha:</span> {new Date(cierre.fecha).toLocaleString()}
             </p>
             <p>
-              <span className="font-semibold">Total Ventas:</span> ${cierre.ventasTotales}
+              <span className="text-sm font-semibold">Total Ventas:</span> ${cierre.ventasTotales}
             </p>
             <p>
-              <span className="font-semibold">Efectivo Final:</span> ${cierre.efectivoFinal}
+              <span className="text-sm font-semibold">Efectivo Final:</span> ${cierre.efectivoFinal}
             </p>
             <p>
-              <span className="font-semibold">Notas:</span> {cierre.notas}
+              <span className="text-sm font-semibold">Notas:</span> {cierre.notas}
             </p>
             <button
               onClick={() => eliminarCierre(cierre._id)}
-              className="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs"
+              className="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-md"
             >
               Eliminar
             </button>

@@ -28,8 +28,17 @@ export const createProduct = (newItem) => APIPRODUCTO.post("/", newItem);
 export const updateProduct = (id, updatedItem) => APIPRODUCTO.put(`/${id}`, updatedItem);
 export const deleteProduct = (id) => APIPRODUCTO.delete(`/${id}`);
 export const fetchVenta = () => APIVENTA.get("/");
-export const realizarVenta = (productos, total, medioPago, userId) => {
+export const realizarVenta = (productos, total, medioPago, pagoDetalle, userId) => {
   console.log("Enviando productos al backend:", productos);
-  return APIVENTA.post(`/`, { products: productos, total, medioPago, userId }); // Incluye userId
+  return APIVENTA.post(`/`, {
+    products: productos,
+    total,
+    medioPago,
+    pagoDetalle, // 👈 Agregás esto
+    userId,
+  });
+};
+export const marcarComoCobrada = (ventaId) => {
+  return APIVENTA.put(`/${ventaId}/cobrar`);
 };
 export const deleteSales = (id, userId) => APIVENTA.delete(`/${id}?userId=${userId}`);

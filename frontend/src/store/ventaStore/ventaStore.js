@@ -1,18 +1,15 @@
 import { create } from "zustand";
-import {
-  fetchVenta,
-  deleteSales
-} from "../../api/apiProducto";
+import { deleteSales, fetchVenta, marcarComoCobrada } from "../../api/apiProducto";
 
 const useVentaStore = create((set, get) => ({
-    ventaProducts: [],
-    mostrarHistorial: true,
-    notification: null,
-    toggleHistorial: () => set((state) => ({ mostrarHistorial: !state.mostrarHistorial })),
+  ventaProducts: [],
+  mostrarHistorial: true,
+  notification: null,
+  toggleHistorial: () => set((state) => ({ mostrarHistorial: !state.mostrarHistorial })),
 
-    setUserId: (id) => set({ userId: id }),
+  setUserId: (id) => set({ userId: id }),
 
-fetchVentaDetails: async () => {
+  fetchVentaDetails: async () => {
     try {
       const { data } = await fetchVenta();
       set({ ventaProducts: data });
@@ -44,6 +41,27 @@ fetchVentaDetails: async () => {
     }
   },
 
-}));  
+  markSaleAsPaid: async (id) => {
+    try {
+      await marcarComoCobrada(id);
+      // Volvés a traer la lista actualizada
+      const { data } = await fetchVenta();
+      set({
+        ventaProducts: data,
+        notification: {
+          message: "Venta marcada como cobrada",
+          type: "success",
+        },
+      });
+    } catch (error) {
+      set({
+        notification: {
+          message: "No se pudo marcar como cobrada",
+          type: "error",
+        },
+      });
+    }
+  },
+}));
 
 export default useVentaStore;

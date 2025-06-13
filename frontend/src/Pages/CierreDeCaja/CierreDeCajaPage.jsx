@@ -77,7 +77,7 @@ function CierreDeCajaPage() {
               handleChange(e); // Asegurate que handleChange guarde string temporal
             }
           }}
-          className="border p-2 w-full rounded-md"
+          className="border p-2 w-full outline-none rounded-md focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
         />
 
         <input
@@ -92,7 +92,7 @@ function CierreDeCajaPage() {
               handleChange(e);
             }
           }}
-          className="border p-2 w-full rounded-md"
+          className="border p-2 w-full rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
         />
         <input
           type="text"
@@ -106,7 +106,7 @@ function CierreDeCajaPage() {
               handleChange(e);
             }
           }}
-          className="border p-2 w-full rounded-md"
+          className="border p-2 w-full rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
         />
         <input
           type="text"
@@ -120,14 +120,14 @@ function CierreDeCajaPage() {
               handleChange(e);
             }
           }}
-          className="border p-2 w-full rounded-md"
+          className="border p-2 w-full rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
         />
         <textarea
           name="notas"
           placeholder="Notas"
           value={nuevoCierre.notas}
           onChange={handleChange}
-          className="border p-2 w-full rounded-md"
+          className="border p-2 w-full rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
         ></textarea>
 
         <button

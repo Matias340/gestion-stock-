@@ -29,8 +29,8 @@ function Login() {
 
   return (
     <div className="mt-24">
-      <h2 className="text-4xl font-bold text-center mb-20">Gestion 360</h2>
-      <div className="max-w-sm mx-4 sm:mx-auto shadow-md p-4 border border-gray-200 rounded-lg">
+      <h2 className="text-4xl font-bold text-blue-600 text-center mb-20">Gestion 360</h2>
+      <div className="max-w-sm mx-4 sm:mx-auto shadow-lg p-4 border border-gray-300 rounded-lg">
         <h2 className="text-xl font-bold text-center mb-4">Inicia Sesión</h2>
         {error && <p className="text-red-500 mb-2 mt-2 text-sm text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -39,7 +39,7 @@ function Login() {
             placeholder="Usuario"
             value={usuario}
             onChange={(e) => setUsuario(e.target.value)}
-            className="w-full p-2 border border-gray-200 rounded outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full p-2 border border-gray-300 rounded outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             required
           />
           <input
@@ -47,7 +47,7 @@ function Login() {
             placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-200 rounded outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full p-2 border border-gray-300 rounded outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             required
           />
           <button

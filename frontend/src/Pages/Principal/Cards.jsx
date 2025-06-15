@@ -1,6 +1,7 @@
 import React from "react";
 import { Fade } from "react-awesome-reveal";
 import CierreDeCaja from "../CierreDeCaja/CierreDeCaja";
+import Clientes from "../Clientes/Clientes";
 import Gastos from "../Gastos/Gastos";
 import HistorialVentas from "../Historial/HistorialVentas";
 import Ingresos from "../Ingresos/Ingresos";
@@ -16,6 +17,7 @@ function Cards() {
           <Venta />
           <Productos />
           <Proveedores />
+          <Clientes />
           <HistorialVentas />
           <Ingresos />
           <Gastos />

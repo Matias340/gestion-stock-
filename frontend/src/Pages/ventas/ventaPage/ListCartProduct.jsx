@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import deleteImage from "../../../assets/delete.png";
 import useProductStore from "../../../store/productStore/productStore";
+import useVentaStore from "../../../store/ventaStore/ventaStore";
 
 function ListCartProduct() {
   const {
@@ -14,6 +15,7 @@ function ListCartProduct() {
     userId,
     setPaymentMethod,
   } = useProductStore();
+  const { fetchVentaDetails } = useVentaStore();
 
   const [cashReceived, setCashReceived] = useState("");
 
@@ -35,6 +37,7 @@ function ListCartProduct() {
         toast.success(result.message); // Mostramos el mensaje de éxito
 
         setCashReceived("");
+        await fetchVentaDetails();
       } else {
         toast.error(`Error al completar la venta: ${result.message}`); // Mostramos el error si no es el mensaje esperado
       }

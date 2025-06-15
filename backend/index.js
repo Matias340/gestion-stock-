@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import cierreRoutes from "./routes/cierreRoutes/cierreRoutes.js";
+import clientesRoutes from "./routes/clientesRoutes/clientesRoutes.js";
 import gastosRoutes from "./routes/gastosRoutes/gastosRoutes.js";
 import productRoutes from "./routes/productRoutes/productRoutes.js";
 import proveedorRoutes from "./routes/proveedorRoutes/proveedorRoutes.js";
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 
 // Rutas
 app.use("/api/product", productRoutes);
+app.use("/api/clientes", clientesRoutes);
 app.use("/api/proveedor", proveedorRoutes);
 app.use("/api/venta", ventaRoutes);
 app.use("/api/gasto", gastosRoutes);

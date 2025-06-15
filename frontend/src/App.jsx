@@ -2,7 +2,9 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AcercaPage from "./Pages/Acerca/AcercaPage";
 import CierreDeCajaPage from "./Pages/CierreDeCaja/CierreDeCajaPage";
+import ClientesPage from "./Pages/Clientes/ClientesPage";
 import EditarGasto from "./Pages/Gastos/editarGasto/EditarGasto";
 import GastosPage from "./Pages/Gastos/gastosPage/GastosPage";
 import HistorialVentasPage from "./Pages/Historial/HistorialVentasPage";
@@ -30,6 +32,8 @@ function App() {
             <Route path="home" element={<Cards />} />
             <Route path="vender" element={<VentaPage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="acerca" element={<AcercaPage />} />
+            <Route path="clientes" element={<ClientesPage />} />
             <Route path="proveedores" element={<ProveedoresPage />} />
             <Route path="nuevoProveedor" element={<NuevoProveedor />} />
             <Route path="nuevoProveedor/:id" element={<NuevoProveedor />} />

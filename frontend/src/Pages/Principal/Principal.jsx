@@ -1,5 +1,6 @@
 import {
   BanknoteIcon,
+  Contact,
   ExternalLinkIcon,
   EyeClosed,
   House,
@@ -7,7 +8,9 @@ import {
   Menu,
   Notebook,
   Package,
+  Search,
   ShoppingCart,
+  Truck,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
@@ -67,6 +70,18 @@ function Principal() {
               <p className="text-md ml-5">Vender</p>
             </div>
           </Link>
+          <Link to="/proveedores">
+            <div className="flex mb-5">
+              <Truck size={24} />
+              <p className="text-md ml-5">Proveedores</p>
+            </div>
+          </Link>
+          <Link to="/clientes">
+            <div className="flex mb-5">
+              <Contact size={24} />
+              <p className="text-md ml-5">Clientes</p>
+            </div>
+          </Link>
           <Link to="/historial">
             <div className="flex mb-5">
               <Notebook size={24} />
@@ -89,6 +104,12 @@ function Principal() {
             <div className="flex mb-5">
               <EyeClosed size={24} />
               <p className="text-md ml-5">Cierre De Caja</p>
+            </div>
+          </Link>
+          <Link to="/acerca">
+            <div className="flex mb-5">
+              <Search size={24} />
+              <p className="text-md ml-5">Acerca De</p>
             </div>
           </Link>
           {user && (
@@ -114,6 +135,7 @@ function Principal() {
               </button>
               <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold whitespace-nowrap">Gestión 360</h1>
             </div>
+
             <h1 className="font-semibold text-sm sm:text-base md:text-lg lg:text-xl whitespace-nowrap mr-10">
               Bienvenido {usuario ? usuario.nombre : "Invitado"}
             </h1>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import gastosImage from "../../assets/close.png";
+import cierreImage from "../../assets/close.png";
 
 function CierreDeCaja() {
   return (
@@ -8,7 +8,7 @@ function CierreDeCaja() {
       <Link to="/cierre">
         Cierre de Caja
         <div className="flex justify-center items-center mt-2">
-          <img src={gastosImage} alt="gastos" className="w-24 h-24" />
+          <img src={cierreImage} alt="gastos" className="w-24 h-24" />
         </div>
       </Link>
     </div>

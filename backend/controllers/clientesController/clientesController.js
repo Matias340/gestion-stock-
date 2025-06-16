@@ -4,7 +4,7 @@ export const createCliente = async (req, res) => {
   const { nombre, telefono, email, observaciones } = req.body;
 
   try {
-    const existeCliente = await Cliente.findOne({ where: { nombre } });
+    const existeCliente = await Cliente.findOne({ nombre });
 
     if (existeCliente) {
       return res.status(400).json({ msg: "Cliente ya registrado" });
@@ -22,7 +22,7 @@ export const createCliente = async (req, res) => {
 
 export const getCliente = async (req, res) => {
   try {
-    const clientes = await Cliente.find({ userId: req.userId }).select("_id nombre, telefono, email, observaciones");
+    const clientes = await Cliente.find({ userId: req.userId }).select("_id nombre telefono email observaciones");
     res.status(200).json(clientes);
   } catch (error) {
     console.error("Error en getCliente:", error);
@@ -32,11 +32,11 @@ export const getCliente = async (req, res) => {
 
 export const getClienteById = async (req, res) => {
   try {
-    const Cliente = await Cliente.findById({ _id: req.params.id, userId: req.userId });
-    if (!Cliente) return res.status(404).json({ message: "cliente no encontrado" });
-    res.status(200).json(Cliente);
+    const cliente = await Cliente.findOne({ _id: req.params.id, userId: req.userId });
+    if (!cliente) return res.status(404).json({ message: "Cliente no encontrado" });
+    res.status(200).json(cliente);
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener los Cliente", error });
+    res.status(500).json({ message: "Error al obtener el cliente", error });
   }
 };
 

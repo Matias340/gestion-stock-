@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AcercaPage from "./Pages/Acerca/AcercaPage";
 import CierreDeCajaPage from "./Pages/CierreDeCaja/CierreDeCajaPage";
 import ClientesPage from "./Pages/Clientes/ClientesPage";
+import NuevoClientes from "./Pages/Clientes/nuevosClientes/nuevosClientes";
 import EditarGasto from "./Pages/Gastos/editarGasto/EditarGasto";
 import GastosPage from "./Pages/Gastos/gastosPage/GastosPage";
 import HistorialVentasPage from "./Pages/Historial/HistorialVentasPage";
@@ -37,6 +38,8 @@ function App() {
             <Route path="proveedores" element={<ProveedoresPage />} />
             <Route path="nuevoProveedor" element={<NuevoProveedor />} />
             <Route path="nuevoProveedor/:id" element={<NuevoProveedor />} />
+            <Route path="nuevoCliente" element={<NuevoClientes />} />
+            <Route path="nuevoCliente/:id" element={<NuevoClientes />} />
             <Route path="nuevoProducto" element={<NuevoProducto />} />
             <Route path="nuevoProductoAgregado" element={<NuevoProductoAgregado />} />
             <Route path="nuevoProducto/:id" element={<NuevoProducto />} />

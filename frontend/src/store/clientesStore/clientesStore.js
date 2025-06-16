@@ -12,10 +12,11 @@ const useClienteStore = create((set, get) => ({
   fetchCliente: async () => {
     try {
       const { data } = await fetchCliente();
-      set({ cliente: data });
+      console.log("Datos recibidos del backend:", data);
+      set({ clientes: data });
     } catch (error) {
       set({
-        cliente: [],
+        clientes: [],
         notification: { message: "Error al cargar los Clientes", type: "error" },
       });
     }
@@ -28,11 +29,7 @@ const useClienteStore = create((set, get) => ({
         throw new Error("El clienteId no está definido");
       }
 
-      let response;
-
-      if (clienteId.length < 10) {
-        response = await fetchClienteById(clienteId);
-      }
+      const response = await fetchClienteById(clienteId);
 
       if (!response || !response.data) {
         throw new Error("Cliente no encontrado");
@@ -48,13 +45,13 @@ const useClienteStore = create((set, get) => ({
   addCliente: async (cliente) => {
     try {
       await createCliente(cliente);
-      set((state) => ({
-        clientes: [...state.clientes, cliente],
+      await get().fetchCliente(); // Recarga todos los clientes
+      set({
         notification: {
-          message: "cliente creado exitosamente",
+          message: "Cliente creado exitosamente",
           type: "success",
         },
-      }));
+      });
     } catch (error) {
       set({
         notification: { message: "No se pudo crear el cliente", type: "error" },

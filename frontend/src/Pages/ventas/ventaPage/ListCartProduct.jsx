@@ -18,6 +18,7 @@ function ListCartProduct() {
   const { fetchVentaDetails } = useVentaStore();
 
   const [cashReceived, setCashReceived] = useState("");
+  const [buyerEmail, setBuyerEmail] = useState("");
 
   const total = getTotal();
   const change = paymentMethod === "efectivo" ? Math.max(cashReceived - total, 0) : 0;
@@ -104,6 +105,17 @@ function ListCartProduct() {
           <option value="tarjeta-credito">Tarjeta crédito</option>
           <option value="transferencia">Transferencia</option>
           <option value="variado">Variado</option>
+
+          <div className="mt-4">
+            <label className="block mb-2 font-medium text-gray-900">Email del comprador:</label>
+            <input
+              type="email"
+              value={buyerEmail}
+              onChange={(e) => setBuyerEmail(e.target.value)}
+              placeholder="ejemplo@correo.com"
+              className="w-full border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            />
+          </div>
         </select>
 
         {paymentMethod === "efectivo" && (

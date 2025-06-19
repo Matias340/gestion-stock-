@@ -15,6 +15,7 @@ const VentaSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ["efectivo", "tarjeta-credito", "tarjeta-debito", "transferencia", "variado"],
+    email: { type: String },
   },
 
   pagoDetalle: {

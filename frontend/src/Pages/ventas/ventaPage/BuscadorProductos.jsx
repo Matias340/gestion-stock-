@@ -43,25 +43,6 @@ function buscadorProductos() {
 
       {/* Buscador de Productos Manual */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
-        <input
-          type="text"
-          value={searchTerm}
-          list="product-list"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onBlur={handleSearch}
-          className="w-full sm:w-72 p-2 border border-gray-900 border-2 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 rounded-md text-lg bg-white"
-          placeholder="Buscar producto manualmente"
-        />
-        <datalist id="product-list">
-          {Array.isArray(products) && products.length > 0 ? (
-            products
-              .filter((product) => product.stockAmount > 0)
-              .map((product) => <option key={product._id} value={product.name || "Producto sin nombre"} />)
-          ) : (
-            <option disabled>No hay productos</option>
-          )}
-        </datalist>
-
         {/* Campo para código de barras (visible solo para depurar) */}
         <input
           type="text"
@@ -73,13 +54,11 @@ function buscadorProductos() {
           placeholder="Escanear código de barras"
         />
 
-        <button className="bg-blue-600 font-bold text-white px-4 py-2 cursor-pointer shadow-md rounded-md hover:bg-blue-700">
-          Agregar
-        </button>
-        <Link to="/nuevoProductoAgregado" className="w-full md:w-auto">
-          <button className="w-full px-4 font-bold cursor-pointer max-w-full md:max-w-xs bg-blue-600 text-white py-3 rounded-md shadow-md hover:bg-blue-700">
-            Agregar Producto Manualmente
-          </button>
+        <Link
+          to="/seleccionar-producto"
+          className="bg-blue-600 font-bold text-white px-4 py-2 rounded-md shadow hover:bg-blue-700"
+        >
+          Buscar productos
         </Link>
       </div>
     </div>

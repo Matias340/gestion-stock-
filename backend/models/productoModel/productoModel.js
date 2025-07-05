@@ -24,7 +24,15 @@ const ProductoSchema = new mongoose.Schema({
   unit: {
     type: String,
     enum: UNIDADES_VALIDAS,
-    required: true,
+    required: false,
+    default: null,
+    validate: {
+      validator: function (v) {
+        // Permitir null o undefined o valores en el enum
+        return v === null || v === undefined || UNIDADES_VALIDAS.includes(v);
+      },
+      message: (props) => `${props.value} no es una unidad válida.`,
+    },
   },
   description: { type: String, required: false },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },

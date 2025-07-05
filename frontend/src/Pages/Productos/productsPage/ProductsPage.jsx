@@ -123,7 +123,7 @@ function ProductsPage() {
                     </td>
                     <td className="py-2 px-4 flex gap-2">
                       <button
-                        className="bg-blue-500 text-white text-md px-3 py-1 font-bold rounded hover:bg-blue-600"
+                        className="bg-blue-500 cursor-pointer text-white text-md px-3 py-1 font-bold rounded hover:bg-blue-600"
                         onClick={() => {
                           setCurrentProduct(product);
                           navigate(`/nuevoProducto/${product._id}`);
@@ -132,7 +132,7 @@ function ProductsPage() {
                         Editar
                       </button>
                       <button
-                        className="bg-red-500 text-white text-md px-3 py-1 font-bold rounded hover:bg-red-600"
+                        className="bg-red-500 cursor-pointer text-white text-md px-3 py-1 font-bold rounded hover:bg-red-600"
                         onClick={() => handleDeleteClick(product)}
                       >
                         Eliminar

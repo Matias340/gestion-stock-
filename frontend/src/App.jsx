@@ -16,6 +16,7 @@ import Home from "./Pages/Principal/Home";
 import NuevoProducto from "./Pages/Productos/nuevoProducto/NuevoProducto";
 import NuevoProductoAgregado from "./Pages/Productos/nuevoProductoAgregado/NuevoProductoAgregado";
 import ProductsPage from "./Pages/Productos/productsPage/ProductsPage";
+import SeleccionarProducto from "./Pages/Productos/seleccionarProducto/seleccionarProducto";
 import NuevoProveedor from "./Pages/Proveedores/nuevoProveedor/nuevoProveedor";
 import ProveedoresPage from "./Pages/Proveedores/proveedoresPage/proveedoresPage";
 import VentaPage from "./Pages/ventas/ventaPage/VentaPage";
@@ -42,6 +43,7 @@ function App() {
             <Route path="nuevoCliente/:id" element={<NuevoClientes />} />
             <Route path="nuevoProducto" element={<NuevoProducto />} />
             <Route path="nuevoProductoAgregado" element={<NuevoProductoAgregado />} />
+            <Route path="seleccionar-producto" element={<SeleccionarProducto />} />
             <Route path="nuevoProducto/:id" element={<NuevoProducto />} />
             <Route path="historial" element={<HistorialVentasPage />} />
             <Route path="ingresos" element={<IngresosPage />} />

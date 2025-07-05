@@ -55,7 +55,7 @@ function CierreDeCajaPage() {
   const totalPaginas = Math.ceil(cierres.length / elementosPorPagina);
 
   return (
-    <div className="p-4 max-h-[400px] overflow-y-auto">
+    <div className="p-4 max-h-[480px] overflow-y-auto">
       <Link to="/home">
         <ArrowLeft size={35} className="mr-10 mb-10" />
       </Link>

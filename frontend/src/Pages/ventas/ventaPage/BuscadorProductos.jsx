@@ -39,11 +39,8 @@ function buscadorProductos() {
 
   return (
     <div className="flex flex-col md:flex-row justify-between mt-3 mb-3 gap-4">
-      {/* Botón para agregar un producto manualmente */}
-
       {/* Buscador de Productos Manual */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
-        {/* Campo para código de barras (visible solo para depurar) */}
         <input
           type="text"
           ref={barcodeInputRef}

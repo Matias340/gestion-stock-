@@ -3,11 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import afipRoutes from "./routes/afipRoutes/afip.routes.js";
 import cierreRoutes from "./routes/cierreRoutes/cierreRoutes.js";
 import clientesRoutes from "./routes/clientesRoutes/clientesRoutes.js";
 import gastosRoutes from "./routes/gastosRoutes/gastosRoutes.js";
-import notasCreditoRoutes from "./routes/notaDeCreditoRoutes/notaCreditoRoutes.js";
 import productRoutes from "./routes/productRoutes/productRoutes.js";
 import proveedorRoutes from "./routes/proveedorRoutes/proveedorRoutes.js";
 import userRoutes from "./routes/userRoutes/userRoutes.js";
@@ -34,8 +32,6 @@ app.use("/api/venta", ventaRoutes);
 app.use("/api/gasto", gastosRoutes);
 app.use("/api/usuario", userRoutes);
 app.use("/api/cierreDeCajas", cierreRoutes);
-app.use("/api/afip", afipRoutes);
-app.use("/api/notasCredito", notasCreditoRoutes);
 
 // Conexión a MongoDB
 mongoose

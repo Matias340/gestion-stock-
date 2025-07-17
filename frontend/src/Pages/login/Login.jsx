@@ -1,3 +1,4 @@
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -6,6 +7,7 @@ import useUserStore from "../../store/userStore/userStore";
 function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  const [mostrarPassword, setMostrarPassword] = useState(false);
   const navigate = useNavigate();
   const { login, user, loading, error } = useUserStore();
 
@@ -42,14 +44,24 @@ function Login() {
             className="w-full p-2 border border-gray-300 rounded outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             required
           />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-            required
-          />
+          <div className="relative">
+            <input
+              type={mostrarPassword ? "text" : "password"}
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 pr-10 border border-gray-300 rounded outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setMostrarPassword(!mostrarPassword)}
+              className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none"
+              tabIndex={-1}
+            >
+              {mostrarPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+            </button>
+          </div>
           <button
             type="submit"
             className="w-full mt-5 p-2 bg-blue-600 font-bold text-white rounded hover:bg-blue-700 cursor-pointer"

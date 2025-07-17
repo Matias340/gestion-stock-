@@ -77,7 +77,7 @@ const SeleccionarProducto = () => {
                   <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{product.name}</td>
                   <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{product.barcode}</td>
                   <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">
-                    ${product.price.toFixed(2)}
+                    ARS$ {new Intl.NumberFormat("es-AR").format(product.price)}
                   </td>
                   <td className="p-3 border-b border-gray-200 text-center whitespace-nowrap">
                     <button

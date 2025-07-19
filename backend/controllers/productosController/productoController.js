@@ -1,3 +1,4 @@
+import XLSX from "xlsx";
 import Product from "../../models/productoModel/productoModel.js";
 
 export const createProduct = async (req, res) => {
@@ -118,5 +119,48 @@ export const deleteProduct = async (req, res) => {
     res.status(200).json({ message: "Producto eliminado con éxito" });
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar el Producto", error });
+  }
+};
+
+export const bulkUploadProducts = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Debe subir un archivo Excel o CSV" });
+    }
+
+    // Leer el archivo con XLSX
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0]; // Primera hoja
+    const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]); // Convertir a JSON
+
+    if (!sheet.length) {
+      return res.status(400).json({ message: "El archivo está vacío o mal formateado" });
+    }
+
+    // Validación básica
+    const productos = sheet.map((row) => {
+      const stockAmount = parseFloat(row.stock) || 0; // ✅ Convertimos a número
+      return {
+        name: row.name,
+        price: parseFloat(row.price),
+        barcode: row.barcode || null,
+        cost: parseFloat(row.cost),
+        stock: stockAmount > 0 ? "Disponible" : "Agotado", // ✅ Disponible si hay stock
+        stockAmount: stockAmount, // ✅ Ya es un número
+        unit: row.unit || null,
+        description: row.description || "",
+        userId: req.userId,
+      };
+    });
+
+    console.log(productos);
+
+    // Insertar en la base de datos
+    await Product.insertMany(productos);
+
+    res.status(201).json({ message: "Productos cargados exitosamente", total: productos.length });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al procesar el archivo", error });
   }
 };

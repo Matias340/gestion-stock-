@@ -73,6 +73,11 @@ function ProductsPage() {
             </Link>
             <h1 className="text-xl sm:text-2xl font-semibold">Productos</h1>
           </div>
+          <Link to="/cargarProductos">
+            <button className="flex cursor-pointer items-center justify-center font-bold gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition text-sm sm:text-base">
+              <Plus size={18} /> Cargar Productos
+            </button>
+          </Link>
           <Link to="/nuevoProducto">
             <button className="flex cursor-pointer items-center justify-center font-bold gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition text-sm sm:text-base">
               <Plus size={18} /> Nuevo Producto

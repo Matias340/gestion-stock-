@@ -145,7 +145,7 @@ function historialVentasPorDia() {
                               <td rowSpan={venta.products.length} className="px-4 py-2 text-center align-top">
                                 <div className="mb-2 font-bold">Total: ${venta.total.toFixed(2)}</div>
                                 <button
-                                  className="px-3 py-1 text-sm font-bold border border-red-500 rounded bg-red-500 text-white"
+                                  className="px-3 cursor-pointer py-1 text-sm font-bold border border-red-500 rounded bg-red-500 text-white"
                                   onClick={() => {
                                     handleDeleteClick(venta);
                                     setShowModal(true);

@@ -15,6 +15,7 @@ import Cards from "./Pages/Principal/Cards";
 import Home from "./Pages/Principal/Home";
 import NuevoProducto from "./Pages/Productos/nuevoProducto/NuevoProducto";
 import NuevoProductoAgregado from "./Pages/Productos/nuevoProductoAgregado/NuevoProductoAgregado";
+import BulkUpload from "./Pages/Productos/productsPage/BulkUpload";
 import ProductsPage from "./Pages/Productos/productsPage/ProductsPage";
 import SeleccionarProducto from "./Pages/Productos/seleccionarProducto/seleccionarProducto";
 import NuevoProveedor from "./Pages/Proveedores/nuevoProveedor/nuevoProveedor";
@@ -42,6 +43,7 @@ function App() {
             <Route path="nuevoCliente" element={<NuevoClientes />} />
             <Route path="nuevoCliente/:id" element={<NuevoClientes />} />
             <Route path="nuevoProducto" element={<NuevoProducto />} />
+            <Route path="cargarProductos" element={<BulkUpload />} />
             <Route path="nuevoProductoAgregado" element={<NuevoProductoAgregado />} />
             <Route path="seleccionar-producto" element={<SeleccionarProducto />} />
             <Route path="nuevoProducto/:id" element={<NuevoProducto />} />

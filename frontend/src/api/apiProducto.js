@@ -42,3 +42,14 @@ export const marcarComoCobrada = (ventaId) => {
   return APIVENTA.put(`/${ventaId}/cobrar`);
 };
 export const deleteSales = (id, userId) => APIVENTA.delete(`/${id}?userId=${userId}`);
+
+export const bulkUploadProducts = (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return APIPRODUCTO.post("/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};

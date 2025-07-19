@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import {
+  bulkUploadProducts,
   createProduct,
   deleteProduct,
   fetchProduct,
@@ -236,6 +237,21 @@ const useProductStore = create((set, get) => ({
         notification: { type: "error", message: "Error al completar la compra" },
       });
       return { success: false, message: "Error al completar la compra" };
+    }
+  },
+
+  bulkUploadProducts: async (file) => {
+    try {
+      const { data } = await bulkUploadProducts(file);
+      // Actualiza la lista de productos
+      await get().fetchProduct();
+      set({
+        notification: { message: "Productos cargados exitosamente", type: "success" },
+      });
+    } catch (error) {
+      set({
+        notification: { message: "Error al cargar los productos", type: "error" },
+      });
     }
   },
 }));

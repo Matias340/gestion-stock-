@@ -8,6 +8,7 @@ import {
   Menu,
   Notebook,
   Package,
+  Receipt,
   Search,
   ShoppingCart,
   Truck,
@@ -41,7 +42,7 @@ function Principal() {
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-50 h-full bg-gray-800 text-white w-64 transform ${
+        className={`fixed top-0 left-0 z-50 h-full overflow-y-auto bg-gray-800 text-white w-64 transform ${
           isOpen ? "translate-x-0" : "-translate-x-64"
         } transition-transform duration-300 ease-in-out`}
       >
@@ -104,6 +105,12 @@ function Principal() {
             <div className="flex mb-5">
               <EyeClosed size={24} />
               <p className="text-md ml-5">Cierre De Caja</p>
+            </div>
+          </Link>
+          <Link to="/facturacion">
+            <div className="flex mb-5">
+              <Receipt size={24} />
+              <p className="text-md ml-5">Facturación</p>
             </div>
           </Link>
           <Link to="/acerca">

@@ -13,7 +13,7 @@ import Venta from "../ventas/Venta";
 function Cards() {
   return (
     <Fade triggerOnce={true} delay={50}>
-      <div className="max-h-[80vh] overflow-y-auto p-4">
+      <div className="max-h-[90vh] overflow-y-auto p-4">
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Venta />
           <Productos />

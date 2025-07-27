@@ -294,6 +294,31 @@ const AcercaPage = () => {
           </li>
           {/* Agregá más líneas si usás íconos de otros autores */}
         </ul>
+        <ul className="list-disc list-inside text-sm">
+          <li>
+            Iconos por{" "}
+            <a
+              href="https://www.flaticon.es/iconos-gratis/factura"
+              title="factura iconos"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline"
+            >
+              Factura iconos creados por Eucalyp
+            </a>{" "}
+            en{" "}
+            <a
+              href="https://www.flaticon.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline"
+            >
+              Flaticon
+            </a>
+            .
+          </li>
+          {/* Agregá más líneas si usás íconos de otros autores */}
+        </ul>
       </div>
     </div>
   );

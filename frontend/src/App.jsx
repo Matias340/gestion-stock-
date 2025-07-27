@@ -6,6 +6,7 @@ import AcercaPage from "./Pages/Acerca/AcercaPage";
 import CierreDeCajaPage from "./Pages/CierreDeCaja/CierreDeCajaPage";
 import ClientesPage from "./Pages/Clientes/ClientesPage";
 import NuevoClientes from "./Pages/Clientes/nuevosClientes/nuevosClientes";
+import FacturacionPage from "./Pages/Facturacion/FacturacionPage";
 import EditarGasto from "./Pages/Gastos/editarGasto/EditarGasto";
 import GastosPage from "./Pages/Gastos/gastosPage/GastosPage";
 import HistorialVentasPage from "./Pages/Historial/HistorialVentasPage";
@@ -52,6 +53,7 @@ function App() {
             <Route path="gastos" element={<GastosPage />} />
             <Route path="editarGasto/:id" element={<EditarGasto />} />
             <Route path="cierre" element={<CierreDeCajaPage />} />
+            <Route path="facturacion" element={<FacturacionPage />} />
           </Route>
         </Routes>
       </main>

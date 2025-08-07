@@ -8,7 +8,6 @@ import {
   Menu,
   Notebook,
   Package,
-  Receipt,
   Search,
   ShoppingCart,
   Truck,
@@ -105,12 +104,6 @@ function Principal() {
             <div className="flex mb-5">
               <EyeClosed size={24} />
               <p className="text-md ml-5">Cierre De Caja</p>
-            </div>
-          </Link>
-          <Link to="/facturacion">
-            <div className="flex mb-5">
-              <Receipt size={24} />
-              <p className="text-md ml-5">Facturación</p>
             </div>
           </Link>
           <Link to="/acerca">

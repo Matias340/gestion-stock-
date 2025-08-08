@@ -128,7 +128,7 @@ function ProductsPage() {
                     </td>
                     <td className="py-2 px-4 flex gap-2">
                       <button
-                        className="bg-blue-500 cursor-pointer text-white text-md px-3 py-1 font-bold rounded hover:bg-blue-600"
+                        className="bg-blue-600 cursor-pointer text-white text-md px-3 py-1 font-bold rounded hover:bg-blue-600"
                         onClick={() => {
                           setCurrentProduct(product);
                           navigate(`/nuevoProducto/${product._id}`);
@@ -157,7 +157,7 @@ function ProductsPage() {
         </div>
 
         {/* Tarjetas para móviles */}
-        <div className="sm:hidden max-h-[400px] overflow-y-auto flex flex-col gap-4 pr-2">
+        <div className="sm:hidden max-h-[320px] overflow-y-auto flex flex-col gap-4 pr-2">
           {paginatedProducts.length > 0 ? (
             paginatedProducts.map((product) => (
               <div key={product._id} className="bg-white p-4 rounded shadow border border-gray-200 text-sm">
@@ -177,7 +177,7 @@ function ProductsPage() {
                 </p>
                 <div className="flex gap-2 mt-2">
                   <button
-                    className="bg-blue-500 text-white text-md px-3 py-1 font-bold rounded hover:bg-blue-600"
+                    className="bg-blue-600 text-white text-md px-3 py-1 font-bold rounded hover:bg-blue-600"
                     onClick={() => {
                       setCurrentProduct(product);
                       navigate(`/nuevoProducto/${product._id}`);
@@ -205,7 +205,7 @@ function ProductsPage() {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1 bg-blue-500 text-white cursor-pointer rounded disabled:opacity-50"
+              className="px-3 py-1 bg-blue-600 font-bold text-white cursor-pointer rounded disabled:opacity-50"
             >
               Anterior
             </button>
@@ -215,7 +215,7 @@ function ProductsPage() {
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 bg-blue-500 cursor-pointer text-white rounded disabled:opacity-50"
+              className="px-3 py-1 bg-blue-600 font-bold cursor-pointer text-white rounded disabled:opacity-50"
             >
               Siguiente
             </button>
@@ -224,14 +224,20 @@ function ProductsPage() {
 
         {/* Modal de confirmación */}
         {showModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
               <h3 className="text-lg font-semibold mb-4">¿Seguro que quieres eliminar este producto?</h3>
               <div className="flex justify-between">
-                <button className="px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded" onClick={confirmDelete}>
+                <button
+                  className="px-4 py-2 cursor-pointer text-sm font-bold text-white bg-blue-600 rounded"
+                  onClick={confirmDelete}
+                >
                   Aceptar
                 </button>
-                <button className="px-4 py-2 text-sm font-bold text-white bg-red-500 rounded" onClick={cancelDelete}>
+                <button
+                  className="px-4 py-2 text-sm cursor-pointer font-bold text-white bg-red-500 rounded"
+                  onClick={cancelDelete}
+                >
                   Cancelar
                 </button>
               </div>

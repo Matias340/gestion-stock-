@@ -155,7 +155,7 @@ function HistorialGastos() {
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 cursor-pointer bg-blue-500 text-white rounded disabled:opacity-50"
+            className="px-3 py-1 cursor-pointer bg-blue-600 font-bold text-white rounded disabled:opacity-50"
           >
             Anterior
           </button>
@@ -165,7 +165,7 @@ function HistorialGastos() {
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 cursor-pointer bg-blue-500 text-white rounded disabled:opacity-50"
+            className="px-3 py-1 cursor-pointer bg-blue-500 font-bold text-white rounded disabled:opacity-50"
           >
             Siguiente
           </button>
@@ -173,20 +173,20 @@ function HistorialGastos() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50 p-4">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 p-4">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
             <h3 className="text-base md:text-lg font-semibold mb-4">
               ¿Seguro que quieres eliminar {gastoToDelete ? "este gasto" : "estos gastos"}?
             </h3>
             <div className="flex justify-between gap-4">
               <button
-                className="flex-1 px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded hover:bg-blue-600"
+                className="flex-1 px-4 py-2 cursor-pointer text-sm font-bold text-white bg-blue-600 rounded hover:bg-blue-600"
                 onClick={confirmDelete}
               >
                 Aceptar
               </button>
               <button
-                className="flex-1 px-4 py-2 text-sm font-bold text-white bg-red-500 rounded hover:bg-red-600"
+                className="flex-1 px-4 py-2 cursor-pointer text-sm font-bold text-white bg-red-500 rounded hover:bg-red-600"
                 onClick={cancelDelete}
               >
                 Cancelar

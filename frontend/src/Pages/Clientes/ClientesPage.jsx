@@ -110,7 +110,7 @@ function ClientesPage() {
                     <td className="py-2 px-4">{cliente.observaciones}</td>
                     <td className="py-2 px-4 flex gap-2">
                       <button
-                        className="bg-blue-500 text-white text-md px-3 py-1 font-bold rounded hover:bg-blue-600"
+                        className="bg-blue-500 cursor-pointer text-white text-md px-3 py-1 font-bold rounded hover:bg-blue-600"
                         onClick={() => {
                           setCurrentClientes(cliente);
                           navigate(`/nuevoCliente/${cliente._id}`);
@@ -119,7 +119,7 @@ function ClientesPage() {
                         Editar
                       </button>
                       <button
-                        className="bg-red-500 text-white text-md px-3 py-1 font-bold rounded hover:bg-red-600"
+                        className="bg-red-500 cursor-pointer text-white text-md px-3 py-1 font-bold rounded hover:bg-red-600"
                         onClick={() => handleDeleteClick(cliente)}
                       >
                         Eliminar
@@ -186,7 +186,7 @@ function ClientesPage() {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1 bg-blue-500 text-white cursor-pointer rounded disabled:opacity-50"
+              className="px-3 py-1 bg-blue-600 font-bold text-white cursor-pointer rounded disabled:opacity-50"
             >
               Anterior
             </button>
@@ -196,7 +196,7 @@ function ClientesPage() {
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 bg-blue-500 cursor-pointer text-white rounded disabled:opacity-50"
+              className="px-3 py-1 bg-blue-500 font-bold cursor-pointer text-white rounded disabled:opacity-50"
             >
               Siguiente
             </button>
@@ -205,14 +205,20 @@ function ClientesPage() {
 
         {/* Modal de confirmación */}
         {showModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
               <h3 className="text-lg font-semibold mb-4">¿Seguro que quieres eliminar este cliente?</h3>
               <div className="flex justify-between">
-                <button className="px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded" onClick={confirmDelete}>
+                <button
+                  className="px-4 py-2 cursor-pointer text-sm font-bold text-white bg-blue-600 rounded"
+                  onClick={confirmDelete}
+                >
                   Aceptar
                 </button>
-                <button className="px-4 py-2 text-sm font-bold text-white bg-red-500 rounded" onClick={cancelDelete}>
+                <button
+                  className="px-4 py-2 cursor-pointer text-sm font-bold text-white bg-red-500 rounded"
+                  onClick={cancelDelete}
+                >
                   Cancelar
                 </button>
               </div>

@@ -310,7 +310,7 @@ function IngresosPage() {
               <button
                 onClick={() => cambiarPagina(paginaActual - 1)}
                 disabled={paginaActual === 1}
-                className="px-3 py-1 cursor-pointer bg-blue-500 text-white rounded disabled:opacity-50"
+                className="px-3 py-1 cursor-pointer bg-blue-600 font-bold text-white rounded disabled:opacity-50"
               >
                 Anterior
               </button>
@@ -320,7 +320,7 @@ function IngresosPage() {
               <button
                 onClick={() => cambiarPagina(paginaActual + 1)}
                 disabled={paginaActual === totalPaginas}
-                className="px-3 py-1 cursor-pointer bg-blue-500 text-white rounded disabled:opacity-50"
+                className="px-3 py-1 cursor-pointer bg-blue-600 font-bold text-white rounded disabled:opacity-50"
               >
                 Siguiente
               </button>

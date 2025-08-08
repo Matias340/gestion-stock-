@@ -273,7 +273,7 @@ function HistorialVentasPage() {
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-3 py-1 cursor-pointer rounded bg-blue-500 text-white disabled:opacity-50"
+              className="px-3 py-1 cursor-pointer rounded bg-blue-600 font-bold text-white disabled:opacity-50"
             >
               Anterior
             </button>
@@ -285,7 +285,7 @@ function HistorialVentasPage() {
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 cursor-pointer rounded bg-blue-500 text-white disabled:opacity-50"
+              className="px-3 py-1 cursor-pointer rounded bg-blue-500 font-bold text-white disabled:opacity-50"
             >
               Siguiente
             </button>

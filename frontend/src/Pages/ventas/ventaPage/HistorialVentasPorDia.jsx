@@ -219,14 +219,14 @@ function historialVentasPorDia() {
         </div>
       )}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
             <h3 className="text-lg font-semibold mb-4">
               ¿Seguro que quieres eliminar {salesToDelete ? "esta venta" : "estas ventas"}?
             </h3>
             <div className="flex justify-between">
               <button
-                className="px-4 py-2 text-sm font-bold text-white bg-blue-500 cursor-pointer rounded"
+                className="px-4 py-2 text-sm font-bold text-white bg-blue-600 cursor-pointer rounded"
                 onClick={confirmDelete}
               >
                 Aceptar

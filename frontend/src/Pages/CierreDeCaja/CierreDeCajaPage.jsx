@@ -13,6 +13,8 @@ function CierreDeCajaPage() {
     gastos: "",
     notas: "",
   });
+  const [showModal, setShowModal] = useState(false);
+  const [cierreAEliminar, setCierreAEliminar] = useState(null);
   useEffect(() => {
     fetchCierres();
   }, [fetchCierres]);
@@ -54,6 +56,19 @@ function CierreDeCajaPage() {
   const cierresPaginados = cierres.slice(indexInicial, indexFinal);
 
   const totalPaginas = Math.ceil(cierres.length / elementosPorPagina);
+
+  const confirmDelete = () => {
+    if (cierreAEliminar) {
+      eliminarCierre(cierreAEliminar);
+      setShowModal(false);
+      setCierreAEliminar(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowModal(false);
+    setCierreAEliminar(null);
+  };
 
   return (
     <Fade triggerOnce={true} delay={50}>
@@ -164,8 +179,11 @@ function CierreDeCajaPage() {
                   <td className="text-sm p-2">{cierre.notas}</td>
                   <td className="text-sm p-2">
                     <button
-                      onClick={() => eliminarCierre(cierre._id)}
-                      className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-2 py-1 rounded text-md"
+                      onClick={() => {
+                        setCierreAEliminar(cierre._id);
+                        setShowModal(true);
+                      }}
+                      className="bg-red-500 font-bold cursor-pointer hover:bg-red-600 text-white px-2 py-1 rounded text-md"
                     >
                       Eliminar
                     </button>
@@ -193,7 +211,10 @@ function CierreDeCajaPage() {
                 <span className="text-sm font-semibold">Notas:</span> {cierre.notas}
               </p>
               <button
-                onClick={() => eliminarCierre(cierre._id)}
+                onClick={() => {
+                  setCierreAEliminar(cierre._id);
+                  setShowModal(true);
+                }}
                 className="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-md"
               >
                 Eliminar
@@ -202,33 +223,50 @@ function CierreDeCajaPage() {
           ))}
         </div>
 
-        <div className="flex justify-center mt-4 space-x-2">
-          <button
-            onClick={() => setPaginaActual((prev) => Math.max(prev - 1, 1))}
-            disabled={paginaActual === 1}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-          >
-            Anterior
-          </button>
-          {Array.from({ length: totalPaginas }, (_, i) => (
+        {totalPaginas > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-4">
             <button
-              key={i}
-              onClick={() => setPaginaActual(i + 1)}
-              className={`px-3 py-1 rounded ${
-                paginaActual === i + 1 ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"
-              }`}
+              onClick={() => setPaginaActual((prev) => Math.max(prev - 1, 1))}
+              disabled={paginaActual === 1}
+              className="px-3 py-1 bg-blue-600 font-bold text-white cursor-pointer rounded disabled:opacity-50"
             >
-              {i + 1}
+              Anterior
             </button>
-          ))}
-          <button
-            onClick={() => setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))}
-            disabled={paginaActual === totalPaginas}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-          >
-            Siguiente
-          </button>
-        </div>
+            <span className=" text-sm">
+              Página {paginaActual} de {totalPaginas}
+            </span>
+            <button
+              onClick={() => setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))}
+              disabled={paginaActual === totalPaginas}
+              className="px-3 py-1 bg-blue-600 font-bold cursor-pointer text-white rounded disabled:opacity-50"
+            >
+              Siguiente
+            </button>
+          </div>
+        )}
+
+        {/* Modal de confirmación */}
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+              <h3 className="text-lg font-semibold mb-4">¿Seguro que quieres eliminar este Cierre de Caja?</h3>
+              <div className="flex justify-between">
+                <button
+                  className="px-4 py-2 cursor-pointer text-sm font-bold text-white bg-blue-600 rounded"
+                  onClick={confirmDelete}
+                >
+                  Aceptar
+                </button>
+                <button
+                  className="px-4 py-2 text-sm cursor-pointer font-bold text-white bg-red-500 rounded"
+                  onClick={cancelDelete}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Fade>
   );

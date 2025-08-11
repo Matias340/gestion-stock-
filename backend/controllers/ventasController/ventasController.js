@@ -1,43 +1,58 @@
+import Clientes from "../../models/clientesModel/clientesModel.js";
 import Product from "../../models/productoModel/productoModel.js";
 import Venta from "../../models/ventaModel/ventaModel.js";
 
 export const ventaCompleta = async (req, res) => {
   try {
-    const { products, total, medioPago, pagoDetalle } = req.body;
+    const { products, clientes, total, medioPago, pagoDetalle } = req.body;
     const userId = req.userId;
 
-    // Validaciones
+    // 1️⃣ Validar productos
     if (!products || !Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ message: "No hay productos en la venta" });
     }
 
-    if (
-      !medioPago ||
-      !["efectivo", "tarjeta-credito", "tarjeta-debito", "transferencia", "variado"].includes(medioPago)
-    ) {
+    // 2️⃣ Validar medio de pago
+    const mediosValidos = ["efectivo", "tarjeta-credito", "tarjeta-debito", "transferencia", "credito", "variado"];
+    if (!medioPago || !mediosValidos.includes(medioPago)) {
       return res.status(400).json({ message: "Método de pago inválido" });
     }
 
-    // Si el método es "variado", validar que `pagoDetalle` esté presente
+    // 3️⃣ Validar pago variado
     if (medioPago === "variado") {
       if (!pagoDetalle || typeof pagoDetalle !== "object") {
         return res.status(400).json({ message: "Falta el desglose de pago (pagoDetalle)" });
       }
 
-      const suma = (pagoDetalle.efectivo || 0) + (pagoDetalle.tarjeta || 0) + (pagoDetalle.transferencia || 0);
+      const suma =
+        (pagoDetalle.efectivo || 0) +
+        (pagoDetalle.tarjeta || 0) +
+        (pagoDetalle.transferencia || 0) +
+        (pagoDetalle.credito || 0);
+
       if (suma !== total) {
         return res.status(400).json({ message: "La suma de pagoDetalle no coincide con el total" });
       }
     }
 
-    // Verificar cada producto
+    // 4️⃣ Validar cliente si se usa crédito (ya sea único medio o parte de variado)
+    let clienteId = null;
+    if (medioPago === "credito" || (medioPago === "variado" && (pagoDetalle?.credito || 0) > 0)) {
+      if (!clientes || !Array.isArray(clientes) || clientes.length === 0) {
+        return res.status(400).json({ message: "Falta el cliente para pago con crédito" });
+      }
+      clienteId = clientes[0].clienteId; // <-- acá el cambio importante
+      console.log("clienteId para descuento:", clienteId);
+      console.log("clientes[0]", clientes[0]);
+    }
+
+    // 5️⃣ Verificar y actualizar stock de productos
     for (const item of products) {
       if (!item.productId) {
         return res.status(400).json({ message: `Falta el ID del producto en: ${item.name}` });
       }
 
       const producto = await Product.findOne({ _id: item.productId, userId });
-
       if (!producto) {
         return res.status(404).json({ message: `Producto no encontrado o no pertenece al usuario: ${item.productId}` });
       }
@@ -52,16 +67,43 @@ export const ventaCompleta = async (req, res) => {
       await producto.save();
     }
 
-    // Determinar estado
-    const inmediato = ["efectivo", "tarjeta-debito", "transferencia"];
-    const estado = inmediato.includes(medioPago) ? "cobrado" : "pendiente";
+    // 6️⃣ Descontar crédito si corresponde
+    if (clienteId) {
+      console.log("clienteId para descuento:", clienteId);
+      const cliente = await Clientes.findOne({ _id: clienteId, userId });
+      console.log("Cliente encontrado:", cliente);
+      if (!cliente) {
+        return res.status(404).json({ message: `Cliente no encontrado o no pertenece al usuario` });
+      }
 
-    // Opcionalmente, establecer fecha de cobro si ya se cobró
+      const medioPagoLower = medioPago?.toLowerCase();
+
+      let montoADescontar = 0;
+
+      if (medioPagoLower === "credito") {
+        montoADescontar = total;
+      } else if (medioPagoLower === "variado" && pagoDetalle?.credito) {
+        montoADescontar = pagoDetalle.credito;
+      }
+
+      if (montoADescontar > 0) {
+        cliente.notaCredito = Math.max(0, (cliente.notaCredito || 0) - montoADescontar);
+
+        await cliente.save();
+        console.log("Cliente guardado correctamente");
+      }
+      console.log("notaCredito antes:", cliente.notaCredito);
+    }
+
+    // 7️⃣ Determinar estado de la venta
+    const inmediato = ["efectivo", "tarjeta-debito", "transferencia", "credito", "variado"];
+    const estado = inmediato.includes(medioPago) ? "cobrado" : "pendiente";
     const fechaCobro = estado === "cobrado" ? new Date() : null;
 
-    // Crear la venta
+    // 8️⃣ Crear la venta
     const nuevaVenta = new Venta({
       products,
+      clientes,
       total,
       medioPago,
       pagoDetalle: medioPago === "variado" ? pagoDetalle : undefined,
@@ -69,6 +111,10 @@ export const ventaCompleta = async (req, res) => {
       fechaCobro,
       userId,
     });
+
+    console.log("medioPago:", medioPago);
+    console.log("total:", total);
+    console.log("pagoDetalle.credito:", pagoDetalle?.credito);
 
     await nuevaVenta.save();
 

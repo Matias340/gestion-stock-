@@ -4,7 +4,7 @@ const ClienteSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
   telefono: String,
   email: String,
-  observaciones: String,
+  notaCredito: { type: Number, required: false },
   createdAt: { type: Date, default: Date.now },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
 });

@@ -9,19 +9,27 @@ const VentaSchema = new mongoose.Schema({
       price: Number,
     },
   ],
+  clientes: [
+    {
+      clienteId: { type: mongoose.Schema.Types.ObjectId, ref: "clientes" },
+      nombre: String,
+      email: String,
+      notaCredito: Number,
+    },
+  ],
   total: { type: Number, required: true },
 
   medioPago: {
     type: String,
     required: true,
-    enum: ["efectivo", "tarjeta-credito", "tarjeta-debito", "transferencia", "variado"],
-    email: { type: String },
+    enum: ["efectivo", "tarjeta-credito", "tarjeta-debito", "transferencia", "credito", "variado"],
   },
 
   pagoDetalle: {
     efectivo: { type: Number, default: 0 },
     tarjeta: { type: Number, default: 0 },
     transferencia: { type: Number, default: 0 },
+    credito: { type: Number, default: 0 },
   },
 
   // Estado general de la venta
@@ -29,7 +37,7 @@ const VentaSchema = new mongoose.Schema({
     type: String,
     enum: ["pendiente", "cobrado"],
     default: function () {
-      const inmediato = ["efectivo", "tarjeta-debito", "transferencia"];
+      const inmediato = ["efectivo", "tarjeta-debito", "transferencia", "credito", "variado"];
       return inmediato.includes(this.medioPago) ? "cobrado" : "pendiente";
     },
   },
@@ -39,6 +47,7 @@ const VentaSchema = new mongoose.Schema({
     efectivo: { type: String, enum: ["pendiente", "cobrado"], default: "cobrado" },
     tarjeta: { type: String, enum: ["pendiente", "cobrado"], default: "pendiente" },
     transferencia: { type: String, enum: ["pendiente", "cobrado"], default: "cobrado" },
+    credito: { type: String, enum: ["pendiente", "cobrado"], default: "cobrado" },
   },
 
   fechaCobro: { type: Date },
@@ -51,7 +60,10 @@ const VentaSchema = new mongoose.Schema({
 VentaSchema.pre("save", function (next) {
   if (this.medioPago === "variado") {
     const sumaDetalle =
-      (this.pagoDetalle.efectivo || 0) + (this.pagoDetalle.tarjeta || 0) + (this.pagoDetalle.transferencia || 0);
+      (this.pagoDetalle.efectivo || 0) +
+      (this.pagoDetalle.tarjeta || 0) +
+      (this.pagoDetalle.transferencia || 0) +
+      (this.pagoDetalle.credito || 0);
 
     if (sumaDetalle !== this.total) {
       return next(new Error("La suma de los montos en pagoDetalle no coincide con el total."));

@@ -13,10 +13,12 @@ import {
 const useProductStore = create((set, get) => ({
   products: [],
   selectedProducts: [], // Productos seleccionados en la compra
+  selectedClient: null,
   ventaProducts: [],
   paymentMethod: "efectivo",
   userId: null,
   currentProduct: null,
+  currentClientes: null,
   notification: null,
 
   setPaymentMethod: (method) => set({ paymentMethod: method }),
@@ -195,17 +197,18 @@ const useProductStore = create((set, get) => ({
     );
   },
 
+  setSelectedClient: (cliente) => set({ selectedClient: cliente }),
+
   completePurchase: async () => {
     try {
-      const { selectedProducts, getTotal, paymentMethod, userID } = get();
-
-      //console.log("Estado actual antes de la compra:", paymentMethod);
-      //console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: paymentMethod });
-
+      const { selectedProducts, selectedClient, getTotal, paymentMethod, paymentDetail, userId } = get();
+      console.log("selectedClient en completePurchase:", selectedClient);
       if (!selectedProducts.length) {
         return { success: false, message: "El carrito está vacío" };
       }
+      console.log("selectedClient en completePurchase:", selectedClient);
 
+      // Formateo de productos para enviar
       const productosFormateados = selectedProducts.map((item) => ({
         productId: item._id,
         name: item.name,
@@ -213,11 +216,28 @@ const useProductStore = create((set, get) => ({
         price: item.price,
       }));
 
+      const clientesFormateados = selectedClient
+        ? [
+            {
+              clienteId: selectedClient._id,
+              nombre: selectedClient.nombre,
+              email: selectedClient.email,
+              notaCredito: selectedClient.notaCredito,
+            },
+          ]
+        : [];
+
       const total = getTotal();
 
-      //console.log("Enviando datos al backend:", { productosFormateados, total, medioPago: paymentMethod }); // 💡 Usa `get()` aquí para evitar valores antiguos
-
-      const response = await realizarVenta(productosFormateados, total, paymentMethod, userID); // 📌 Usa `get().paymentMethod` para asegurar que tiene el valor actualizado
+      // Llamada a la API
+      const response = await realizarVenta(
+        productosFormateados,
+        clientesFormateados,
+        total,
+        paymentMethod,
+        paymentDetail || null,
+        userId
+      );
 
       if (response.status === 201) {
         set({

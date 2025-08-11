@@ -8,7 +8,7 @@ const ITEMS_PER_PAGE = 5;
 
 function ClientesPage() {
   const { clientes, fetchCliente, removeCliente, setCurrentClientes } = useClienteStore();
-  console.log(clientes);
+  console.log("40", clientes);
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
@@ -43,17 +43,14 @@ function ClientesPage() {
     const nombre = cliente.nombre ? cliente.nombre.toLowerCase() : "";
     const telefono = cliente.telefono ? cliente.telefono.toString() : "";
     const email = cliente.email ? cliente.email.toLowerCase() : "";
-    const observaciones = cliente.observaciones ? cliente.observaciones.toLowerCase() : "";
 
-    return (
-      nombre.includes(texto) || telefono.includes(filterText) || email.includes(texto) || observaciones.includes(texto)
-    );
+    return nombre.includes(texto) || telefono.includes(filterText) || email.includes(texto);
   });
 
   const totalPages = Math.ceil(filteredCliente.length / ITEMS_PER_PAGE);
   const paginatedCliente = filteredCliente.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
-  console.log("fgdfgdf", paginatedCliente);
+  console.log("20", paginatedCliente);
 
   return (
     <Fade triggerOnce={true} delay={50}>
@@ -96,7 +93,7 @@ function ClientesPage() {
                 <th className="py-2 px-4 text-left">Nombre</th>
                 <th className="py-2 px-4 text-left">Telefono</th>
                 <th className="py-2 px-4 text-left">Email</th>
-                <th className="py-2 px-4 text-left">Observaciones</th>
+                <th className="py-2 px-4 text-left">Credito</th>
                 <th className="py-2 px-4 text-left">Acciones</th>
               </tr>
             </thead>
@@ -107,7 +104,7 @@ function ClientesPage() {
                     <td className="py-2 px-4">{cliente.nombre}</td>
                     <td className="py-2 px-4">{cliente.telefono}</td>
                     <td className="py-2 px-4">{cliente.email}</td>
-                    <td className="py-2 px-4">{cliente.observaciones}</td>
+                    <td className="py-2 px-4">ARS$ {new Intl.NumberFormat("es-AR").format(cliente.notaCredito)}</td>
                     <td className="py-2 px-4 flex gap-2">
                       <button
                         className="bg-blue-500 cursor-pointer text-white text-md px-3 py-1 font-bold rounded hover:bg-blue-600"
@@ -154,7 +151,7 @@ function ClientesPage() {
                   <span className="font-semibold">Email:</span> {cliente.email}
                 </p>
                 <p>
-                  <span className="font-semibold">Observaciones:</span> {cliente.observaciones}
+                  <span className="font-semibold">Credito:</span> {cliente.notaCredito}
                 </p>
                 <div className="flex gap-2 mt-2">
                   <button

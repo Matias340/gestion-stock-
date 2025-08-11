@@ -28,15 +28,20 @@ export const createProduct = (newItem) => APIPRODUCTO.post("/", newItem);
 export const updateProduct = (id, updatedItem) => APIPRODUCTO.put(`/${id}`, updatedItem);
 export const deleteProduct = (id) => APIPRODUCTO.delete(`/${id}`);
 export const fetchVenta = () => APIVENTA.get("/");
-export const realizarVenta = (productos, total, medioPago, pagoDetalle, userId) => {
+export const realizarVenta = (productos, clientes, total, medioPago, pagoDetalle, userId) => {
   console.log("Enviando productos al backend:", productos);
-  return APIVENTA.post(`/`, {
+
+  const payload = {
     products: productos,
+    clientes: clientes || [],
     total,
     medioPago,
-    pagoDetalle, // 👈 Agregás esto
+    pagoDetalle: pagoDetalle || null,
     userId,
-  });
+  };
+
+  console.log("Enviando venta al backend:", payload);
+  return APIVENTA.post(`/`, payload);
 };
 export const marcarComoCobrada = (ventaId) => {
   return APIVENTA.put(`/${ventaId}/cobrar`);

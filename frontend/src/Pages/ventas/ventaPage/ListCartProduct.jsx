@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import deleteImage from "../../../assets/delete.png";
+import useClienteStore from "../../../store/clientesStore/clientesStore";
 import useProductStore from "../../../store/productStore/productStore";
 import useVentaStore from "../../../store/ventaStore/ventaStore";
 
@@ -15,11 +17,9 @@ function ListCartProduct() {
     userId,
     setPaymentMethod,
   } = useProductStore();
+  const { clientes, setCurrentClientes, currentClientes } = useClienteStore();
   const { fetchVentaDetails } = useVentaStore();
-
   const [cashReceived, setCashReceived] = useState("");
-  const [buyerEmail, setBuyerEmail] = useState("");
-
   const total = getTotal();
   const change = paymentMethod === "efectivo" ? Math.max(cashReceived - total, 0) : 0;
 
@@ -31,8 +31,18 @@ function ListCartProduct() {
       return;
     }
 
+    // Validación para crédito
+    if (paymentMethod === "credito") {
+      const creditoDisponible = currentClientes?.notaCredito || 0;
+
+      if (creditoDisponible < total) {
+        toast.error("Crédito insuficiente para completar la compra.");
+        return;
+      }
+    }
+
     try {
-      const result = await completePurchase(userId, paymentMethod, cashReceived);
+      const result = await completePurchase();
 
       if (result.message === "Venta registrada con éxito") {
         toast.success(result.message); // Mostramos el mensaje de éxito
@@ -104,20 +114,11 @@ function ListCartProduct() {
           <option value="tarjeta-debito">Tarjeta débito</option>
           <option value="tarjeta-credito">Tarjeta crédito</option>
           <option value="transferencia">Transferencia</option>
+          <option value="credito">Credito</option>
           <option value="variado">Variado</option>
-
-          <div className="mt-4">
-            <label className="block mb-2 font-medium text-gray-900">Email del comprador:</label>
-            <input
-              type="email"
-              value={buyerEmail}
-              onChange={(e) => setBuyerEmail(e.target.value)}
-              placeholder="ejemplo@correo.com"
-              className="w-full border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-            />
-          </div>
         </select>
 
+        {/* Efectivo */}
         {paymentMethod === "efectivo" && (
           <div className="mt-4">
             <label className="block mb-2 font-medium text-gray-900">Dinero Recibido:</label>
@@ -134,6 +135,32 @@ function ListCartProduct() {
               className="w-full border border-gray-900 border-2 p-2 rounded-md outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             />
             {cashReceived > 0 && <p className="mt-2 text-lg font-semibold text-green-600">Cambio: ${change}</p>}
+          </div>
+        )}
+
+        {/* Crédito */}
+        {paymentMethod === "credito" && (
+          <div className="mt-4">
+            <label className="block mb-2 font-medium text-gray-900">Crédito disponible:</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={
+                  currentClientes?.notaCredito.toLocaleString("es-AR", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }) || ""
+                }
+                readOnly
+                className="flex-1 border border-gray-900 border-2 p-2 rounded-md bg-gray-100 text-gray-700 outline-none"
+              />
+              <Link
+                to="/seleccionar-cliente"
+                className="bg-blue-600 font-bold text-white px-4 py-2 rounded-md shadow hover:bg-blue-700"
+              >
+                Seleccionar cliente
+              </Link>
+            </div>
           </div>
         )}
       </div>

@@ -1,19 +1,29 @@
 import { ArrowLeft, Filter } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import useClienteStore from "../../../store/clientesStore/clientesStore";
 import useProductStore from "../../../store/productStore/productStore";
 
-const SeleccionarProducto = () => {
-  const { products, setCurrentProduct } = useProductStore();
-  console.log("20", products);
+const SeleccionarClientes = () => {
+  const { clientes, setCurrentClientes, fetchCliente } = useClienteStore();
+  console.log("30", clientes);
   const [filterText, setFilterText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
+  console.log("1", clientes);
+
   const itemsPerPage = 5;
 
-  const handleSelect = (product) => {
-    setCurrentProduct(product);
+  useEffect(() => {
+    if (clientes.length === 0) {
+      fetchCliente();
+    }
+  }, []);
+
+  const handleSelect = (cliente) => {
+    setCurrentClientes(cliente);
+    useProductStore.getState().setSelectedClient(cliente);
     navigate("/vender");
   };
 
@@ -21,22 +31,22 @@ const SeleccionarProducto = () => {
     setCurrentPage(page);
   };
 
-  const filteredProducts = products.filter((product) => {
-    const name = product.name?.toLowerCase() || "";
-    const barcode = product.barcode?.toLowerCase() || "";
-    const price = product.price?.toString() || "";
+  const filteredClientes = clientes.filter((cliente) => {
+    const nombre = cliente.nombre?.toLowerCase() || "";
+    const email = cliente.email?.toLowerCase() || "";
+    const notaCredito = cliente.notaCredito?.toString() || "";
 
     return (
-      name.includes(filterText.toLowerCase()) ||
-      barcode.includes(filterText.toLowerCase()) ||
-      price.includes(filterText)
+      nombre.includes(filterText.toLowerCase()) ||
+      email.includes(filterText.toLowerCase()) ||
+      notaCredito.includes(filterText)
     );
   });
 
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const paginatedProducts = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(filteredClientes.length / itemsPerPage);
+  const paginatedClientes = filteredClientes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  console.log("10", paginatedProducts);
+  console.log("2", paginatedClientes);
 
   return (
     <div className="p-4 max-h-[480px] overflow-y-auto">
@@ -45,13 +55,13 @@ const SeleccionarProducto = () => {
           <ArrowLeft size={30} className="sm:mr-6" />
         </Link>
       </div>
-      <h1 className="text-2xl font-bold mb-4">Seleccioná un producto</h1>
+      <h1 className="text-2xl font-bold mb-4">Seleccioná un cliente</h1>
 
       {/* Filtro */}
       <div className="relative w-full mb-6">
         <input
           type="text"
-          placeholder="Filtrar por Nombre, Precio o Código"
+          placeholder="Filtrar por Nombre o Email"
           value={filterText}
           onChange={(e) => {
             setFilterText(e.target.value);
@@ -68,23 +78,23 @@ const SeleccionarProducto = () => {
           <thead className="bg-blue-500 text-left">
             <tr>
               <th className="p-3 border-b text-white whitespace-nowrap">Nombre</th>
-              <th className="p-3 border-b text-white whitespace-nowrap">Código de barras</th>
-              <th className="p-3 border-b text-white whitespace-nowrap">Precio</th>
+              <th className="p-3 border-b text-white whitespace-nowrap">Email</th>
+              <th className="p-3 border-b text-white whitespace-nowrap">Credito</th>
               <th className="p-3 border-b text-white text-center whitespace-nowrap">Acción</th>
             </tr>
           </thead>
           <tbody>
-            {paginatedProducts.length > 0 ? (
-              paginatedProducts.map((product) => (
-                <tr key={product._id} className="hover:bg-gray-50">
-                  <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{product.name}</td>
-                  <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{product.barcode}</td>
+            {paginatedClientes.length > 0 ? (
+              paginatedClientes.map((cliente) => (
+                <tr key={cliente._id} className="hover:bg-gray-50">
+                  <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{cliente.nombre}</td>
+                  <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{cliente.email}</td>
                   <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">
-                    ARS$ {new Intl.NumberFormat("es-AR").format(product.price)}
+                    ARS$ {new Intl.NumberFormat("es-AR").format(cliente.notaCredito)}
                   </td>
                   <td className="p-3 border-b border-gray-200 text-center whitespace-nowrap">
                     <button
-                      onClick={() => handleSelect(product)}
+                      onClick={() => handleSelect(cliente)}
                       className="bg-blue-600 cursor-pointer font-bold text-white px-3 py-1 rounded hover:bg-blue-500"
                     >
                       Agregar
@@ -95,7 +105,7 @@ const SeleccionarProducto = () => {
             ) : (
               <tr>
                 <td colSpan="4" className="p-3 text-center text-gray-500">
-                  No hay productos disponibles.
+                  No hay clientes disponibles.
                 </td>
               </tr>
             )}
@@ -105,21 +115,21 @@ const SeleccionarProducto = () => {
 
       {/* Cards visibles solo en pantallas pequeñas */}
       <div className="block max-h-[400px] overflow-y-auto sm:hidden">
-        {paginatedProducts.length > 0 ? (
+        {paginatedClientes.length > 0 ? (
           <div className="grid gap-4 grid-cols-1">
-            {paginatedProducts.map((product) => (
-              <div key={product._id} className="border rounded-lg shadow p-4 bg-white flex flex-col justify-between">
+            {paginatedClientes.map((cliente) => (
+              <div key={cliente._id} className="border rounded-lg shadow p-4 bg-white flex flex-col justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
+                  <h2 className="text-lg font-semibold mb-1">{cliente.nombre}</h2>
                   <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-bold">Código:</span> {product.barcode}
+                    <span className="font-bold">Email:</span> {cliente.email}
                   </p>
                   <p className="text-sm text-gray-600">
-                    <span className="font-bold">Precio:</span> ${product.price.toFixed(2)}
+                    <span className="font-bold">Credito:</span> ${cliente.notaCredito.toFixed(2)}
                   </p>
                 </div>
                 <button
-                  onClick={() => handleSelect(product)}
+                  onClick={() => handleSelect(cliente)}
                   className="mt-4 bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700"
                 >
                   Agregar
@@ -128,7 +138,7 @@ const SeleccionarProducto = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center text-gray-500 mt-4">No hay productos disponibles.</div>
+          <div className="text-center text-gray-500 mt-4">No hay clientes disponibles.</div>
         )}
       </div>
 
@@ -154,4 +164,4 @@ const SeleccionarProducto = () => {
   );
 };
 
-export default SeleccionarProducto;
+export default SeleccionarClientes;

@@ -6,6 +6,7 @@ import AcercaPage from "./Pages/Acerca/AcercaPage";
 import CierreDeCajaPage from "./Pages/CierreDeCaja/CierreDeCajaPage";
 import ClientesPage from "./Pages/Clientes/ClientesPage";
 import NuevoClientes from "./Pages/Clientes/nuevosClientes/nuevosClientes";
+import SeleccionarClientes from "./Pages/Clientes/seleccionarClientes/SeleccionarClientes";
 import EditarGasto from "./Pages/Gastos/editarGasto/EditarGasto";
 import GastosPage from "./Pages/Gastos/gastosPage/GastosPage";
 import HistorialVentasPage from "./Pages/Historial/HistorialVentasPage";
@@ -46,6 +47,7 @@ function App() {
             <Route path="cargarProductos" element={<BulkUpload />} />
             <Route path="nuevoProductoAgregado" element={<NuevoProductoAgregado />} />
             <Route path="seleccionar-producto" element={<SeleccionarProducto />} />
+            <Route path="seleccionar-cliente" element={<SeleccionarClientes />} />
             <Route path="nuevoProducto/:id" element={<NuevoProducto />} />
             <Route path="historial" element={<HistorialVentasPage />} />
             <Route path="ingresos" element={<IngresosPage />} />

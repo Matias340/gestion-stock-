@@ -14,7 +14,7 @@ function NuevoClientes() {
   const [nombre, setNombre] = useState("");
   const [telefono, setTelefono] = useState("");
   const [email, setEmail] = useState("");
-  const [observaciones, setObservaciones] = useState("");
+  const [notaCredito, setNotaCredito] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -24,7 +24,7 @@ function NuevoClientes() {
           setNombre(cliente.nombre || "");
           setTelefono(cliente.telefono || "");
           setEmail(cliente.email || "");
-          setObservaciones(cliente.observaciones || "");
+          setNotaCredito(cliente.notaCredito || "");
         } else {
           toast.error("Cliente no encontrado");
           navigate("/clientes");
@@ -39,7 +39,7 @@ function NuevoClientes() {
       nombre,
       telefono,
       email,
-      observaciones,
+      notaCredito,
     };
 
     try {
@@ -55,13 +55,22 @@ function NuevoClientes() {
       setNombre("");
       setTelefono("");
       setEmail("");
-      setObservaciones("");
+      setNotaCredito("");
       clearCurrentClientes();
 
       navigate("/clientes");
     } catch (error) {
       toast.error("Ocurrió un error al guardar el cliente");
       console.error("Error al guardar cliente:", error);
+    }
+  };
+
+  const handleNotaCreditoChange = (e) => {
+    let value = e.target.value;
+
+    // Permitir signo negativo opcional y números con decimales
+    if (/^-?\d*\.?\d*$/.test(value)) {
+      setNotaCredito(value);
     }
   };
 
@@ -119,12 +128,19 @@ function NuevoClientes() {
                 />
               </div>
 
-              <div className="col-span-1 md:col-span-2 flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">observaciones:</label>
-                <textarea
-                  placeholder="observaciones"
-                  value={observaciones}
-                  onChange={(e) => setObservaciones(e.target.value)}
+              <div className="flex flex-col">
+                <label className="mb-2 text-md font-medium text-gray-900">Credito del cliente:</label>
+                <input
+                  type="text"
+                  placeholder="Credito del cliente"
+                  required
+                  value={
+                    notaCredito.toLocaleString("es-AR", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }) || ""
+                  }
+                  onChange={handleNotaCreditoChange}
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                 />
               </div>

@@ -13,6 +13,8 @@ const VentaSchema = new mongoose.Schema({
     {
       clienteId: { type: mongoose.Schema.Types.ObjectId, ref: "clientes" },
       nombre: String,
+      apellido: String,
+      codigo: Number,
       email: String,
       notaCredito: Number,
     },

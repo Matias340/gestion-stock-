@@ -33,11 +33,15 @@ const SeleccionarClientes = () => {
 
   const filteredClientes = clientes.filter((cliente) => {
     const nombre = cliente.nombre?.toLowerCase() || "";
+    const apellido = cliente.apellido?.toLowerCase() || "";
+    const codigo = cliente.codigo?.toString() || "";
     const email = cliente.email?.toLowerCase() || "";
     const notaCredito = cliente.notaCredito?.toString() || "";
 
     return (
       nombre.includes(filterText.toLowerCase()) ||
+      apellido.includes(filterText.toLowerCase()) ||
+      codigo.includes(filterText.toString()) ||
       email.includes(filterText.toLowerCase()) ||
       notaCredito.includes(filterText)
     );
@@ -78,6 +82,8 @@ const SeleccionarClientes = () => {
           <thead className="bg-blue-500 text-left">
             <tr>
               <th className="p-3 border-b text-white whitespace-nowrap">Nombre</th>
+              <th className="p-3 border-b text-white whitespace-nowrap">Apellido</th>
+              <th className="p-3 border-b text-white whitespace-nowrap">Codigo</th>
               <th className="p-3 border-b text-white whitespace-nowrap">Email</th>
               <th className="p-3 border-b text-white whitespace-nowrap">Credito</th>
               <th className="p-3 border-b text-white text-center whitespace-nowrap">Acción</th>
@@ -88,6 +94,8 @@ const SeleccionarClientes = () => {
               paginatedClientes.map((cliente) => (
                 <tr key={cliente._id} className="hover:bg-gray-50">
                   <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{cliente.nombre}</td>
+                  <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{cliente.apellido}</td>
+                  <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{cliente.codigo}</td>
                   <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">{cliente.email}</td>
                   <td className="p-3 border-b border-gray-200 font-bold whitespace-nowrap">
                     ARS$ {new Intl.NumberFormat("es-AR").format(cliente.notaCredito)}

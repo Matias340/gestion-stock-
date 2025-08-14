@@ -54,6 +54,8 @@ function HistorialVentasPage() {
     return ventaProducts; // "all"
   }, [ventaProducts, filter]);
 
+  console.log("2", ventaProducts);
+
   // Calcular las ventas que mostrar en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -195,7 +197,9 @@ function HistorialVentasPage() {
               <thead className="bg-blue-600 text-white">
                 <tr>
                   <th className="p-2 text-left">Fecha</th>
-                  <th className="p-2 text-left">Nombre</th>
+                  <th className="p-2 text-left">Cod.Cliente</th>
+                  <th className="p-2 text-left">Nom.Cliente</th>
+                  <th className="p-2 text-left">Producto/s</th>
                   <th className="p-2 text-center">Cantidad</th>
                   <th className="p-2 text-right">Total</th>
                 </tr>
@@ -212,8 +216,14 @@ function HistorialVentasPage() {
                         minute: "2-digit",
                       })}
                     </td>
+                    <td className="p-2 truncate max-w-xs">
+                      {venta.clientes.map((c) => c.clienteId?.codigo ?? "").join(", ")}
+                    </td>
+                    <td className="p-2 truncate max-w-xs">{venta.clientes.map((p) => p.nombre).join(", ")}</td>
                     <td className="p-2 truncate max-w-xs">{venta.products.map((p) => p.name).join(", ")}</td>
+
                     <td className="p-2 text-center">{venta.products.reduce((acc, p) => acc + p.quantity, 0)}</td>
+
                     <td className="p-2 text-right font-bold">
                       $
                       {venta.total.toLocaleString("es-AR", {

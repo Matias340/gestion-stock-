@@ -177,7 +177,10 @@ export const getSales = async (req, res) => {
       }
     }
 
-    const sales = await Venta.find(filtro).populate("products.productId").exec();
+    const sales = await Venta.find(filtro)
+      .populate("products.productId") // poblamos productos
+      .populate("clientes.clienteId", "nombre apellido codigo email notaCredito") // poblamos cliente completo
+      .exec();
 
     res.status(200).json(sales);
   } catch (error) {

@@ -154,6 +154,12 @@ function ListCartProduct() {
                 readOnly
                 className="flex-1 border border-gray-900 border-2 p-2 rounded-md bg-gray-100 text-gray-700 outline-none"
               />
+              <input
+                type="text"
+                value={currentClientes?.codigo}
+                readOnly
+                className="flex-1 border border-gray-900 border-2 p-1 rounded-md bg-gray-100 text-gray-700 outline-none"
+              />
               <Link
                 to="/seleccionar-cliente"
                 className="bg-blue-600 font-bold text-white px-4 py-2 rounded-md shadow hover:bg-blue-700"

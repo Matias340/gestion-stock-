@@ -12,6 +12,8 @@ function NuevoClientes() {
     useClienteStore();
 
   const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [codigo, setCodigo] = useState("");
   const [telefono, setTelefono] = useState("");
   const [email, setEmail] = useState("");
   const [notaCredito, setNotaCredito] = useState("");
@@ -22,6 +24,8 @@ function NuevoClientes() {
         if (cliente) {
           setCurrentClientes(cliente);
           setNombre(cliente.nombre || "");
+          setApellido(cliente.apellido || "");
+          setCodigo(cliente.codigo || "");
           setTelefono(cliente.telefono || "");
           setEmail(cliente.email || "");
           setNotaCredito(cliente.notaCredito || "");
@@ -37,6 +41,8 @@ function NuevoClientes() {
     e.preventDefault();
     const clienteData = {
       nombre,
+      apellido,
+      codigo,
       telefono,
       email,
       notaCredito,
@@ -53,6 +59,8 @@ function NuevoClientes() {
 
       // Limpiar formulario
       setNombre("");
+      setApellido("");
+      setCodigo("");
       setTelefono("");
       setEmail("");
       setNotaCredito("");
@@ -94,6 +102,32 @@ function NuevoClientes() {
                   placeholder="Nombre del cliente"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
+                  autoFocus
+                  required
+                  className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="mb-2 text-md font-medium text-gray-900">Apellido:</label>
+                <input
+                  type="text"
+                  placeholder="Apellido del cliente"
+                  value={apellido}
+                  onChange={(e) => setApellido(e.target.value)}
+                  autoFocus
+                  required
+                  className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="mb-2 text-md font-medium text-gray-900">Codigo:</label>
+                <input
+                  type="text"
+                  placeholder="Codigo"
+                  value={codigo}
+                  onChange={(e) => setCodigo(e.target.value)}
                   autoFocus
                   required
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"

@@ -1,10 +1,10 @@
 import Cliente from "../../models/clientesModel/clientesModel.js";
 
 export const createCliente = async (req, res) => {
-  const { nombre, telefono, email, notaCredito } = req.body;
+  const { nombre, apellido, codigo, telefono, email, notaCredito } = req.body;
 
   try {
-    const existeCliente = await Cliente.findOne({ nombre });
+    const existeCliente = await Cliente.findOne({ codigo });
 
     if (existeCliente) {
       return res.status(400).json({ msg: "Cliente ya registrado" });
@@ -22,7 +22,9 @@ export const createCliente = async (req, res) => {
 
 export const getCliente = async (req, res) => {
   try {
-    const clientes = await Cliente.find({ userId: req.userId }).select("_id nombre telefono email notaCredito");
+    const clientes = await Cliente.find({ userId: req.userId }).select(
+      "_id nombre apellido codigo telefono email notaCredito"
+    );
     res.status(200).json(clientes);
   } catch (error) {
     console.error("Error en getCliente:", error);

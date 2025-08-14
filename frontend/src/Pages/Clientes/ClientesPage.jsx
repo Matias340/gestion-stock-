@@ -41,10 +41,18 @@ function ClientesPage() {
   const filteredCliente = clientes.filter((cliente) => {
     const texto = filterText.toLowerCase();
     const nombre = cliente.nombre ? cliente.nombre.toLowerCase() : "";
+    const apellido = cliente.apellido ? cliente.apellido.toLowerCase() : "";
+    const codigo = cliente.codigo ? cliente.codigo.toString() : "";
     const telefono = cliente.telefono ? cliente.telefono.toString() : "";
     const email = cliente.email ? cliente.email.toLowerCase() : "";
 
-    return nombre.includes(texto) || telefono.includes(filterText) || email.includes(texto);
+    return (
+      nombre.includes(texto) ||
+      apellido.includes(texto) ||
+      codigo.includes(filterText) ||
+      telefono.includes(filterText) ||
+      email.includes(texto)
+    );
   });
 
   const totalPages = Math.ceil(filteredCliente.length / ITEMS_PER_PAGE);
@@ -74,7 +82,7 @@ function ClientesPage() {
         <div className="relative w-full mb-4">
           <input
             type="text"
-            placeholder="Filtrar por Nombre, Telefono o Email"
+            placeholder="Filtrar por Nombre, Codigo o Mail"
             value={filterText}
             onChange={(e) => {
               setFilterText(e.target.value);
@@ -91,6 +99,8 @@ function ClientesPage() {
             <thead className="bg-blue-600 text-white">
               <tr>
                 <th className="py-2 px-4 text-left">Nombre</th>
+                <th className="py-2 px-4 text-left">Apellido</th>
+                <th className="py-2 px-4 text-left">Codigo</th>
                 <th className="py-2 px-4 text-left">Telefono</th>
                 <th className="py-2 px-4 text-left">Email</th>
                 <th className="py-2 px-4 text-left">Credito</th>
@@ -102,6 +112,8 @@ function ClientesPage() {
                 paginatedCliente.map((cliente) => (
                   <tr key={cliente._id} className="border border-gray-200 hover:bg-blue-50">
                     <td className="py-2 px-4">{cliente.nombre}</td>
+                    <td className="py-2 px-4">{cliente.apellido}</td>
+                    <td className="py-2 px-4">{cliente.codigo}</td>
                     <td className="py-2 px-4">{cliente.telefono}</td>
                     <td className="py-2 px-4">{cliente.email}</td>
                     <td className="py-2 px-4">ARS$ {new Intl.NumberFormat("es-AR").format(cliente.notaCredito)}</td>
@@ -142,6 +154,12 @@ function ClientesPage() {
               <div key={cliente._id} className="bg-white p-4 rounded shadow border border-gray-200 text-sm">
                 <p>
                   <span className="font-semibold">Nombre:</span> {cliente.nombre}
+                </p>
+                <p>
+                  <span className="font-semibold">Apellido:</span> {cliente.apellido}
+                </p>
+                <p>
+                  <span className="font-semibold">Codigo:</span> {cliente.codigo}
                 </p>
                 <p>
                   <span className="font-semibold">Telefono:</span>

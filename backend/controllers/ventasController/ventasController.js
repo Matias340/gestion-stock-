@@ -24,26 +24,19 @@ export const ventaCompleta = async (req, res) => {
         return res.status(400).json({ message: "Falta el desglose de pago (pagoDetalle)" });
       }
 
-      const suma =
-        (pagoDetalle.efectivo || 0) +
-        (pagoDetalle.tarjeta || 0) +
-        (pagoDetalle.transferencia || 0) +
-        (pagoDetalle.credito || 0);
-
+      const suma = Object.values(pagoDetalle).reduce((acc, monto) => acc + (monto || 0), 0);
       if (suma !== total) {
         return res.status(400).json({ message: "La suma de pagoDetalle no coincide con el total" });
       }
     }
 
-    // 4️⃣ Validar cliente si se usa crédito (ya sea único medio o parte de variado)
+    // 4️⃣ Validar cliente si se usa crédito
     let clienteId = null;
     if (medioPago === "credito" || (medioPago === "variado" && (pagoDetalle?.credito || 0) > 0)) {
       if (!clientes || !Array.isArray(clientes) || clientes.length === 0) {
         return res.status(400).json({ message: "Falta el cliente para pago con crédito" });
       }
-      clienteId = clientes[0].clienteId; // <-- acá el cambio importante
-      console.log("clienteId para descuento:", clienteId);
-      console.log("clientes[0]", clientes[0]);
+      clienteId = clientes[0].clienteId;
     }
 
     // 5️⃣ Verificar y actualizar stock de productos
@@ -69,59 +62,40 @@ export const ventaCompleta = async (req, res) => {
 
     // 6️⃣ Descontar crédito si corresponde
     if (clienteId) {
-      console.log("clienteId para descuento:", clienteId);
       const cliente = await Clientes.findOne({ _id: clienteId, userId });
-      console.log("Cliente encontrado:", cliente);
       if (!cliente) {
-        return res.status(404).json({ message: `Cliente no encontrado o no pertenece al usuario` });
+        return res.status(404).json({ message: "Cliente no encontrado o no pertenece al usuario" });
       }
 
-      const medioPagoLower = medioPago?.toLowerCase();
-
       let montoADescontar = 0;
-
-      if (medioPagoLower === "credito") {
+      if (medioPago === "credito") {
         montoADescontar = total;
-      } else if (medioPagoLower === "variado" && pagoDetalle?.credito) {
+      } else if (medioPago === "variado" && pagoDetalle?.credito) {
         montoADescontar = pagoDetalle.credito;
       }
 
       if (montoADescontar > 0) {
         cliente.notaCredito = Math.max(0, (cliente.notaCredito || 0) - montoADescontar);
-
         await cliente.save();
-        console.log("Cliente guardado correctamente");
       }
-      console.log("notaCredito antes:", cliente.notaCredito);
     }
 
-    // 7️⃣ Determinar estado de la venta
-    const inmediato = ["efectivo", "tarjeta-debito", "transferencia", "credito", "variado"];
-    const estado = inmediato.includes(medioPago) ? "cobrado" : "pendiente";
-    const fechaCobro = estado === "cobrado" ? new Date() : null;
-
-    // 8️⃣ Crear la venta
+    // 7️⃣ Crear la venta
     const nuevaVenta = new Venta({
       products,
       clientes,
       total,
       medioPago,
-      pagoDetalle: medioPago === "variado" ? pagoDetalle : undefined,
-      estado,
-      fechaCobro,
+      pagoDetalle: medioPago === "variado" ? pagoDetalle : undefined, // el modelo se encargará de transformarlo a detalleVariado
       userId,
     });
-
-    console.log("medioPago:", medioPago);
-    console.log("total:", total);
-    console.log("pagoDetalle.credito:", pagoDetalle?.credito);
 
     await nuevaVenta.save();
 
     res.status(201).json({ message: "Venta registrada con éxito", venta: nuevaVenta });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Error al procesar la venta" });
+    res.status(500).json({ message: "Error al procesar la venta" });
   }
 };
 

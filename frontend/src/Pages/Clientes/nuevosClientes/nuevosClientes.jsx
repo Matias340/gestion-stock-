@@ -122,12 +122,18 @@ function NuevoClientes() {
               </div>
 
               <div className="flex flex-col">
-                <label className="mb-2 text-md font-medium text-gray-900">Codigo:</label>
+                <label className="mb-2 text-md font-medium text-gray-900">Código:</label>
                 <input
                   type="text"
-                  placeholder="Codigo"
+                  placeholder="Código"
                   value={codigo}
-                  onChange={(e) => setCodigo(e.target.value)}
+                  onChange={(e) => {
+                    // Solo permitir hasta 8 caracteres
+                    if (e.target.value.length <= 8) {
+                      setCodigo(e.target.value);
+                    }
+                  }}
+                  maxLength={8} // Límite en el HTML
                   autoFocus
                   required
                   className="border border-gray-500 bg-white p-2 rounded-md text-gray-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"

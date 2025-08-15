@@ -247,6 +247,9 @@ function IngresosPage() {
                     <th scope="col" className="px-4 py-2">
                       Total
                     </th>
+                    <th scope="col" className="px-4 py-2">
+                      Detalles
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -264,6 +267,14 @@ function IngresosPage() {
                         <option value="cobrado">Cobrado</option>
                       </select>
                       <td className="px-4 py-2 font-bold text-gray-900">${venta.total}</td>
+                      <td className="px-4 py-2">
+                        {venta.pagoDetalle
+                          ? Object.entries(venta.pagoDetalle)
+                              .filter(([metodo, monto]) => monto > 0) // solo métodos con monto
+                              .map(([metodo, monto]) => `${metodo}: $${monto}`) // formateamos cada uno
+                              .join(" | ") // unimos con separador
+                          : `${venta.medioPago}: $${venta.total}`}{" "}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

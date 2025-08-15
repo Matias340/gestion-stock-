@@ -42,14 +42,14 @@ function ClientesPage() {
     const texto = filterText.toLowerCase();
     const nombre = cliente.nombre ? cliente.nombre.toLowerCase() : "";
     const apellido = cliente.apellido ? cliente.apellido.toLowerCase() : "";
-    const codigo = cliente.codigo ? cliente.codigo.toString() : "";
+    const codigo = cliente.codigo ? cliente.codigo.toLowerCase() : "";
     const telefono = cliente.telefono ? cliente.telefono.toString() : "";
     const email = cliente.email ? cliente.email.toLowerCase() : "";
 
     return (
       nombre.includes(texto) ||
       apellido.includes(texto) ||
-      codigo.includes(filterText) ||
+      codigo.includes(texto) ||
       telefono.includes(filterText) ||
       email.includes(texto)
     );

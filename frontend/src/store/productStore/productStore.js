@@ -199,16 +199,11 @@ const useProductStore = create((set, get) => ({
 
   setSelectedClient: (cliente) => set({ selectedClient: cliente }),
 
-  completePurchase: async () => {
+  completePurchase: async (paymentDetailFromComponent) => {
     try {
-      const { selectedProducts, selectedClient, getTotal, paymentMethod, paymentDetail, userId } = get();
-      console.log("selectedClient en completePurchase:", selectedClient);
-      if (!selectedProducts.length) {
-        return { success: false, message: "El carrito está vacío" };
-      }
-      console.log("selectedClient en completePurchase:", selectedClient);
+      const { selectedProducts, selectedClient, getTotal, paymentMethod, userId } = get();
+      const total = getTotal();
 
-      // Formateo de productos para enviar
       const productosFormateados = selectedProducts.map((item) => ({
         productId: item._id,
         name: item.name,
@@ -227,15 +222,12 @@ const useProductStore = create((set, get) => ({
           ]
         : [];
 
-      const total = getTotal();
-
-      // Llamada a la API
       const response = await realizarVenta(
         productosFormateados,
         clientesFormateados,
         total,
         paymentMethod,
-        paymentDetail || null,
+        paymentDetailFromComponent || null, // <-- ahora toma el detalle desde el componente
         userId
       );
 
